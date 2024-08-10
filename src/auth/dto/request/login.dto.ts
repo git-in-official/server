@@ -8,5 +8,5 @@ export class LoginDto {
 
   @ApiProperty()
   @IsString()
-  accessToken: string;
+  providerAccessToken: string;
 }

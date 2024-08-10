@@ -1,12 +1,25 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, HttpException } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/request';
+import { LoginDto, SignupDto } from './dto/request';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @Post('login')
-  login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  async login(@Body() loginDto: LoginDto) {
+    try {
+      return await this.authService.login(loginDto);
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === 'user not found') {
+          throw new HttpException('user not found', 404);
+        }
+      }
+    }
+  }
+
+  @Post('signup')
+  async signup(@Body() signupDto: SignupDto) {
+    return this.authService.signup(signupDto);
   }
 }
