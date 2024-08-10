@@ -6,3 +6,17 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum Provider {
+  google
+  apple
+}
+
+model User {
+  id         String   @id @default(uuid())
+  provider   Provider
+  providerId String
+  name       String
+
+  @@unique([provider, providerId])
+}
