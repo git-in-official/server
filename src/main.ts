@@ -28,6 +28,7 @@ async function bootstrap() {
     .setTitle('to_morrow API')
     .setDescription('to_morrow API description')
     .setVersion('1.0')
+    .addBearerAuth()
     .addTag('to_morrow')
     .build();
   const document = SwaggerModule.createDocument(app, config);
