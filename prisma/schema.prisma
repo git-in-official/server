@@ -17,6 +17,22 @@ model User {
   provider   Provider
   providerId String
   name       String
+  Poem       Poem[]
 
   @@unique([provider, providerId])
+}
+
+model Poem {
+  id          String   @id @default(uuid())
+  title       String
+  textAlign   String
+  textSize    String
+  textFont    String
+  content     String
+  tags        String[]
+  isRecorded  Boolean
+  isPublished Boolean?
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
 }
