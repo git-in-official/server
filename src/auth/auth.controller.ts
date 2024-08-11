@@ -39,6 +39,7 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Signup' })
   @ApiResponse({ status: 201, type: JwtDto })
+  @ApiResponse({ status: 400, description: '유효성 검사 실패' })
   @Post('signup')
   async signup(@Body() signupDto: SignupDto) {
     return this.authService.signup(signupDto);
