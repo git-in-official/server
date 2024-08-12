@@ -1,0 +1,62 @@
+[
+    {
+        "emotion" : "기쁨",
+        "description" : [
+            "사랑",
+            "성공",
+            "즐거움"
+        ]
+
+    },
+    {
+        "emotion" : "슬픔",
+        "description" : [
+            "실패",
+            "실망",
+            "이별"
+            
+        ]
+    },
+    {
+        "emotion" : "두려움",
+        "description" : [
+            "불안",
+            "긴장",
+            "불확실성"
+        ]
+    },
+    {
+        "emotion" : "분노",
+        "description" : [
+            "격노",
+            "좌절"
+        ]
+    },
+    {
+        "emotion" : "혐오",
+        "description" : [
+            "역겨움",
+            "경멸",
+            "불쾌"
+        ]
+    },
+    {
+        "emotion" : "기대",
+        "description" : [
+            "동기부여",
+            "설렘"
+        ]
+    },
+    {
+        "emotion": "안정",
+        "description": [
+            "의지",
+            "신뢰",
+            "친밀함"
+        ]
+    },
+    {
+        "emotion": "모르겠음",
+        "description": []
+    }
+]
