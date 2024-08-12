@@ -53,7 +53,7 @@ export class PoemController {
   @ApiBody({ type: ChangeTagDto })
   @ApiResponse({ status: 200, type: ContentDto })
   @HttpCode(200)
-  @Patch('emotion')
+  @Patch('tag')
   async changeEmotion(@Body() changeEmotionDto: ChangeTagDto) {
     return this.poemService.changeEmotion({
       ...changeEmotionDto,
