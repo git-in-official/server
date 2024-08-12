@@ -1,2 +1,3 @@
 export { AnaylsisPoemDto } from './analysis-poem.dto';
-export { ChangeEmotionDto } from './change-emotion.dto';
+export { ChangeTagDto } from './change-tag.dto';
+export { CreatePoemDto } from './create-poem.dto';

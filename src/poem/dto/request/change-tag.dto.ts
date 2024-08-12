@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString } from 'class-validator';
 
-export class ChangeEmotionDto {
+export class ChangeTagDto {
   @ApiProperty()
   @IsString()
   title: string;
@@ -9,12 +9,22 @@ export class ChangeEmotionDto {
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  beforeEmotion: string[];
+  beforeThemes: string[];
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  afterEmotion: string[];
+  beforeInteractions: string[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsString({ each: true })
+  afterThemes: string[];
+
+  @ApiProperty()
+  @IsArray()
+  @IsString({ each: true })
+  afterInteractions: string[];
 
   @ApiProperty()
   @IsString()
