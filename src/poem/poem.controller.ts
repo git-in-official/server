@@ -1,4 +1,11 @@
-import { Controller, Post, UseGuards, Body, HttpCode } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Body,
+  HttpCode,
+  Patch,
+} from '@nestjs/common';
 import { JwtGuard } from 'src/auth/guards';
 import {
   ApiTags,
@@ -7,8 +14,8 @@ import {
   ApiBody,
   ApiResponse,
 } from '@nestjs/swagger';
-import { AnaylsisPoemDto } from './dto/request';
-import { EmotionsDto } from './dto/response';
+import { AnaylsisPoemDto, ChangeEmotionDto } from './dto/request';
+import { EmotionsDto, ContentDto } from './dto/response';
 import { PoemService } from './poem.service';
 
 @ApiTags('poem')
@@ -18,7 +25,10 @@ import { PoemService } from './poem.service';
 export class PoemController {
   constructor(private readonly poemService: PoemService) {}
 
-  @ApiOperation({ summary: '시 감정분석 - 현재는 하드코딩입니다.' })
+  @ApiOperation({
+    summary:
+      '시 감정분석 - 현재는 하드코딩, 감정에 대한 기획이 완료되면 추가구현',
+  })
   @ApiBody({ type: AnaylsisPoemDto })
   @ApiResponse({ status: 200, type: EmotionsDto })
   @HttpCode(200)
@@ -28,5 +38,19 @@ export class PoemController {
       analysisPoemDto.title,
       analysisPoemDto.content,
     );
+  }
+
+  @ApiOperation({
+    summary:
+      '시 감정태그 수정 - 현재는 하드코딩, 감정에 대한 기획이 완료되면 추가구현',
+  })
+  @ApiBody({ type: ChangeEmotionDto })
+  @ApiResponse({ status: 200, type: ContentDto })
+  @HttpCode(200)
+  @Patch('emotion')
+  async changeEmotion(@Body() changeEmotionDto: ChangeEmotionDto) {
+    return this.poemService.changeEmotion({
+      ...changeEmotionDto,
+    });
   }
 }
