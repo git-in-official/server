@@ -6,6 +6,7 @@ import { UserModule } from './user/user.module';
 import { InspirationModule } from './inspiration/inspiration.module';
 import { PoemModule } from './poem/poem.module';
 import { AwsModule } from './aws/aws.module';
+import { EmotionModule } from './emotion/emotion.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AwsModule } from './aws/aws.module';
     InspirationModule,
     PoemModule,
     AwsModule,
+    EmotionModule,
   ],
 })
 export class AppModule {}
