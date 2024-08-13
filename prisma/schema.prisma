@@ -32,7 +32,7 @@ model Poem {
   themes          String[]
   interactions    String[]
   isRecorded      Boolean
-  isPublished     Boolean? @default(false)
+  status          String
   originalContent String?
   createdAt       DateTime @default(now())
 

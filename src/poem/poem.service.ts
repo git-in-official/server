@@ -38,6 +38,7 @@ export class PoemService {
       textFont: createPoemInput.textFont,
       isRecorded: createPoemInput.audioFile ? true : false,
       originalContent: createPoemInput.originalContent ?? null,
+      status: '교정중',
     };
 
     const newPoem = await this.poemRepository.createPoem(userId, poemData);

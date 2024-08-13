@@ -28,8 +28,8 @@ export class NewPoemDto {
   @ApiProperty()
   isRecorded: boolean;
 
-  @ApiProperty()
-  isPublished: boolean;
+  @ApiProperty({ enum: ['교정중', '교열', '인쇄', '출판'] })
+  status: string;
 
   @ApiProperty()
   createdAt: Date;
