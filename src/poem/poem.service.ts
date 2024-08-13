@@ -37,6 +37,8 @@ export class PoemService {
       textSize: createPoemInput.textSize,
       textFont: createPoemInput.textFont,
       isRecorded: createPoemInput.audioFile ? true : false,
+      originalContent: createPoemInput.originalContent ?? null,
+      status: '교정중',
     };
 
     const newPoem = await this.poemRepository.createPoem(userId, poemData);
@@ -46,8 +48,11 @@ export class PoemService {
         newPoem.id,
         createPoemInput.audioFile,
       );
+      return {
+        ...newPoem,
+        audioUrl: this.awsService.getAudioUrl() + newPoem.id,
+      };
     }
-
     return newPoem;
   }
 }
@@ -60,6 +65,7 @@ export type CreatePoemInput = {
   textAlign: string;
   textSize: number;
   textFont: string;
+  originalContent?: string;
   audioFile?: Express.Multer.File;
 };
 

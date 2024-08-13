@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 datasource db {
@@ -23,17 +24,18 @@ model User {
 }
 
 model Poem {
-  id           String   @id @default(uuid())
-  title        String
-  content      String
-  textAlign    String
-  textSize     Int
-  textFont     String
-  themes       String[]
-  interactions String[]
-  isRecorded   Boolean
-  isPublished  Boolean? @default(false)
-  createdAt    DateTime @default(now())
+  id              String   @id @default(uuid())
+  title           String
+  content         String
+  textAlign       String
+  textSize        Int
+  textFont        String
+  themes          String[]
+  interactions    String[]
+  isRecorded      Boolean
+  status          String
+  originalContent String?
+  createdAt       DateTime @default(now())
 
   authorId String
   author   User   @relation(fields: [authorId], references: [id])

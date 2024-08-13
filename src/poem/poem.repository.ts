@@ -12,6 +12,9 @@ export class PoemRepository {
         ...data,
         authorId: userId,
       },
+      omit: {
+        originalContent: true,
+      },
     });
   }
 }
