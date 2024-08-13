@@ -32,8 +32,7 @@ export class PoemController {
   constructor(private readonly poemService: PoemService) {}
 
   @ApiOperation({
-    summary:
-      '시 태그 분석 - 현재는 하드코딩, 감정에 대한 기획이 완료되면 추가구현',
+    summary: '시 태그 분석',
   })
   @ApiBody({ type: AnaylsisPoemDto })
   @ApiResponse({ status: 200, type: TagsDto })
@@ -47,8 +46,7 @@ export class PoemController {
   }
 
   @ApiOperation({
-    summary:
-      '시 태그 수정 - 현재는 하드코딩, 감정에 대한 기획이 완료되면 추가구현',
+    summary: '시 태그 수정 - 현재는 하드코딩',
   })
   @ApiBody({ type: ChangeTagDto })
   @ApiResponse({ status: 200, type: ContentDto })

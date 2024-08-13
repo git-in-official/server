@@ -1,21 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { PoemRepository } from './poem.repository';
 import { AwsService } from 'src/aws/aws.service';
+import { LlmService } from './llm.service';
 
 @Injectable()
 export class PoemService {
   constructor(
     private readonly awsService: AwsService,
     private readonly poemRepository: PoemRepository,
+    private readonly llmService: LlmService,
   ) {}
   async analysisPoem(title: string, content: string) {
     // 시 태그 분석 로직
-    title;
-    content;
-    return {
-      themes: ['테마1', '테마2'],
-      interactions: ['상호작용1', '상호작용2'],
-    };
+    return this.llmService.analyzePoem(title, content);
   }
 
   async changeEmotion(changeTagInput: ChangeTagInput) {
