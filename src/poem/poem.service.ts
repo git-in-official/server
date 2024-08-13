@@ -37,6 +37,7 @@ export class PoemService {
       textSize: createPoemInput.textSize,
       textFont: createPoemInput.textFont,
       isRecorded: createPoemInput.audioFile ? true : false,
+      originalContent: createPoemInput.originalContent ?? null,
     };
 
     const newPoem = await this.poemRepository.createPoem(userId, poemData);
@@ -60,6 +61,7 @@ export type CreatePoemInput = {
   textAlign: string;
   textSize: number;
   textFont: string;
+  originalContent?: string;
   audioFile?: Express.Multer.File;
 };
 
