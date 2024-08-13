@@ -19,4 +19,10 @@ export class AwsService {
 
     return this.s3Client.send(command);
   }
+
+  getAudioUrl() {
+    return (
+      this.configService.get<string>('AWS_CLOUDFRONT_URL') + '/poems/records/'
+    );
+  }
 }

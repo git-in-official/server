@@ -48,8 +48,11 @@ export class PoemService {
         newPoem.id,
         createPoemInput.audioFile,
       );
+      return {
+        ...newPoem,
+        audioUrl: this.awsService.getAudioUrl() + newPoem.id,
+      };
     }
-
     return newPoem;
   }
 }
