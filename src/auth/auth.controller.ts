@@ -4,6 +4,7 @@ import {
   Body,
   HttpException,
   UseGuards,
+  HttpCode,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -22,9 +23,10 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @ApiOperation({ summary: 'Login' })
-  @ApiResponse({ status: 201, type: JwtDto })
+  @ApiResponse({ status: 200, type: JwtDto })
   @ApiResponse({ status: 404, description: 'user not found' })
   @Post('login')
+  @HttpCode(200)
   async login(@Body() loginDto: LoginDto) {
     try {
       return await this.authService.login(loginDto);
