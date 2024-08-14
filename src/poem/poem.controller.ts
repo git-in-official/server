@@ -39,21 +39,21 @@ export class PoemController {
   @HttpCode(200)
   @Post('analysis')
   async analysis(@Body() analysisPoemDto: AnaylsisPoemDto) {
-    return this.poemService.analysisPoem(
+    return await this.poemService.analysisPoem(
       analysisPoemDto.title,
       analysisPoemDto.content,
     );
   }
 
   @ApiOperation({
-    summary: '시 태그 수정 - 현재는 하드코딩',
+    summary: '시 태그 수정',
   })
   @ApiBody({ type: ChangeTagDto })
   @ApiResponse({ status: 200, type: ContentDto })
   @HttpCode(200)
   @Patch('tag')
   async changeEmotion(@Body() changeEmotionDto: ChangeTagDto) {
-    return this.poemService.changeEmotion({
+    return await this.poemService.changeEmotion({
       ...changeEmotionDto,
     });
   }
@@ -70,7 +70,7 @@ export class PoemController {
     @UploadedFile() audioFile?: Express.Multer.File,
   ) {
     console.log(createPoemDto);
-    return this.poemService.createPoem(req.user.id, {
+    return await this.poemService.createPoem(req.user.id, {
       ...createPoemDto,
       audioFile,
     });
