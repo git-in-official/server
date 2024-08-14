@@ -46,7 +46,7 @@ export class PoemController {
   }
 
   @ApiOperation({
-    summary: '시 태그 수정',
+    summary: '시 태그 수정 - 3~4초 정도 걸립니다',
   })
   @ApiBody({ type: ChangeTagDto })
   @ApiResponse({ status: 200, type: ContentDto })
