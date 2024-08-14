@@ -11,17 +11,11 @@ export class PoemService {
     private readonly llmService: LlmService,
   ) {}
   async analysisPoem(title: string, content: string) {
-    // 시 태그 분석 로직
-    return this.llmService.analyzePoem(title, content);
+    return await this.llmService.analyzePoem(title, content);
   }
 
   async changeEmotion(changeTagInput: ChangeTagInput) {
-    // 감정 수정 로직
-    changeTagInput;
-
-    return {
-      content: '감정에 맞춰 수정된 시 입니다.\n' + changeTagInput.content,
-    };
+    return await this.llmService.changeTag(changeTagInput);
   }
 
   async createPoem(userId: string, createPoemInput: CreatePoemInput) {

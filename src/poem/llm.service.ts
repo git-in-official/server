@@ -62,4 +62,63 @@ export class LlmService {
       throw new Error('Anthropic api response error');
     }
   }
+
+  async changeTag(changeTagInput: ChangeTagInput) {
+    const result = await this.anthropic.messages.create({
+      model: this.configService.get<string>('ANTHROPIC_MODEL')!,
+      max_tokens: 1024,
+      temperature: 0.5,
+      tools: [
+        {
+          name: 'modify_poem',
+          description:
+            '시가 현재 가지고 있는 테마와 상호작용을 줄건데 이 시를 새로운 테마와 상호작용이 적용된 시로 수정해줘',
+          input_schema: {
+            type: 'object',
+            properties: {
+              title: {
+                type: 'string',
+                description:
+                  '제목은 꼭 바꿀 필요는 없는데, 바꾸고 싶다면 새로운 제목을 입력해',
+              },
+              content: {
+                type: 'string',
+                description:
+                  '새로운 테마와 상호작용이 적용된 시로 수정해줘. 최대한 원본의 내용을 유지해줘',
+              },
+            },
+            required: ['content'],
+          },
+        },
+      ],
+      tool_choice: { type: 'tool', name: 'modify_poem' },
+      messages: [
+        {
+          role: 'user',
+          content: JSON.stringify(changeTagInput),
+        },
+      ],
+    });
+
+    if (result.content[0].type === 'tool_use') {
+      return result.content[0].input as {
+        title: string;
+        content: string;
+      };
+    } else {
+      console.error('Anthropic api response error');
+      console.error(changeTagInput);
+      console.error(result);
+      throw new Error('Anthropic api response error');
+    }
+  }
 }
+
+export type ChangeTagInput = {
+  title: string;
+  content: string;
+  beforeThemes: string[];
+  beforeInteractions: string[];
+  afterThemes: string[];
+  afterInteractions: string[];
+};
