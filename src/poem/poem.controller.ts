@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiConsumes,
 } from '@nestjs/swagger';
-import { AnaylsisPoemDto, ChangeTagDto, CreatePoemDto } from './dto/request';
+import { AnalyzePoemDto, ChangeTagDto, CreatePoemDto } from './dto/request';
 import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
 import { PoemService } from './poem.service';
 import { JwtRequest } from 'src/auth/requests';
@@ -34,14 +34,14 @@ export class PoemController {
   @ApiOperation({
     summary: '시 태그 분석',
   })
-  @ApiBody({ type: AnaylsisPoemDto })
+  @ApiBody({ type: AnalyzePoemDto })
   @ApiResponse({ status: 200, type: TagsDto })
   @HttpCode(200)
-  @Post('analysis')
-  async analysis(@Body() analysisPoemDto: AnaylsisPoemDto) {
-    return await this.poemService.analysisPoem(
-      analysisPoemDto.title,
-      analysisPoemDto.content,
+  @Post('analyze')
+  async analysis(@Body() analyzePoemDto: AnalyzePoemDto) {
+    return await this.poemService.analyzePoem(
+      analyzePoemDto.title,
+      analyzePoemDto.content,
     );
   }
 

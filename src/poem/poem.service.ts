@@ -10,7 +10,7 @@ export class PoemService {
     private readonly poemRepository: PoemRepository,
     private readonly llmService: LlmService,
   ) {}
-  async analysisPoem(title: string, content: string) {
+  async analyzePoem(title: string, content: string) {
     return await this.llmService.analyzePoem(title, content);
   }
 
