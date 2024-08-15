@@ -18,7 +18,7 @@ export class AuthService {
   }) {
     if (provider === 'google') {
       const profile = await this.getGoogleProfile(providerAccessToken);
-      const user = await this.userRepository.findUserByProvider(
+      const user = await this.userRepository.findOneByProvider(
         provider,
         profile.id,
       );
@@ -41,7 +41,7 @@ export class AuthService {
   }) {
     if (provider === 'google') {
       const profile = await this.getGoogleProfile(providerAccessToken);
-      const newUser = await this.userRepository.createUser({
+      const newUser = await this.userRepository.create({
         provider,
         providerId: profile.id,
         name,
