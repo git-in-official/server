@@ -1,1 +1,1 @@
-export { EmotionDto } from './emotion.dto';
+export * from './emotion.dto';
