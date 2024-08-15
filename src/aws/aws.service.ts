@@ -9,10 +9,10 @@ export class AwsService {
     private readonly configService: ConfigService,
   ) {}
 
-  async uploadPoemRecord(id: string, file: Express.Multer.File) {
+  async uploadPoemAudio(id: string, file: Express.Multer.File) {
     const command = new PutObjectCommand({
       Bucket: this.configService.get<string>('AWS_BUCKET_NAME'),
-      Key: 'poems/records/' + id,
+      Key: 'poems/audios/' + id,
       Body: file.buffer,
       ContentType: file.mimetype,
     });
@@ -22,7 +22,7 @@ export class AwsService {
 
   getAudioUrl() {
     return (
-      this.configService.get<string>('AWS_CLOUDFRONT_URL') + '/poems/records/'
+      this.configService.get<string>('AWS_CLOUDFRONT_URL') + '/poems/audios/'
     );
   }
 }

@@ -36,7 +36,7 @@ export class PoemService {
     const newPoem = await this.poemRepository.create(userId, poemData);
 
     if (createInput.audioFile) {
-      await this.awsService.uploadPoemRecord(newPoem.id, createInput.audioFile);
+      await this.awsService.uploadPoemAudio(newPoem.id, createInput.audioFile);
       return {
         ...newPoem,
         audioUrl: this.awsService.getAudioUrl() + newPoem.id,
