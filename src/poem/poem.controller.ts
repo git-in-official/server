@@ -64,13 +64,13 @@ export class PoemController {
   @ApiResponse({ status: 201, type: NewPoemDto })
   @Post()
   @UseInterceptors(FileInterceptor('audioFile'))
-  async createPoem(
+  async create(
     @Req() req: JwtRequest,
     @Body() createPoemDto: CreatePoemDto,
     @UploadedFile() audioFile?: Express.Multer.File,
   ) {
     console.log(createPoemDto);
-    return await this.poemService.createPoem(req.user.id, {
+    return await this.poemService.create(req.user.id, {
       ...createPoemDto,
       audioFile,
     });

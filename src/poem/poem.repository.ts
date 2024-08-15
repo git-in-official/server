@@ -6,7 +6,7 @@ import { Prisma } from '@prisma/client';
 export class PoemRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createPoem(userId: string, data: Prisma.PoemCreateWithoutAuthorInput) {
+  async create(userId: string, data: Prisma.PoemCreateWithoutAuthorInput) {
     return this.prisma.poem.create({
       data: {
         ...data,
