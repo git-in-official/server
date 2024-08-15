@@ -11,7 +11,7 @@ export class EmotionController {
   @ApiOperation({ summary: '감정 리스트 조회' })
   @ApiResponse({ status: 200, type: [EmotionDto] })
   @Get()
-  async getEmotions() {
-    return this.emotionService.getEmotions();
+  async getAll() {
+    return this.emotionService.getAll();
   }
 }
