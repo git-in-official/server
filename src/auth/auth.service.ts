@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { GoogleProfile } from './dto';
+import { AuthTypes } from 'src/types';
 import { UserRepository } from 'src/user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 
@@ -51,7 +51,9 @@ export class AuthService {
     }
   }
 
-  async getGoogleProfile(accessToken: string): Promise<GoogleProfile> {
+  async getGoogleProfile(
+    accessToken: string,
+  ): Promise<AuthTypes.GoogleProfile> {
     const response = await fetch(
       `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
     );
