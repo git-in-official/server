@@ -42,6 +42,15 @@ export class CreatePoemDto {
   originalContent?: string;
 
   @ApiProperty({
+    description: 'AI가 수정하기 전의 원본 시 제목',
+    required: false,
+    nullable: true,
+  })
+  @IsOptional()
+  @IsString()
+  originalTitle?: string;
+
+  @ApiProperty({
     type: 'string',
     format: 'binary',
     required: false,

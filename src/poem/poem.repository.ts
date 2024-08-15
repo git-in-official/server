@@ -14,6 +14,7 @@ export class PoemRepository {
       },
       omit: {
         originalContent: true,
+        originalTitle: true,
       },
     });
   }
