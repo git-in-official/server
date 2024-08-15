@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class UserRepository {
   constructor(private readonly prisma: PrismaService) {}
-  async findOneByProvider(provider: 'google' | 'apple', providerId: string) {
+  async findOneByProvider(provider: 'GOOGLE' | 'APPLE', providerId: string) {
     return this.prisma.user.findUnique({
       where: {
         provider_providerId: {
@@ -20,7 +20,7 @@ export class UserRepository {
     providerId,
     name,
   }: {
-    provider: 'google' | 'apple';
+    provider: 'GOOGLE' | 'APPLE';
     providerId: string;
     name: string;
   }) {

@@ -9,8 +9,8 @@ datasource db {
 }
 
 enum Provider {
-  google
-  apple
+  GOOGLE
+  APPLE
 }
 
 model User {

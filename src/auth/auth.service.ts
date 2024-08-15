@@ -13,10 +13,10 @@ export class AuthService {
     provider,
     providerAccessToken,
   }: {
-    provider: 'google' | 'apple';
+    provider: 'GOOGLE' | 'APPLE';
     providerAccessToken: string;
   }) {
-    if (provider === 'google') {
+    if (provider === 'GOOGLE') {
       const profile = await this.getGoogleProfile(providerAccessToken);
       const user = await this.userRepository.findOneByProvider(
         provider,
@@ -35,11 +35,11 @@ export class AuthService {
     providerAccessToken,
     name,
   }: {
-    provider: 'google' | 'apple';
+    provider: 'GOOGLE' | 'APPLE';
     providerAccessToken: string;
     name: string;
   }) {
-    if (provider === 'google') {
+    if (provider === 'GOOGLE') {
       const profile = await this.getGoogleProfile(providerAccessToken);
       const newUser = await this.userRepository.create({
         provider,
