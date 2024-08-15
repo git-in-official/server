@@ -14,8 +14,8 @@ export class PoemService {
     return await this.llmService.analyzePoem(title, content);
   }
 
-  async changeEmotion(changeTagInput: ChangeTagInput) {
-    return await this.llmService.changeTag(changeTagInput);
+  async updateTag(updateTagInput: UpdateTagInput) {
+    return await this.llmService.updateTag(updateTagInput);
   }
 
   async createPoem(userId: string, createPoemInput: CreatePoemInput) {
@@ -62,7 +62,7 @@ export type CreatePoemInput = {
   audioFile?: Express.Multer.File;
 };
 
-export type ChangeTagInput = {
+export type UpdateTagInput = {
   title: string;
   beforeThemes: string[];
   beforeInteractions: string[];

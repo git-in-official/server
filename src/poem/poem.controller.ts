@@ -19,7 +19,7 @@ import {
   ApiResponse,
   ApiConsumes,
 } from '@nestjs/swagger';
-import { AnalyzePoemDto, ChangeTagDto, CreatePoemDto } from './dto/request';
+import { AnalyzePoemDto, UpdateTagDto, CreatePoemDto } from './dto/request';
 import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
 import { PoemService } from './poem.service';
 import { JwtRequest } from 'src/auth/requests';
@@ -48,13 +48,13 @@ export class PoemController {
   @ApiOperation({
     summary: '시 태그 수정 - 3~4초 정도 걸립니다',
   })
-  @ApiBody({ type: ChangeTagDto })
+  @ApiBody({ type: UpdateTagDto })
   @ApiResponse({ status: 200, type: ContentDto })
   @HttpCode(200)
   @Patch('tag')
-  async changeEmotion(@Body() changeEmotionDto: ChangeTagDto) {
-    return await this.poemService.changeEmotion({
-      ...changeEmotionDto,
+  async updateTag(@Body() updateTagDto: UpdateTagDto) {
+    return await this.poemService.updateTag({
+      ...updateTagDto,
     });
   }
 
