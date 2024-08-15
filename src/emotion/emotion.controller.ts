@@ -3,8 +3,8 @@ import { EmotionService } from './emotion.service';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { EmotionDto } from './dto/response';
 
-@ApiTags('emotion')
-@Controller('emotion')
+@ApiTags('emotions')
+@Controller('emotions')
 export class EmotionController {
   constructor(private readonly emotionService: EmotionService) {}
 

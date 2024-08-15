@@ -24,10 +24,10 @@ import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
 import { PoemService } from './poem.service';
 import { JwtRequest } from 'src/auth/requests';
 
-@ApiTags('poem')
+@ApiTags('poems')
 @ApiBearerAuth()
 @UseGuards(JwtGuard)
-@Controller('poem')
+@Controller('poems')
 export class PoemController {
   constructor(private readonly poemService: PoemService) {}
 
