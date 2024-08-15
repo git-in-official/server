@@ -4,9 +4,9 @@ import { IsString } from 'class-validator';
 export class AnalyzePoemDto {
   @ApiProperty()
   @IsString()
-  title: string;
+  readonly title: string;
 
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly content: string;
 }

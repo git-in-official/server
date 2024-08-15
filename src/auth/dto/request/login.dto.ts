@@ -4,9 +4,9 @@ import { ApiProperty } from '@nestjs/swagger';
 export class LoginDto {
   @ApiProperty({ enum: ['google', 'apple'] })
   @IsEnum(['google', 'apple'])
-  provider: 'google' | 'apple';
+  readonly provider: 'google' | 'apple';
 
   @ApiProperty()
   @IsString()
-  providerAccessToken: string;
+  readonly providerAccessToken: string;
 }

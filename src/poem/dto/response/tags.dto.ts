@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class TagsDto {
   @ApiProperty()
-  themes: string[];
+  readonly themes: string[];
 
   @ApiProperty()
-  interactions: string[];
+  readonly interactions: string[];
 }

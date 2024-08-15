@@ -4,33 +4,33 @@ import { IsArray, IsString, IsNumber, IsOptional } from 'class-validator';
 export class CreatePoemDto {
   @ApiProperty()
   @IsString()
-  title: string;
+  readonly title: string;
 
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly content: string;
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  themes: string[];
+  readonly themes: string[];
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  interactions: string[];
+  readonly interactions: string[];
 
   @ApiProperty()
   @IsString()
-  textAlign: string;
+  readonly textAlign: string;
 
   @ApiProperty({ type: 'number' })
   @IsNumber()
-  textSize: number;
+  readonly textSize: number;
 
   @ApiProperty()
   @IsString()
-  textFont: string;
+  readonly textFont: string;
 
   @ApiProperty({
     description: 'AI가 수정하기 전의 원본 시 내용',
@@ -39,7 +39,7 @@ export class CreatePoemDto {
   })
   @IsOptional()
   @IsString()
-  originalContent?: string;
+  readonly originalContent?: string;
 
   @ApiProperty({
     description: 'AI가 수정하기 전의 원본 시 제목',
@@ -48,7 +48,7 @@ export class CreatePoemDto {
   })
   @IsOptional()
   @IsString()
-  originalTitle?: string;
+  readonly originalTitle?: string;
 
   @ApiProperty({
     type: 'string',
@@ -56,5 +56,5 @@ export class CreatePoemDto {
     required: false,
     nullable: true,
   })
-  audioFile?: Express.Multer.File;
+  readonly audioFile?: Express.Multer.File;
 }

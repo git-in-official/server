@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class EmotionDto {
   @ApiProperty()
-  emotion: string;
+  readonly emotion: string;
 
   @ApiProperty()
-  description: string[];
+  readonly description: string[];
 }
