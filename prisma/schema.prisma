@@ -13,10 +13,6 @@ enum Provider {
   APPLE
 }
 
-enum ReactoinType {
-  SCRAP
-}
-
 // SCRAPKING은 임시입니다.
 enum AchievementName {
   SCRAPKING
@@ -27,13 +23,12 @@ model User {
   provider   Provider
   providerId String
   name       String
-  avatarUrl  String?
 
-  mainAchienementId String?
-  mainAchienement   Achievement?             @relation(fields: [mainAchienementId], references: [id])
+  mainAchievementId String?
+  mainAchievement   Achievement?             @relation(fields: [mainAchievementId], references: [id])
   Poem              Poem[]
   achievements      AchievementAcquisition[]
-  Reaction          Reaction[]
+  scraps            Scrap[]
 
   @@unique([provider, providerId])
 }
@@ -54,14 +49,13 @@ model Poem {
   createdAt       DateTime @default(now())
 
   authorId String
-  author   User       @relation(fields: [authorId], references: [id])
-  Reaction Reaction[]
+  author   User    @relation(fields: [authorId], references: [id])
+  scraps   Scrap[]
 }
 
-model Reaction {
-  id        String       @id @default(uuid())
-  type      ReactoinType
-  createdAt DateTime     @default(now())
+model Scrap {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
