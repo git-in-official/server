@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PoemRepository } from './poem.repository';
 import { AwsService } from 'src/aws/aws.service';
 import { LlmService } from './llm.service';
@@ -6,8 +6,8 @@ import { LlmService } from './llm.service';
 @Injectable()
 export class PoemService {
   constructor(
+    @Inject(PoemRepository) private readonly poemRepository: PoemRepository,
     private readonly awsService: AwsService,
-    private readonly poemRepository: PoemRepository,
     private readonly llmService: LlmService,
   ) {}
   async analyzePoem(title: string, content: string) {
