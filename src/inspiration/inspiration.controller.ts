@@ -9,9 +9,9 @@ import {
 import { InspirationService } from './inspiration.service';
 import { TitleDto, WordDto } from './dto/response';
 
-@ApiTags('inspiration')
+@ApiTags('inspirations')
 @ApiBearerAuth()
-@Controller('inspiration')
+@Controller('inspirations')
 export class InspirationController {
   constructor(private readonly inspirationService: InspirationService) {}
 

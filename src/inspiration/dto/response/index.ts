@@ -1,2 +1,2 @@
-export { TitleDto } from './title.dto';
-export { WordDto } from './word.dto';
+export * from './title.dto';
+export * from './word.dto';

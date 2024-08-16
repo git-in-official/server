@@ -1,12 +1,14 @@
 import { IsString, IsEnum } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
-  @ApiProperty({ enum: ['google', 'apple'] })
-  @IsEnum(['google', 'apple'])
-  provider: 'google' | 'apple';
+  @ApiProperty({ enum: ['GOOGLE', 'APPLE'] })
+  @Transform(({ value }) => value.toUpperCase())
+  @IsEnum(['GOOGLE', 'APPLE'])
+  readonly provider: 'GOOGLE' | 'APPLE';
 
   @ApiProperty()
   @IsString()
-  providerAccessToken: string;
+  readonly providerAccessToken: string;
 }

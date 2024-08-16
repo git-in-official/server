@@ -1,3 +1,3 @@
-export { AnaylsisPoemDto } from './analysis-poem.dto';
-export { ChangeTagDto } from './change-tag.dto';
-export { CreatePoemDto } from './create-poem.dto';
+export * from './analyze-poem.dto';
+export * from './update-tag.dto';
+export * from './create-poem.dto';

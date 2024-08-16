@@ -1,24 +1,24 @@
-import { Injectable } from '@nestjs/common';
-import { GoogleProfile } from './dto';
+import { Injectable, Inject } from '@nestjs/common';
+import { AuthTypes } from 'src/types';
 import { UserRepository } from 'src/user/user.repository';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly userRepository: UserRepository,
+    @Inject(UserRepository) private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
   ) {}
   async login({
     provider,
     providerAccessToken,
   }: {
-    provider: 'google' | 'apple';
+    provider: 'GOOGLE' | 'APPLE';
     providerAccessToken: string;
   }) {
-    if (provider === 'google') {
+    if (provider === 'GOOGLE') {
       const profile = await this.getGoogleProfile(providerAccessToken);
-      const user = await this.userRepository.findUserByProvider(
+      const user = await this.userRepository.findOneByProvider(
         provider,
         profile.id,
       );
@@ -35,13 +35,13 @@ export class AuthService {
     providerAccessToken,
     name,
   }: {
-    provider: 'google' | 'apple';
+    provider: 'GOOGLE' | 'APPLE';
     providerAccessToken: string;
     name: string;
   }) {
-    if (provider === 'google') {
+    if (provider === 'GOOGLE') {
       const profile = await this.getGoogleProfile(providerAccessToken);
-      const newUser = await this.userRepository.createUser({
+      const newUser = await this.userRepository.create({
         provider,
         providerId: profile.id,
         name,
@@ -51,7 +51,9 @@ export class AuthService {
     }
   }
 
-  async getGoogleProfile(accessToken: string): Promise<GoogleProfile> {
+  async getGoogleProfile(
+    accessToken: string,
+  ): Promise<AuthTypes.GoogleProfile> {
     const response = await fetch(
       `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
     );

@@ -1,3 +1,3 @@
-export { TagsDto } from './tags.dto';
-export { ContentDto } from './content.dto';
-export { NewPoemDto } from './new-poem.dto';
+export * from './tags.dto';
+export * from './content.dto';
+export * from './new-poem.dto';

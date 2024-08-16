@@ -1,35 +1,28 @@
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+export interface UserRepository {
+  findOneByProvider(
+    provider: 'GOOGLE' | 'APPLE',
+    providerId: string,
+  ): Promise<{
+    id: string;
+    provider: 'GOOGLE' | 'APPLE';
+    providerId: string;
+    name: string;
+  } | null>;
 
-@Injectable()
-export class UserRepository {
-  constructor(private readonly prisma: PrismaService) {}
-  async findUserByProvider(provider: 'google' | 'apple', providerId: string) {
-    return this.prisma.user.findUnique({
-      where: {
-        provider_providerId: {
-          provider,
-          providerId,
-        },
-      },
-    });
-  }
-
-  async createUser({
+  create({
     provider,
     providerId,
     name,
   }: {
-    provider: 'google' | 'apple';
+    provider: 'GOOGLE' | 'APPLE';
     providerId: string;
     name: string;
-  }) {
-    return this.prisma.user.create({
-      data: {
-        provider,
-        providerId,
-        name,
-      },
-    });
-  }
+  }): Promise<{
+    id: string;
+    provider: 'GOOGLE' | 'APPLE';
+    providerId: string;
+    name: string;
+  }>;
 }
+
+export const UserRepository = Symbol('UserRepository');

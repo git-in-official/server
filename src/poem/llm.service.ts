@@ -63,7 +63,7 @@ export class LlmService {
     }
   }
 
-  async changeTag(changeTagInput: ChangeTagInput) {
+  async updateTag(updateTagInput: UpdateTagInput) {
     const result = await this.anthropic.messages.create({
       model: this.configService.get<string>('ANTHROPIC_MODEL')!,
       max_tokens: 1024,
@@ -95,7 +95,7 @@ export class LlmService {
       messages: [
         {
           role: 'user',
-          content: JSON.stringify(changeTagInput),
+          content: JSON.stringify(updateTagInput),
         },
       ],
     });
@@ -107,14 +107,14 @@ export class LlmService {
       };
     } else {
       console.error('Anthropic api response error');
-      console.error(changeTagInput);
+      console.error(updateTagInput);
       console.error(result);
       throw new Error('Anthropic api response error');
     }
   }
 }
 
-export type ChangeTagInput = {
+export type UpdateTagInput = {
   title: string;
   content: string;
   beforeThemes: string[];

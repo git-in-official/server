@@ -1,32 +1,32 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsString } from 'class-validator';
 
-export class ChangeTagDto {
+export class UpdateTagDto {
   @ApiProperty()
   @IsString()
-  title: string;
+  readonly title: string;
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  beforeThemes: string[];
+  readonly beforeThemes: string[];
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  beforeInteractions: string[];
+  readonly beforeInteractions: string[];
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  afterThemes: string[];
+  readonly afterThemes: string[];
 
   @ApiProperty()
   @IsArray()
   @IsString({ each: true })
-  afterInteractions: string[];
+  readonly afterInteractions: string[];
 
   @ApiProperty()
   @IsString()
-  content: string;
+  readonly content: string;
 }

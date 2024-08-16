@@ -3,7 +3,7 @@ import { emotionList } from './emotion-list';
 
 @Injectable()
 export class EmotionService {
-  getEmotions() {
+  getAll() {
     return emotionList;
   }
 }

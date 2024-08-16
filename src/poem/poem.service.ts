@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PoemRepository } from './poem.repository';
 import { AwsService } from 'src/aws/aws.service';
 import { LlmService } from './llm.service';
@@ -6,40 +6,37 @@ import { LlmService } from './llm.service';
 @Injectable()
 export class PoemService {
   constructor(
+    @Inject(PoemRepository) private readonly poemRepository: PoemRepository,
     private readonly awsService: AwsService,
-    private readonly poemRepository: PoemRepository,
     private readonly llmService: LlmService,
   ) {}
-  async analysisPoem(title: string, content: string) {
+  async analyzePoem(title: string, content: string) {
     return await this.llmService.analyzePoem(title, content);
   }
 
-  async changeEmotion(changeTagInput: ChangeTagInput) {
-    return await this.llmService.changeTag(changeTagInput);
+  async updateTag(updateTagInput: UpdateTagInput) {
+    return await this.llmService.updateTag(updateTagInput);
   }
 
-  async createPoem(userId: string, createPoemInput: CreatePoemInput) {
+  async create(userId: string, createInput: CreateInput) {
     const poemData = {
-      title: createPoemInput.title,
-      content: createPoemInput.content,
-      themes: createPoemInput.themes,
-      interactions: createPoemInput.interactions,
-      textAlign: createPoemInput.textAlign,
-      textSize: createPoemInput.textSize,
-      textFont: createPoemInput.textFont,
-      isRecorded: createPoemInput.audioFile ? true : false,
-      originalContent: createPoemInput.originalContent ?? null,
-      originalTitle: createPoemInput.originalTitle ?? null,
+      title: createInput.title,
+      content: createInput.content,
+      themes: createInput.themes,
+      interactions: createInput.interactions,
+      textAlign: createInput.textAlign,
+      textSize: createInput.textSize,
+      textFont: createInput.textFont,
+      isRecorded: createInput.audioFile ? true : false,
+      originalContent: createInput.originalContent ?? null,
+      originalTitle: createInput.originalTitle ?? null,
       status: '교정중',
     };
 
-    const newPoem = await this.poemRepository.createPoem(userId, poemData);
+    const newPoem = await this.poemRepository.create(userId, poemData);
 
-    if (createPoemInput.audioFile) {
-      await this.awsService.uploadPoemRecord(
-        newPoem.id,
-        createPoemInput.audioFile,
-      );
+    if (createInput.audioFile) {
+      await this.awsService.uploadPoemAudio(newPoem.id, createInput.audioFile);
       return {
         ...newPoem,
         audioUrl: this.awsService.getAudioUrl() + newPoem.id,
@@ -49,7 +46,7 @@ export class PoemService {
   }
 }
 
-export type CreatePoemInput = {
+export type CreateInput = {
   title: string;
   content: string;
   themes: string[];
@@ -62,7 +59,7 @@ export type CreatePoemInput = {
   audioFile?: Express.Multer.File;
 };
 
-export type ChangeTagInput = {
+export type UpdateTagInput = {
   title: string;
   beforeThemes: string[];
   beforeInteractions: string[];

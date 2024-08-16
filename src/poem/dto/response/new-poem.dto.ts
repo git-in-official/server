@@ -2,41 +2,41 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class NewPoemDto {
   @ApiProperty()
-  id: string;
+  readonly id: string;
 
   @ApiProperty()
-  title: string;
+  readonly title: string;
 
   @ApiProperty()
-  content: string;
+  readonly content: string;
 
   @ApiProperty()
-  textAlign: string;
+  readonly textAlign: string;
 
   @ApiProperty()
-  textSize: number;
+  readonly textSize: number;
 
   @ApiProperty()
-  textFont: string;
+  readonly textFont: string;
 
   @ApiProperty()
-  themes: string[];
+  readonly themes: string[];
 
   @ApiProperty()
-  interactions: string[];
+  readonly interactions: string[];
 
   @ApiProperty()
-  isRecorded: boolean;
+  readonly isRecorded: boolean;
 
   @ApiProperty({ enum: ['교정중', '교열', '인쇄', '출판'] })
-  status: string;
+  readonly status: string;
 
   @ApiProperty({ description: 'ISO 8601' })
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @ApiProperty()
-  authorId: string;
+  readonly authorId: string;
 
   @ApiProperty({ description: '녹음 파일 URL', required: false })
-  audioUrl?: string;
+  readonly audioUrl?: string;
 }
