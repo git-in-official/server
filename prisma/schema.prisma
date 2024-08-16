@@ -13,12 +13,27 @@ enum Provider {
   APPLE
 }
 
+enum ReactoinType {
+  SCRAP
+}
+
+// SCRAPKING은 임시입니다.
+enum AchievementName {
+  SCRAPKING
+}
+
 model User {
   id         String   @id @default(uuid())
   provider   Provider
   providerId String
   name       String
-  Poem       Poem[]
+  avatarUrl  String?
+
+  mainAchienementId String?
+  mainAchienement   Achievement?             @relation(fields: [mainAchienementId], references: [id])
+  Poem              Poem[]
+  achievements      AchievementAcquisition[]
+  Reaction          Reaction[]
 
   @@unique([provider, providerId])
 }
@@ -39,5 +54,37 @@ model Poem {
   createdAt       DateTime @default(now())
 
   authorId String
-  author   User   @relation(fields: [authorId], references: [id])
+  author   User       @relation(fields: [authorId], references: [id])
+  Reaction Reaction[]
+}
+
+model Reaction {
+  id        String       @id @default(uuid())
+  type      ReactoinType
+  createdAt DateTime     @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  poemId String
+  poem   Poem   @relation(fields: [poemId], references: [id])
+}
+
+model Achievement {
+  id        String          @id @default(uuid())
+  name      AchievementName
+  icon      String
+  createdAt DateTime        @default(now())
+
+  acquisitionUser       User[]
+  achievementAcquistion AchievementAcquisition[]
+}
+
+model AchievementAcquisition {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  userId        String
+  user          User        @relation(fields: [userId], references: [id])
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
 }
