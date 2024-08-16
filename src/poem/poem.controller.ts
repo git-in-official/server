@@ -5,7 +5,6 @@ import {
   Body,
   HttpCode,
   Patch,
-  Req,
   UseInterceptors,
   UploadedFile,
 } from '@nestjs/common';
@@ -22,7 +21,7 @@ import {
 import { AnalyzePoemDto, UpdateTagDto, CreatePoemDto } from './dto/request';
 import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
 import { PoemService } from './poem.service';
-import { JwtRequest } from 'src/auth/requests';
+import { CurrentUser } from '../common/decorators';
 
 @ApiTags('poems')
 @ApiBearerAuth()
@@ -65,14 +64,17 @@ export class PoemController {
   @Post()
   @UseInterceptors(FileInterceptor('audioFile'))
   async create(
-    @Req() req: JwtRequest,
+    @CurrentUser() userId: string,
     @Body() createPoemDto: CreatePoemDto,
     @UploadedFile() audioFile?: Express.Multer.File,
   ) {
     console.log(audioFile);
-    return await this.poemService.create(req.user.id, {
+    return await this.poemService.create(userId, {
       ...createPoemDto,
       audioFile,
     });
   }
+
+  @Post(':id/scrap')
+  async scrap() {}
 }
