@@ -9,7 +9,6 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtGuard } from 'src/auth/guards';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -22,6 +21,7 @@ import { AnalyzePoemDto, UpdateTagDto, CreatePoemDto } from './dto/request';
 import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
 import { PoemService } from './poem.service';
 import { CurrentUser } from '../common/decorators';
+import { JwtGuard } from '../auth/guards';
 
 @ApiTags('poems')
 @ApiBearerAuth()

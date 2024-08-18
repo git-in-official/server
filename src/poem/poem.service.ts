@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { PoemRepository } from './poem.repository';
-import { AwsService } from 'src/aws/aws.service';
 import { LlmService } from './llm.service';
+import { AwsService } from '../aws/aws.service';
 
 @Injectable()
 export class PoemService {
