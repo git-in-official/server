@@ -1,5 +1,4 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guards';
 import {
   ApiTags,
   ApiOperation,
@@ -8,6 +7,7 @@ import {
 } from '@nestjs/swagger';
 import { InspirationService } from './inspiration.service';
 import { TitleDto, WordDto } from './dto/response';
+import { JwtGuard } from '../auth/guards';
 
 @ApiTags('inspirations')
 @ApiBearerAuth()
