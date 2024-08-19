@@ -78,8 +78,9 @@ export class PoemController {
 
   @ApiOperation({
     summary: '시 스크랩',
+    description: '응답 body x, 상태 코드로 성공 실패 판별.',
   })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({ status: 201 })
   @Post(':id/scrap')
   async scrap(@Param('id') poemId: string, @CurrentUser() userId: string) {
     return await this.poemService.scrap(poemId, userId);
