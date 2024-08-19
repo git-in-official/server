@@ -37,7 +37,7 @@ describe('Poem (e2e)', () => {
     await prisma.user.deleteMany();
   });
 
-  describe('/:id/scrap (POST)', async () => {
+  describe('POST /poems/:id/scrap - 시 스크랩', async () => {
     it('시 스크랩', async () => {
       // given
       const { accessToken, name } = await login(app);
