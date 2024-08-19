@@ -7,6 +7,7 @@ import {
   Patch,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -75,6 +76,12 @@ export class PoemController {
     });
   }
 
+  @ApiOperation({
+    summary: '시 스크랩',
+  })
+  @ApiResponse({ status: 200 })
   @Post(':id/scrap')
-  async scrap() {}
+  async scrap(@Param('id') poemId: string, @CurrentUser() userId: string) {
+    return await this.poemService.scrap(poemId, userId);
+  }
 }

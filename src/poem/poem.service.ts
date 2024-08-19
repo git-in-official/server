@@ -2,11 +2,13 @@ import { Injectable, Inject } from '@nestjs/common';
 import { PoemRepository } from './poem.repository';
 import { LlmService } from './llm.service';
 import { AwsService } from '../aws/aws.service';
+import { ScrapRepository } from './scrap.repository';
 
 @Injectable()
 export class PoemService {
   constructor(
     @Inject(PoemRepository) private readonly poemRepository: PoemRepository,
+    @Inject(ScrapRepository) private readonly scrapRepository: ScrapRepository,
     private readonly awsService: AwsService,
     private readonly llmService: LlmService,
   ) {}
@@ -43,6 +45,24 @@ export class PoemService {
       };
     }
     return newPoem;
+  }
+
+  async scrap(poemId: string, userId: string) {
+    const scrap = await this.scrapRepository.findOneByPoemIdAndUserId(
+      poemId,
+      userId,
+    );
+    return scrap
+      ? await this.unScrap(scrap.id)
+      : await this.doScrap(poemId, userId);
+  }
+
+  async doScrap(poemId: string, userId: string) {
+    await this.scrapRepository.create(poemId, userId);
+  }
+
+  async unScrap(id: string) {
+    await this.scrapRepository.delete(id);
   }
 }
 
