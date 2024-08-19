@@ -5,12 +5,11 @@ import {
   Body,
   HttpCode,
   Patch,
-  Req,
   UseInterceptors,
   UploadedFile,
+  Param,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { JwtGuard } from 'src/auth/guards';
 import {
   ApiTags,
   ApiBearerAuth,
@@ -22,7 +21,8 @@ import {
 import { AnalyzePoemDto, UpdateTagDto, CreatePoemDto } from './dto/request';
 import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
 import { PoemService } from './poem.service';
-import { JwtRequest } from 'src/auth/requests';
+import { CurrentUser } from '../common/decorators';
+import { JwtGuard } from '../auth/guards';
 
 @ApiTags('poems')
 @ApiBearerAuth()
@@ -65,14 +65,24 @@ export class PoemController {
   @Post()
   @UseInterceptors(FileInterceptor('audioFile'))
   async create(
-    @Req() req: JwtRequest,
+    @CurrentUser() userId: string,
     @Body() createPoemDto: CreatePoemDto,
     @UploadedFile() audioFile?: Express.Multer.File,
   ) {
     console.log(audioFile);
-    return await this.poemService.create(req.user.id, {
+    return await this.poemService.create(userId, {
       ...createPoemDto,
       audioFile,
     });
+  }
+
+  @ApiOperation({
+    summary: '시 스크랩',
+    description: '응답 body x, 상태 코드로 성공 실패 판별.',
+  })
+  @ApiResponse({ status: 201 })
+  @Post(':id/scrap')
+  async scrap(@Param('id') poemId: string, @CurrentUser() userId: string) {
+    return await this.poemService.scrap(poemId, userId);
   }
 }
