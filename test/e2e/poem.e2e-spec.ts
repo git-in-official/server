@@ -119,7 +119,7 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(scrapStatus).toEqual(201);
-      expect(unScrapStatus);
+      expect(unScrapStatus).toEqual(201);
       expect(scrap).toBeFalsy();
     });
   });
