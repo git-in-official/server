@@ -35,6 +35,7 @@ export class AuthController {
         if (e.message === 'user not found') {
           throw new HttpException('user not found', 404);
         }
+        throw e;
       }
     }
   }
