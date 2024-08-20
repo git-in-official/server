@@ -146,13 +146,13 @@ describe('Poem (e2e)', () => {
       };
 
       // when
-      const response = await request(app.getHttpServer())
+      const { status, body } = await request(app.getHttpServer())
         .post('/poems/analyze')
         .set('Authorization', `Bearer ${accessToken}`)
         .send(analyzePoemDto);
 
       // then
-      expect(response.status).toEqual(200);
+      expect(status).toEqual(200);
     });
   });
 });
