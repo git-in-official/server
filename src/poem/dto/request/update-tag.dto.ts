@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString } from 'class-validator';
+import { IsArray, IsString, IsEnum } from 'class-validator';
+import { themes, interactions } from 'src/constants/tags';
 
 export class UpdateTagDto {
   @ApiProperty()
@@ -8,22 +9,22 @@ export class UpdateTagDto {
 
   @ApiProperty()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(themes, { each: true })
   readonly beforeThemes: string[];
 
   @ApiProperty()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(interactions, { each: true })
   readonly beforeInteractions: string[];
 
   @ApiProperty()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(themes, { each: true })
   readonly afterThemes: string[];
 
   @ApiProperty()
   @IsArray()
-  @IsString({ each: true })
+  @IsEnum(interactions, { each: true })
   readonly afterInteractions: string[];
 
   @ApiProperty()
