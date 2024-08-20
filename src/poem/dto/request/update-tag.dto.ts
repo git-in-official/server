@@ -7,19 +7,19 @@ export class UpdateTagDto {
   @IsString()
   readonly title: string;
 
-  @ApiProperty()
+  @ApiProperty({ enum: themes })
   @IsEnum(themes, { each: true })
   readonly beforeThemes: string[];
 
-  @ApiProperty()
+  @ApiProperty({ enum: interactions })
   @IsEnum(interactions, { each: true })
   readonly beforeInteractions: string[];
 
-  @ApiProperty()
+  @ApiProperty({ enum: themes })
   @IsEnum(themes, { each: true })
   readonly afterThemes: string[];
 
-  @ApiProperty()
+  @ApiProperty({ enum: interactions })
   @IsEnum(interactions, { each: true })
   readonly afterInteractions: string[];
 
