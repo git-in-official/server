@@ -7,7 +7,7 @@ import { AppModule } from '../../src/app.module';
 import { SignupDto } from '../../src/auth/dto/request';
 import { JwtDto } from '../../src/auth/dto/response';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { themes, interactions } from 'src/tag/tags';
+import { themes, interactions } from 'src/constants/tags';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
