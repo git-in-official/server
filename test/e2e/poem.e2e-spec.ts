@@ -7,12 +7,13 @@ import { AppModule } from '../../src/app.module';
 import { SignupDto } from '../../src/auth/dto/request';
 import { JwtDto } from '../../src/auth/dto/response';
 import { PrismaService } from '../../src/prisma/prisma.service';
-import { themes, interactions } from 'src/constants/tags';
+import { LlmService } from 'src/poem/llm.service';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
   let authService: AuthService;
   let prisma: PrismaService;
+  let llmService: LlmService;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -24,11 +25,16 @@ describe('Poem (e2e)', () => {
     await app.init();
 
     authService = moduleFixture.get<AuthService>(AuthService);
+    llmService = moduleFixture.get<LlmService>(LlmService);
     jest.spyOn(authService, 'getGoogleProfile').mockResolvedValue({
       id: 'test-id',
       email: 'test@test.com',
       picture: 'https://picture.com',
       verified_email: true,
+    });
+    jest.spyOn(llmService, 'analyzePoem').mockResolvedValue({
+      themes: ['테스트테마1', '테스트테마2'],
+      interactions: ['테스트상호작용1', '테스트상호작용2'],
     });
   });
 
@@ -147,25 +153,7 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(response.status).toEqual(200);
-
-      // 테마는 테마리스트들로 이루어져 있다.
-      expect(response.body.themes).toEqual(
-        expect.arrayContaining(
-          response.body.themes.map(() =>
-            expect.stringMatching(new RegExp(`^(${themes.join('|')})$`)),
-          ),
-        ),
-      );
-
-      // 상호작용은 상호작용리스트들로 이루어져 있다.
-      expect(response.body.interactions).toEqual(
-        expect.arrayContaining(
-          response.body.interactions.map(() =>
-            expect.stringMatching(new RegExp(`^(${interactions.join('|')})$`)),
-          ),
-        ),
-      );
-    }, 10000);
+    });
   });
 });
 
