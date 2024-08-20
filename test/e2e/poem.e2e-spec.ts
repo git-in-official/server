@@ -7,13 +7,15 @@ import { AppModule } from '../../src/app.module';
 import { SignupDto } from '../../src/auth/dto/request';
 import { JwtDto } from '../../src/auth/dto/response';
 import { PrismaService } from '../../src/prisma/prisma.service';
+import { LlmService } from 'src/poem/llm.service';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
   let authService: AuthService;
   let prisma: PrismaService;
+  let llmService: LlmService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -23,6 +25,7 @@ describe('Poem (e2e)', () => {
     await app.init();
 
     authService = moduleFixture.get<AuthService>(AuthService);
+    llmService = moduleFixture.get<LlmService>(LlmService);
     jest.spyOn(authService, 'getGoogleProfile').mockResolvedValue({
       id: 'test-id',
       email: 'test@test.com',
@@ -121,6 +124,39 @@ describe('Poem (e2e)', () => {
       expect(scrapStatus).toEqual(201);
       expect(unScrapStatus).toEqual(201);
       expect(scrap).toBeFalsy();
+    });
+  });
+
+  describe('POST /poems/analyze - 시 태그 분석', async () => {
+    it('시의 제목과 내용을 분석하여 테마와 상호작용 태그를 반환한다.', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      jest.spyOn(llmService, 'analyzePoem').mockResolvedValue({
+        themes: ['테스트테마1', '테스트테마2'],
+        interactions: ['테스트상호작용1', '테스트상호작용2'],
+      });
+
+      const analyzePoemDto = {
+        title: '니가 어떤 딸인데 그러니',
+        content:
+          '너 훌쩍이는 소리가\n네 어머니 귀에는 천둥소리라 하더라.\n그녀를 닮은 얼굴로 서럽게 울지마라.',
+      };
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .post('/poems/analyze')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(analyzePoemDto);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toEqual({
+        themes: ['테스트테마1', '테스트테마2'],
+        interactions: ['테스트상호작용1', '테스트상호작용2'],
+      });
     });
   });
 });
