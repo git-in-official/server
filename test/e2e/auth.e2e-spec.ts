@@ -17,16 +17,6 @@ describe('Auth (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
-    app.useGlobalPipes(
-      new ValidationPipe({
-        whitelist: true,
-        transform: true,
-        transformOptions: {
-          enableImplicitConversion: true,
-        },
-        enableDebugMessages: true,
-      }),
-    );
     await app.init();
 
     prisma = moduleFixture.get<PrismaService>(PrismaService);
