@@ -7,6 +7,7 @@ import { AppModule } from '../../src/app.module';
 import { SignupDto } from '../../src/auth/dto/request';
 import { JwtDto } from '../../src/auth/dto/response';
 import { PrismaService } from '../../src/prisma/prisma.service';
+import { themes, interactions } from 'src/tag/tags';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
@@ -122,6 +123,49 @@ describe('Poem (e2e)', () => {
       expect(unScrapStatus).toEqual(201);
       expect(scrap).toBeFalsy();
     });
+  });
+
+  describe('POST /poems/analyze - 시 태그 분석', async () => {
+    it('시의 제목과 내용을 분석하여 테마와 상호작용 태그를 반환한다.', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const analyzePoemDto = {
+        title: '니가 어떤 딸인데 그러니',
+        content:
+          '너 훌쩍이는 소리가\n네 어머니 귀에는 천둥소리라 하더라.\n그녀를 닮은 얼굴로 서럽게 울지마라.',
+      };
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post('/poems/analyze')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(analyzePoemDto);
+
+      // then
+      expect(response.status).toEqual(200);
+
+      // 테마는 테마리스트들로 이루어져 있다.
+      expect(response.body.themes).toEqual(
+        expect.arrayContaining(
+          response.body.themes.map(() =>
+            expect.stringMatching(new RegExp(`^(${themes.join('|')})$`)),
+          ),
+        ),
+      );
+
+      // 상호작용은 상호작용리스트들로 이루어져 있다.
+      expect(response.body.interactions).toEqual(
+        expect.arrayContaining(
+          response.body.interactions.map(() =>
+            expect.stringMatching(new RegExp(`^(${interactions.join('|')})$`)),
+          ),
+        ),
+      );
+    }, 10000);
   });
 });
 
