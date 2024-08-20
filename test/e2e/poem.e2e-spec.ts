@@ -153,6 +153,10 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(200);
+      expect(body).toEqual({
+        themes: ['테스트테마1', '테스트테마2'],
+        interactions: ['테스트상호작용1', '테스트상호작용2'],
+      });
     });
   });
 });
