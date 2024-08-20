@@ -32,10 +32,6 @@ describe('Poem (e2e)', () => {
       picture: 'https://picture.com',
       verified_email: true,
     });
-    jest.spyOn(llmService, 'analyzePoem').mockResolvedValue({
-      themes: ['테스트테마1', '테스트테마2'],
-      interactions: ['테스트상호작용1', '테스트상호작용2'],
-    });
   });
 
   afterEach(async () => {
@@ -137,6 +133,10 @@ describe('Poem (e2e)', () => {
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
         where: { name },
+      });
+      jest.spyOn(llmService, 'analyzePoem').mockResolvedValue({
+        themes: ['테스트테마1', '테스트테마2'],
+        interactions: ['테스트상호작용1', '테스트상호작용2'],
       });
 
       const analyzePoemDto = {
