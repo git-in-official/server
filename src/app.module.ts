@@ -8,6 +8,7 @@ import { PoemModule } from './poem/poem.module';
 import { AwsModule } from './aws/aws.module';
 import { EmotionModule } from './emotion/emotion.module';
 import { TagModule } from './tag/tag.module';
+import { PipesModule } from './common/pipes/pipes.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { TagModule } from './tag/tag.module';
       expandVariables: true,
       cache: true,
     }),
+    PipesModule,
     AuthModule,
     UserModule,
     InspirationModule,

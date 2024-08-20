@@ -12,17 +12,6 @@ async function bootstrap() {
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   });
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      transformOptions: {
-        enableImplicitConversion: true,
-      },
-      enableDebugMessages: true,
-    }),
-  );
-
   // swagger
   const config = new DocumentBuilder()
     .setTitle('to_morrow API')

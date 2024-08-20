@@ -31,7 +31,7 @@ describe('Poem (e2e)', () => {
     });
   });
 
-  beforeEach(async () => {
+  afterEach(async () => {
     await prisma.scrap.deleteMany();
     await prisma.poem.deleteMany();
     await prisma.user.deleteMany();
