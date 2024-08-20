@@ -15,7 +15,7 @@ describe('Poem (e2e)', () => {
   let prisma: PrismaService;
   let llmService: LlmService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
