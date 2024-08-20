@@ -1,4 +1,4 @@
-export const emotionList = [
+export const emotions = [
   {
     emotion: '슬픔',
     description: ['슬픔', '실패', '이별'],

@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { emotionList } from './emotion-list';
+import { emotions } from '../constants/emotions';
 
 @Injectable()
 export class EmotionService {
   getAll() {
-    return emotionList;
+    return emotions;
   }
 }
