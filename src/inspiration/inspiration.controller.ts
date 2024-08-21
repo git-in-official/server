@@ -28,7 +28,7 @@ export class InspirationController {
   @Get('title')
   async getTitle() {
     try {
-      return await this.inspirationService.getTitle();
+      return await this.inspirationService.getTitle(new Date());
     } catch (e) {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {

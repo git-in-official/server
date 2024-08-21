@@ -7,15 +7,14 @@ export class InspirationService {
     @Inject(InspirationRepository)
     private readonly inspirationRepository: InspirationRepository,
   ) {}
-  async getTitle() {
+  async getTitle(today: Date) {
     const titles = await this.inspirationRepository.findAllTitle();
     const length = titles.length;
+    const dateString = today.toISOString().split('T')[0];
 
     if (length === 0) {
       throw new Error('no inspiration');
     }
-
-    const dateString = this.getDateString();
 
     const index = this.getHashedIndex(dateString, length);
     return titles[index];
@@ -25,11 +24,6 @@ export class InspirationService {
     return {
       word: '오늘의 단어',
     };
-  }
-
-  getDateString() {
-    const today = new Date();
-    return today.toISOString().split('T')[0];
   }
 
   // range가 10이면 0~9까지의 숫자를 반환
