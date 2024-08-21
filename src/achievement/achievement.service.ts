@@ -15,7 +15,7 @@ export class AchievementService {
     const acquiredAchievements =
       await this.achievementRepository.findAllByUserId(userId);
 
-    return this.checkAqusitionStatus(achievements, acquiredAchievements);
+    return this.checkAcqusitionStatus(achievements, acquiredAchievements);
   }
 
   // TODO 회원 검색 구현하면, 존재하는 회원인지 검증 코드 추가.
@@ -23,7 +23,7 @@ export class AchievementService {
     return await this.achievementRepository.findAllByUserId(userId);
   }
 
-  checkAqusitionStatus(
+  checkAcqusitionStatus(
     achievements: Achievement[],
     acquiredAchievements: Achievement[],
   ) {
