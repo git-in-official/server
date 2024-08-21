@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { AchievementName } from '../../achievement.repository';
+import { AchievementName } from '../../types';
 
 export class AchievementsDto {
   @ApiProperty()
@@ -13,4 +13,7 @@ export class AchievementsDto {
 
   @ApiProperty({ description: '아이콘 URL' })
   readonly icon: string;
+
+  @ApiProperty({ description: '획득 여부' })
+  readonly isAquired: boolean;
 }

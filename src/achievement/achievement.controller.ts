@@ -15,6 +15,7 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { AchievementsDto } from './dto/response';
+import { CurrentUser } from '../common/decorators';
 
 @ApiTags('achievements')
 @ApiBearerAuth()
@@ -28,8 +29,8 @@ export class AchievementController {
   })
   @ApiResponse({ status: 200, type: [AchievementsDto] })
   @Get()
-  async getAll() {
-    return await this.achievementService.getAll();
+  async getAll(@CurrentUser() userId: string) {
+    return await this.achievementService.getAll(userId);
   }
 
   @ApiOperation({
