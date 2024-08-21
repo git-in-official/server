@@ -49,12 +49,14 @@ describe('Achievement (e2e)', () => {
         data: {
           icon: 'https://icon1.com',
           name: 'SCRAPKING',
+          description: '예뻐야 획득 가능함',
         },
       });
       const achievement2 = await prisma.achievement.create({
         data: {
           icon: 'https://icon2.com',
           name: 'SCRAPQUEEN',
+          description: '잘생겨야 획득 가능함',
         },
       });
       await prisma.achievementAcquisition.create({
@@ -96,12 +98,14 @@ describe('Achievement (e2e)', () => {
         data: {
           icon: 'https://icon1.com',
           name: 'SCRAPKING',
+          description: '잘생겨야 획득 가능함',
         },
       });
       const achievement2 = await prisma.achievement.create({
         data: {
           icon: 'https://icon2.com',
           name: 'SCRAPQUEEN',
+          description: '예뻐야 획득 가능함',
         },
       });
       await prisma.achievementAcquisition.create({
