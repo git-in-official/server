@@ -9,10 +9,15 @@ export class InspirationService {
   ) {}
   async getTitle() {
     const titles = await this.inspirationRepository.findAllTitle();
+    const length = titles.length;
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
 
     const today = new Date();
     const dateString = today.toISOString().split('T')[0];
-    const index = this.getHashedIndex(dateString, titles.length);
+    const index = this.getHashedIndex(dateString, length);
     return titles[index];
   }
 
