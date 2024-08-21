@@ -126,7 +126,6 @@ describe('Inspiration (e2e)', () => {
     // then
     const uniqueTitles = [...new Set(titles)];
     expect(uniqueTitles.length).toBeGreaterThan(1);
-    console.log(uniqueTitles);
   });
 });
 
