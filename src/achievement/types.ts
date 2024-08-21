@@ -1,7 +1,5 @@
-export type AchievementName = 'SCRAPKING' | 'SCRAPQUEEN';
-
 export type Achievement = {
   id: string;
-  name: AchievementName;
+  name: string;
   icon: string;
 };

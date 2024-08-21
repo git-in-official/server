@@ -3,11 +3,9 @@ export interface AchievementRepository {
   findAllByUserId(userId: string): Promise<Achievement[]>;
 }
 
-type AchievementName = 'SCRAPKING' | 'SCRAPQUEEN';
-
 type Achievement = {
   id: string;
-  name: AchievementName;
+  name: string;
   icon: string;
   description: string;
 };
