@@ -13,11 +13,6 @@ enum Provider {
   APPLE
 }
 
-// SCRAPKING은 임시입니다.
-enum AchievementName {
-  SCRAPKING
-}
-
 model User {
   id         String   @id @default(uuid())
   provider   Provider
@@ -64,10 +59,11 @@ model Scrap {
 }
 
 model Achievement {
-  id        String          @id @default(uuid())
-  name      AchievementName
-  icon      String
-  createdAt DateTime        @default(now())
+  id          String   @id @default(uuid())
+  name        String
+  icon        String
+  description String
+  createdAt   DateTime @default(now())
 
   acquisitionUser       User[]
   achievementAcquistion AchievementAcquisition[]
