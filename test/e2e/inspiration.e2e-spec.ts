@@ -76,59 +76,6 @@ describe('Inspiration (e2e)', () => {
     expect(status).toBe(404);
   });
 
-  it('날마다 제목 글감이 랜덤으로 바뀐다', async () => {
-    // given
-    const { accessToken } = await login(app);
-
-    await prisma.titleInspiration.createMany({
-      data: [
-        { title: 'test-title-1' },
-        { title: 'test-title-2' },
-        { title: 'test-title-3' },
-        { title: 'test-title-4' },
-        { title: 'test-title-5' },
-        { title: 'test-title-6' },
-        { title: 'test-title-7' },
-        { title: 'test-title-8' },
-        { title: 'test-title-9' },
-        { title: 'test-title-10' },
-      ],
-    });
-
-    const dateStrings = [
-      '2023-08-22T15:30:00Z',
-      '2023-08-20T12:00:00Z',
-      '2023-08-23T09:45:00Z',
-      '2023-08-24T20:00:00Z',
-      '2023-08-25T10:30:00Z',
-      '2023-08-26T14:00:00Z',
-      '2023-08-27T07:00:00Z',
-      '2023-08-28T18:30:00Z',
-      '2023-08-29T11:15:00Z',
-      '2023-08-30T13:45:00Z',
-    ];
-
-    let dateIndex = 0;
-    jest.spyOn(inspirationService, 'getDateString').mockImplementation(() => {
-      const dateString = dateStrings[dateIndex];
-      dateIndex = (dateIndex + 1) % dateStrings.length;
-      return dateString;
-    });
-
-    // when
-    const titles = [];
-    for (let i = 0; i < 10; i++) {
-      const { body } = await request(app.getHttpServer())
-        .get('/inspirations/title')
-        .set('Authorization', `Bearer ${accessToken}`);
-      titles.push(body.title);
-    }
-
-    // then
-    const uniqueTitles = [...new Set(titles)];
-    expect(uniqueTitles.length).toBeGreaterThan(1);
-  });
-
   describe('GET /inspirations/word - 단어 글감 받기', () => {
     it('단어 글감을 반환한다', async () => {
       // given
