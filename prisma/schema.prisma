@@ -13,9 +13,10 @@ enum Provider {
   APPLE
 }
 
-// SCRAPKING은 임시입니다.
+// 임시 업적입니다.
 enum AchievementName {
   SCRAPKING
+  SCRAPQUEEN
 }
 
 model User {
