@@ -15,8 +15,8 @@ export class InspirationService {
       throw new Error('no inspiration');
     }
 
-    const today = new Date();
-    const dateString = today.toISOString().split('T')[0];
+    const dateString = this.getDateString();
+
     const index = this.getHashedIndex(dateString, length);
     return titles[index];
   }
@@ -25,6 +25,11 @@ export class InspirationService {
     return {
       word: '오늘의 단어',
     };
+  }
+
+  getDateString() {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
   }
 
   // range가 10이면 0~9까지의 숫자를 반환

@@ -11,6 +11,7 @@ import { JwtGuard } from '../auth/guards';
 
 @ApiTags('inspirations')
 @ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller('inspirations')
 export class InspirationController {
   constructor(private readonly inspirationService: InspirationService) {}
@@ -25,7 +26,6 @@ export class InspirationController {
       'no inspiration - 데이터베이스에 글감이 없어서 나는 에러입니다.',
   })
   @Get('title')
-  @UseGuards(JwtGuard)
   async getTitle() {
     try {
       return await this.inspirationService.getTitle();
