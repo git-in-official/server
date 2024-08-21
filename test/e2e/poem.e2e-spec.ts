@@ -159,6 +159,69 @@ describe('Poem (e2e)', () => {
       });
     });
   });
+
+  describe('PATCH /poems/tag - 시 태그 수정', async () => {
+    it('서비스에 정의된 테마와 상호작용이 아닌 태그를 입력하면 400 에러를 반환한다.', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const updateTagDto = {
+        title: 'test-title',
+        beforeThemes: ['test-theme1', 'test-theme2'],
+        beforeInteractions: ['test-interaction1', 'test-interaction2'],
+        afterThemes: ['test-theme1', 'test-theme2'],
+        afterInteractions: ['test-interaction1', 'test-interaction2'],
+        content: 'test-content',
+      };
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .patch('/poems/tag')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateTagDto);
+
+      // then
+      expect(status).toEqual(400);
+    });
+
+    it('시의 태그를 수정하면 시의 내용을 수정해서 반환한다.', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      jest.spyOn(llmService, 'updateTag').mockResolvedValue({
+        title: 'mocked-title',
+        content: 'mocked-content',
+      });
+
+      const updateTagDto = {
+        title: '니가 어떤 딸인데 그러니',
+        beforeThemes: ['가족', '사랑'],
+        beforeInteractions: ['위로', '감성적'],
+        afterThemes: ['가족', '그리움'],
+        afterInteractions: ['위로', '감성적'],
+        content:
+          '너 훌쩍이는 소리가\n네 어머니 귀에는 천둥소리라 하더라.\n그녀를 닮은 얼굴로 서럽게 울지마라.',
+      };
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .patch('/poems/tag')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(updateTagDto);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toEqual({
+        title: 'mocked-title',
+        content: 'mocked-content',
+      });
+    });
+  });
 });
 
 const login = async (app: INestApplication) => {
