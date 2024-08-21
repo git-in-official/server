@@ -37,6 +37,7 @@ describe('Inspiration (e2e)', () => {
 
   afterEach(async () => {
     await prisma.titleInspiration.deleteMany();
+    await prisma.wordInspiration.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -62,7 +63,7 @@ describe('Inspiration (e2e)', () => {
     });
   });
 
-  it('글감이 없으면 404를 반환한다', async () => {
+  it('제목 글감이 없으면 404를 반환한다', async () => {
     // given
     const { accessToken } = await login(app);
 
@@ -75,7 +76,7 @@ describe('Inspiration (e2e)', () => {
     expect(status).toBe(404);
   });
 
-  it('날마다 글감이 랜덤으로 바뀐다', async () => {
+  it('날마다 제목 글감이 랜덤으로 바뀐다', async () => {
     // given
     const { accessToken } = await login(app);
 
@@ -126,6 +127,94 @@ describe('Inspiration (e2e)', () => {
     // then
     const uniqueTitles = [...new Set(titles)];
     expect(uniqueTitles.length).toBeGreaterThan(1);
+  });
+
+  describe('GET /inspirations/word - 단어 글감 받기', () => {
+    it('단어 글감을 반환한다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      await prisma.wordInspiration.create({
+        data: {
+          word: 'test-word',
+        },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/inspirations/word')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toBe(200);
+      expect(body.word).toBe('test-word');
+    });
+
+    it('단어 글감이 없으면 404를 반환한다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/inspirations/word')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toBe(404);
+    });
+
+    it('날마다 단어 글감이 랜덤으로 바뀐다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      await prisma.wordInspiration.createMany({
+        data: [
+          { word: 'test-word-1' },
+          { word: 'test-word-2' },
+          { word: 'test-word-3' },
+          { word: 'test-word-4' },
+          { word: 'test-word-5' },
+          { word: 'test-word-6' },
+          { word: 'test-word-7' },
+          { word: 'test-word-8' },
+          { word: 'test-word-9' },
+          { word: 'test-word-10' },
+        ],
+      });
+
+      const dateStrings = [
+        '2023-08-22T15:30:00Z',
+        '2023-08-20T12:00:00Z',
+        '2023-08-23T09:45:00Z',
+        '2023-08-24T20:00:00Z',
+        '2023-08-25T10:30:00Z',
+        '2023-08-26T14:00:00Z',
+        '2023-08-27T07:00:00Z',
+        '2023-08-28T18:30:00Z',
+        '2023-08-29T11:15:00Z',
+        '2023-08-30T13:45:00Z',
+      ];
+
+      let dateIndex = 0;
+      jest.spyOn(inspirationService, 'getDateString').mockImplementation(() => {
+        const dateString = dateStrings[dateIndex];
+        dateIndex = (dateIndex + 1) % dateStrings.length;
+        return dateString;
+      });
+
+      // when
+      const words = [];
+      for (let i = 0; i < 10; i++) {
+        const { body } = await request(app.getHttpServer())
+          .get('/inspirations/word')
+          .set('Authorization', `Bearer ${accessToken}`);
+        words.push(body.word);
+      }
+
+      // then
+      const uniqueWords = [...new Set(words)];
+      expect(uniqueWords.length).toBeGreaterThan(1);
+    });
   });
 });
 

@@ -41,7 +41,7 @@ export class InspirationController {
   }
 
   @ApiOperation({
-    summary: '단어 글감 받기 - 현재는 하드코딩. 기획이 확정나면 추가 구현 예정',
+    summary: '단어 글감 받기 - 하루마다 랜덤으로 바뀜',
   })
   @ApiResponse({ status: 200, type: WordDto })
   @ApiResponse({
