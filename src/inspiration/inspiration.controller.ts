@@ -53,7 +53,7 @@ export class InspirationController {
   @UseGuards(JwtGuard)
   async getWord() {
     try {
-      return await this.inspirationService.getWord();
+      return await this.inspirationService.getWord(new Date());
     } catch (e) {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {

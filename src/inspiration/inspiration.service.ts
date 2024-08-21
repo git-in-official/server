@@ -20,15 +20,14 @@ export class InspirationService {
     return titles[index];
   }
 
-  async getWord() {
+  async getWord(date: Date) {
     const words = await this.inspirationRepository.findAllWords();
     const length = words.length;
+    const dateString = date.toISOString().split('T')[0];
 
     if (length === 0) {
       throw new Error('no inspiration');
     }
-
-    const dateString = this.getDateString();
 
     const index = this.getHashedIndex(dateString, length);
     return words[index];
