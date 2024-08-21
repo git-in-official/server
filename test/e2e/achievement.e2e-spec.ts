@@ -40,18 +40,27 @@ describe('Achievement (e2e)', () => {
   describe('GET /achievements - 모든 업적 조회', async () => {
     it('모든 업적 조회', async () => {
       // given
-      const { accessToken } = await login(app);
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
 
-      await prisma.achievement.create({
+      const achievement1 = await prisma.achievement.create({
         data: {
           icon: 'https://icon1.com',
           name: 'SCRAPKING',
         },
       });
-      await prisma.achievement.create({
+      const achievement2 = await prisma.achievement.create({
         data: {
           icon: 'https://icon2.com',
           name: 'SCRAPQUEEN',
+        },
+      });
+      await prisma.achievementAcquisition.create({
+        data: {
+          achievementId: achievement1.id,
+          userId: user!.id,
         },
       });
 
@@ -65,6 +74,8 @@ describe('Achievement (e2e)', () => {
       // then
       expect(status).toEqual(200);
       expect(body.length).toEqual(2);
+      expect(body[0].isAquired).toBe(true);
+      expect(body[1].isAquired).toBe(false);
       body.forEach((achievement) => {
         expect(achievement.id).toBeDefined();
         expect(achievement.name).toBeDefined();
