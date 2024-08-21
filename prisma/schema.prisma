@@ -13,12 +13,6 @@ enum Provider {
   APPLE
 }
 
-// 임시 업적입니다.
-enum AchievementName {
-  SCRAPKING
-  SCRAPQUEEN
-}
-
 model User {
   id         String   @id @default(uuid())
   provider   Provider
@@ -65,11 +59,11 @@ model Scrap {
 }
 
 model Achievement {
-  id          String          @id @default(uuid())
-  name        AchievementName
+  id          String   @id @default(uuid())
+  name        String
   icon        String
   description String
-  createdAt   DateTime        @default(now())
+  createdAt   DateTime @default(now())
 
   acquisitionUser       User[]
   achievementAcquistion AchievementAcquisition[]
