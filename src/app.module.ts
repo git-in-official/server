@@ -9,6 +9,7 @@ import { AwsModule } from './aws/aws.module';
 import { EmotionModule } from './emotion/emotion.module';
 import { TagModule } from './tag/tag.module';
 import { PipesModule } from './common/pipes/pipes.module';
+import { AchievementModule } from './achievement/achievement.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { PipesModule } from './common/pipes/pipes.module';
     AwsModule,
     EmotionModule,
     TagModule,
+    AchievementModule,
   ],
 })
 export class AppModule {}
