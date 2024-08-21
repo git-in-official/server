@@ -86,3 +86,7 @@ model AchievementAcquisition {
 model TitleInspiration {
   title String @id
 }
+
+model WordInspiration {
+  word String @id
+}
