@@ -87,7 +87,7 @@ describe('Achievement (e2e)', () => {
   });
 
   describe('GET /achievements/user - 특정 회원이 획득한 모든 업적 조회', async () => {
-    it('모든 업적 조회', async () => {
+    it('특정 회원이 획득한 모든 업적 조회', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
