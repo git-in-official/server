@@ -16,13 +16,13 @@ export class InspirationController {
   constructor(private readonly inspirationService: InspirationService) {}
 
   @ApiOperation({
-    summary: '제목 글감 받기 - 현재는 하드코딩. 기획이 확정나면 추가 구현 예정',
+    summary: '제목 글감 받기 - 하루마다 랜덤으로 바뀜',
   })
   @ApiResponse({ status: 200, type: TitleDto })
   @Get('title')
   @UseGuards(JwtGuard)
   async getTitle() {
-    return this.inspirationService.getTitle();
+    return await this.inspirationService.getTitle();
   }
 
   @ApiOperation({
