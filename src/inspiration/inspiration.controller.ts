@@ -33,6 +33,8 @@ export class InspirationController {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {
           throw new HttpException('no inspiration', 404);
+        } else {
+          throw e;
         }
       }
     }
