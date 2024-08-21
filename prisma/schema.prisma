@@ -65,10 +65,11 @@ model Scrap {
 }
 
 model Achievement {
-  id        String          @id @default(uuid())
-  name      AchievementName
-  icon      String
-  createdAt DateTime        @default(now())
+  id          String          @id @default(uuid())
+  name        AchievementName
+  icon        String
+  description String
+  createdAt   DateTime        @default(now())
 
   acquisitionUser       User[]
   achievementAcquistion AchievementAcquisition[]
