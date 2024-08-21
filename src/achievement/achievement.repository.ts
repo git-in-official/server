@@ -3,9 +3,9 @@ export interface AchievementRepository {
   findAllByUserId(userId: string): Promise<Achievement[]>;
 }
 
-export type AchievementName = 'SCRAPKING' | 'SCRAPQUEEN';
+type AchievementName = 'SCRAPKING' | 'SCRAPQUEEN';
 
-export type Achievement = {
+type Achievement = {
   id: string;
   name: AchievementName;
   icon: string;

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Achievement, AchievementRepository } from './achievement.repository';
+import { AchievementRepository } from './achievement.repository';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
