@@ -6,7 +6,11 @@ import { InspirationRepository } from './inspiration.repository';
 export class InspirationPrismaRepository implements InspirationRepository {
   constructor(private prisma: PrismaService) {}
 
-  async findAllTitle() {
+  async findAllTitles() {
     return await this.prisma.titleInspiration.findMany();
+  }
+
+  async findAllWords() {
+    return await this.prisma.wordInspiration.findMany();
   }
 }

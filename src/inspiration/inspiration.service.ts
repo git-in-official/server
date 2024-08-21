@@ -8,7 +8,7 @@ export class InspirationService {
     private readonly inspirationRepository: InspirationRepository,
   ) {}
   async getTitle() {
-    const titles = await this.inspirationRepository.findAllTitle();
+    const titles = await this.inspirationRepository.findAllTitles();
     const length = titles.length;
 
     if (length === 0) {
@@ -22,9 +22,17 @@ export class InspirationService {
   }
 
   async getWord() {
-    return {
-      word: '오늘의 단어',
-    };
+    const words = await this.inspirationRepository.findAllWords();
+    const length = words.length;
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
+
+    const dateString = this.getDateString();
+
+    const index = this.getHashedIndex(dateString, length);
+    return words[index];
   }
 
   getDateString() {
