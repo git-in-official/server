@@ -78,3 +78,7 @@ model AchievementAcquisition {
   achievementId String
   achievement   Achievement @relation(fields: [achievementId], references: [id])
 }
+
+model TitleInspiration {
+  title String @id
+}
