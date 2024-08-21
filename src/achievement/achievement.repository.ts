@@ -9,6 +9,7 @@ type Achievement = {
   id: string;
   name: AchievementName;
   icon: string;
+  description: string;
 };
 
 export const AchievementRepository = Symbol('AchievementRepository');
