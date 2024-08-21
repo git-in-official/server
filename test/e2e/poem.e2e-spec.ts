@@ -4,10 +4,9 @@ import * as request from 'supertest';
 import { describe } from 'node:test';
 import { AuthService } from '../../src/auth/auth.service';
 import { AppModule } from '../../src/app.module';
-import { SignupDto } from '../../src/auth/dto/request';
-import { JwtDto } from '../../src/auth/dto/response';
 import { PrismaService } from '../../src/prisma/prisma.service';
 import { LlmService } from 'src/poem/llm.service';
+import { login } from './helpers/login';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
@@ -223,21 +222,3 @@ describe('Poem (e2e)', () => {
     });
   });
 });
-
-const login = async (app: INestApplication) => {
-  const dto: SignupDto = {
-    name: 'test',
-    provider: 'GOOGLE',
-    providerAccessToken: 'test-oauth-token',
-  };
-
-  const response = await request(app.getHttpServer())
-    .post('/auth/signup')
-    .send(dto);
-  const body: JwtDto = response.body;
-
-  return {
-    accessToken: body.accessToken,
-    name: dto.name,
-  };
-};
