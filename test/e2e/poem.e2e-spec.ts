@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { describe } from 'node:test';
-import { AuthService } from '../../src/auth/auth.service';
-import { AppModule } from '../../src/app.module';
-import { PrismaService } from '../../src/prisma/prisma.service';
+import { AuthService } from 'src/auth/auth.service';
+import { AppModule } from 'src/app.module';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { LlmService } from 'src/poem/llm.service';
 import { login } from './helpers/login';
 
