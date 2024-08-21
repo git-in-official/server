@@ -1,5 +1,6 @@
 export interface AchievementRepository {
   findAll(): Promise<Achievement[]>;
+  findAllByUserId(userId: string): Promise<Achievement[]>;
 }
 
 export type AchievementName = 'SCRAPKING' | 'SCRAPQUEEN';
