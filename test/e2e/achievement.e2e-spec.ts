@@ -32,6 +32,7 @@ describe('Achievement (e2e)', () => {
   });
 
   afterEach(async () => {
+    await prisma.achievementAcquisition.deleteMany();
     await prisma.achievement.deleteMany();
     await prisma.user.deleteMany();
   });
@@ -57,6 +58,57 @@ describe('Achievement (e2e)', () => {
       // when
       const response = await request(app.getHttpServer())
         .get('/achievements')
+        .set('Authorization', `Bearer ${accessToken}`);
+      const { status } = response;
+      const body: AchievementsDto[] = response.body;
+
+      // then
+      expect(status).toEqual(200);
+      expect(body.length).toEqual(2);
+      body.forEach((achievement) => {
+        expect(achievement.id).toBeDefined();
+        expect(achievement.name).toBeDefined();
+        expect(achievement.icon).toBeDefined();
+      });
+    });
+  });
+
+  describe('GET /achievements/user - 특정 회원이 획득한 모든 업적 조회', async () => {
+    it('모든 업적 조회', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const achievement1 = await prisma.achievement.create({
+        data: {
+          icon: 'https://icon1.com',
+          name: 'SCRAPKING',
+        },
+      });
+      const achievement2 = await prisma.achievement.create({
+        data: {
+          icon: 'https://icon2.com',
+          name: 'SCRAPQUEEN',
+        },
+      });
+      await prisma.achievementAcquisition.create({
+        data: {
+          achievementId: achievement1.id,
+          userId: user!.id,
+        },
+      });
+      await prisma.achievementAcquisition.create({
+        data: {
+          achievementId: achievement2.id,
+          userId: user!.id,
+        },
+      });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get(`/achievements/user?userId=${user!.id}`)
         .set('Authorization', `Bearer ${accessToken}`);
       const { status } = response;
       const body: AchievementsDto[] = response.body;
