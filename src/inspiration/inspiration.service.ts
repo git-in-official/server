@@ -8,7 +8,7 @@ export class InspirationService {
     private readonly inspirationRepository: InspirationRepository,
   ) {}
   async getTitle(today: Date) {
-    const titles = await this.inspirationRepository.findAllTitle();
+    const titles = await this.inspirationRepository.findAllTitles();
     const length = titles.length;
     const dateString = today.toISOString().split('T')[0];
 
@@ -20,10 +20,17 @@ export class InspirationService {
     return titles[index];
   }
 
-  async getWord() {
-    return {
-      word: '오늘의 단어',
-    };
+  async getWord(date: Date) {
+    const words = await this.inspirationRepository.findAllWords();
+    const length = words.length;
+    const dateString = date.toISOString().split('T')[0];
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
+
+    const index = this.getHashedIndex(dateString, length);
+    return words[index];
   }
 
   // range가 10이면 0~9까지의 숫자를 반환

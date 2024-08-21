@@ -41,12 +41,27 @@ export class InspirationController {
   }
 
   @ApiOperation({
-    summary: '단어 글감 받기 - 현재는 하드코딩. 기획이 확정나면 추가 구현 예정',
+    summary: '단어 글감 받기 - 하루마다 랜덤으로 바뀜',
   })
   @ApiResponse({ status: 200, type: WordDto })
+  @ApiResponse({
+    status: 404,
+    description:
+      'no inspiration - 데이터베이스에 글감이 없어서 나는 에러입니다.',
+  })
   @Get('word')
   @UseGuards(JwtGuard)
   async getWord() {
-    return this.inspirationService.getWord();
+    try {
+      return await this.inspirationService.getWord(new Date());
+    } catch (e) {
+      if (e instanceof Error) {
+        if (e.message === 'no inspiration') {
+          throw new HttpException('no inspiration', 404);
+        } else {
+          throw e;
+        }
+      }
+    }
   }
 }

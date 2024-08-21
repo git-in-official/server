@@ -18,6 +18,21 @@ async function main() {
     ],
     skipDuplicates: true,
   });
+
+  await prisma.wordInspiration.createMany({
+    data: [
+      { word: '속삭임' },
+      { word: '불꽃' },
+      { word: '어머니' },
+      { word: '노을' },
+      { word: '기억' },
+      { word: '무게' },
+      { word: '주사위' },
+      { word: ' 친구' },
+      { word: '이름' },
+      { word: '희망' },
+    ],
+  });
 }
 
 main()

@@ -1,5 +1,6 @@
 export interface InspirationRepository {
-  findAllTitle(): Promise<{ title: string }[]>;
+  findAllTitles(): Promise<{ title: string }[]>;
+  findAllWords(): Promise<{ word: string }[]>;
 }
 
 export const InspirationRepository = Symbol('InspirationRepository');

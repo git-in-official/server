@@ -37,6 +37,7 @@ describe('Inspiration (e2e)', () => {
 
   afterEach(async () => {
     await prisma.titleInspiration.deleteMany();
+    await prisma.wordInspiration.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -62,7 +63,7 @@ describe('Inspiration (e2e)', () => {
     });
   });
 
-  it('글감이 없으면 404를 반환한다', async () => {
+  it('제목 글감이 없으면 404를 반환한다', async () => {
     // given
     const { accessToken } = await login(app);
 
@@ -73,6 +74,41 @@ describe('Inspiration (e2e)', () => {
 
     // then
     expect(status).toBe(404);
+  });
+
+  describe('GET /inspirations/word - 단어 글감 받기', () => {
+    it('단어 글감을 반환한다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      await prisma.wordInspiration.create({
+        data: {
+          word: 'test-word',
+        },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/inspirations/word')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toBe(200);
+      expect(body.word).toBe('test-word');
+    });
+
+    it('단어 글감이 없으면 404를 반환한다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/inspirations/word')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toBe(404);
+    });
   });
 });
 
