@@ -4,8 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
-import { SignupDto } from 'src/auth/dto/request';
-import { JwtDto } from 'src/auth/dto/response';
+import { login } from './helpers/login';
 import { InspirationService } from 'src/inspiration/inspiration.service';
 
 describe('Inspiration (e2e)', () => {
@@ -36,8 +35,7 @@ describe('Inspiration (e2e)', () => {
   });
 
   afterEach(async () => {
-    await prisma.titleInspiration.deleteMany();
-    await prisma.wordInspiration.deleteMany();
+    await prisma.inspiration.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -46,9 +44,10 @@ describe('Inspiration (e2e)', () => {
       // given
       const { accessToken } = await login(app);
 
-      await prisma.titleInspiration.create({
+      await prisma.inspiration.create({
         data: {
-          title: 'test-title',
+          type: 'TITLE',
+          displayName: 'test-title',
         },
       });
 
@@ -60,6 +59,7 @@ describe('Inspiration (e2e)', () => {
       // then
       expect(status).toBe(200);
       expect(body.title).toBe('test-title');
+      expect(body.id).toBeDefined();
     });
   });
 
@@ -81,9 +81,10 @@ describe('Inspiration (e2e)', () => {
       // given
       const { accessToken } = await login(app);
 
-      await prisma.wordInspiration.create({
+      await prisma.inspiration.create({
         data: {
-          word: 'test-word',
+          type: 'WORD',
+          displayName: 'test-word',
         },
       });
 
@@ -95,6 +96,7 @@ describe('Inspiration (e2e)', () => {
       // then
       expect(status).toBe(200);
       expect(body.word).toBe('test-word');
+      expect(body.id).toBeDefined();
     });
 
     it('단어 글감이 없으면 404를 반환한다', async () => {
@@ -111,21 +113,3 @@ describe('Inspiration (e2e)', () => {
     });
   });
 });
-
-const login = async (app: INestApplication) => {
-  const dto: SignupDto = {
-    name: 'test',
-    provider: 'GOOGLE',
-    providerAccessToken: 'test-oauth-token',
-  };
-
-  const response = await request(app.getHttpServer())
-    .post('/auth/signup')
-    .send(dto);
-  const body: JwtDto = response.body;
-
-  return {
-    accessToken: body.accessToken,
-    name: dto.name,
-  };
-};
