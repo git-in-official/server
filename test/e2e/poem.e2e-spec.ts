@@ -221,4 +221,80 @@ describe('Poem (e2e)', () => {
       });
     });
   });
+
+  describe('GET /poems/can-write - 시를 쓸 수 있는지 확인', () => {
+    it('이미 시를 두 번 썼을 때 400 에러를 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      await prisma.poem.createMany({
+        data: [
+          {
+            title: 'test-poem1',
+            content: 'test-content1',
+            textAlign: 'test-align1',
+            textSize: 16,
+            textFont: 'test-font1',
+            themes: [],
+            interactions: [],
+            isRecorded: false,
+            status: 'test-status1',
+            authorId: user!.id,
+          },
+          {
+            title: 'test-poem2',
+            content: 'test-content2',
+            textAlign: 'test-align2',
+            textSize: 16,
+            textFont: 'test-font2',
+            themes: [],
+            interactions: [],
+            isRecorded: false,
+            status: 'test-status2',
+            authorId: user!.id,
+          },
+        ],
+      });
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/poems/can-write')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(400);
+    });
+
+    it('아직 시를 쓰지 않았거나 한 번만 썼을 때 200을 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      await prisma.poem.create({
+        data: {
+          title: 'test-poem1',
+          content: 'test-content1',
+          textAlign: 'test-align1',
+          textSize: 16,
+          textFont: 'test-font1',
+          themes: [],
+          interactions: [],
+          isRecorded: false,
+          status: 'test-status1',
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/poems/can-write')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+    });
+  });
 });

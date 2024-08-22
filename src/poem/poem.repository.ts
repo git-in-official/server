@@ -1,5 +1,6 @@
 export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<Poem>;
+  countUserDaily(userId: string): Promise<number>;
 }
 
 export type CreateInput = {

@@ -64,6 +64,15 @@ export class PoemService {
   async unScrap(id: string) {
     await this.scrapRepository.delete(id);
   }
+
+  async canWrite(userId: string) {
+    const count = await this.poemRepository.countUserDaily(userId);
+    if (count < 2) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }
 
 export type CreateInput = {
