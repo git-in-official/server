@@ -48,11 +48,14 @@ model Poem {
   status          String
   originalContent String?
   originalTitle   String?
-  createdAt       DateTime @default(now())
 
-  authorId String
-  author   User    @relation(fields: [authorId], references: [id])
-  scraps   Scrap[]
+  createdAt DateTime @default(now())
+
+  inspirationId String
+  inspiration   Inspiration @relation(fields: [inspirationId], references: [id], onDelete: NoAction)
+  authorId      String
+  author        User        @relation(fields: [authorId], references: [id])
+  scraps        Scrap[]
 }
 
 model Scrap {
@@ -90,4 +93,5 @@ model Inspiration {
   id          String          @id @default(uuid())
   type        InspirationType
   displayName String
+  Poem        Poem[]
 }
