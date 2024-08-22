@@ -427,7 +427,6 @@ describe('Poem (e2e)', () => {
         .field('inspirationId', createPoemDto.inspirationId);
 
       // then
-      console.log(body);
       expect(status).toEqual(201);
       expect(body).toEqual({
         id: expect.any(String),
