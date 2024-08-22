@@ -20,9 +20,45 @@ export class AwsService {
     return this.s3Client.send(command);
   }
 
-  getAudioUrl() {
+  getPoemAudioUrl() {
     return (
       this.configService.get<string>('AWS_CLOUDFRONT_URL') + '/poems/audios/'
+    );
+  }
+
+  async uploadAudioInspiration(file: Express.Multer.File) {
+    const command = new PutObjectCommand({
+      Bucket: this.configService.get<string>('AWS_BUCKET_NAME'),
+      Key: 'inspirations/audios/' + file.originalname,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+
+    return this.s3Client.send(command);
+  }
+
+  async uploadVideoInspiration(file: Express.Multer.File) {
+    const command = new PutObjectCommand({
+      Bucket: this.configService.get<string>('AWS_BUCKET_NAME'),
+      Key: 'inspirations/videos/' + file.originalname,
+      Body: file.buffer,
+      ContentType: file.mimetype,
+    });
+
+    return this.s3Client.send(command);
+  }
+
+  getAudioInspirationUrl() {
+    return (
+      this.configService.get<string>('AWS_CLOUDFRONT_URL') +
+      '/inspirations/audios/'
+    );
+  }
+
+  getVideoInspirationUrl() {
+    return (
+      this.configService.get<string>('AWS_CLOUDFRONT_URL') +
+      '/inspirations/videos/'
     );
   }
 }

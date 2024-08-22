@@ -10,6 +10,7 @@ import { EmotionModule } from './emotion/emotion.module';
 import { TagModule } from './tag/tag.module';
 import { PipesModule } from './common/pipes/pipes.module';
 import { AchievementModule } from './achievement/achievement.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AchievementModule } from './achievement/achievement.module';
     EmotionModule,
     TagModule,
     AchievementModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
