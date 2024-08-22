@@ -19,4 +19,16 @@ export class PoemPrismaRepository implements PoemRepository {
       },
     });
   }
+
+  async countUserDaily(userId: string): Promise<number> {
+    return this.prisma.poem.count({
+      where: {
+        authorId: userId,
+        createdAt: {
+          gte: new Date(new Date().setHours(0, 0, 0, 0)),
+          lt: new Date(new Date().setHours(23, 59, 59, 999)),
+        },
+      },
+    });
+  }
 }

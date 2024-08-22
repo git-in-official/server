@@ -8,6 +8,8 @@ import {
   UseInterceptors,
   UploadedFile,
   Param,
+  Get,
+  HttpException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -84,5 +86,26 @@ export class PoemController {
   @Post(':id/scrap')
   async scrap(@Param('id') poemId: string, @CurrentUser() userId: string) {
     return await this.poemService.scrap(poemId, userId);
+  }
+
+  @ApiOperation({
+    summary: '글을 쓸 수 있는지 확인하기 - 하루 두 번만 글쓸수있음',
+  })
+  @ApiResponse({
+    status: 200,
+    description: '글쓸 수 있음. 따로 응답 body는 없습니다.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: '하루에 두 번만 작성할 수 있습니다.',
+  })
+  @Get('can-write')
+  async canWrite(@CurrentUser() userId: string) {
+    const result = await this.poemService.canWrite(userId);
+    if (result) {
+      return;
+    } else {
+      throw new HttpException('하루에 두 번만 작성할 수 있습니다.', 400);
+    }
   }
 }
