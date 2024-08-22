@@ -13,6 +13,13 @@ enum Provider {
   APPLE
 }
 
+enum InspirationType {
+  TITLE
+  WORD
+  AUDIO
+  VEDIO
+}
+
 model User {
   id         String   @id @default(uuid())
   provider   Provider
@@ -79,10 +86,8 @@ model AchievementAcquisition {
   achievement   Achievement @relation(fields: [achievementId], references: [id])
 }
 
-model TitleInspiration {
-  title String @id
-}
-
-model WordInspiration {
-  word String @id
+model Inspiration {
+  id          String          @id @default(uuid())
+  type        InspirationType
+  displayName String
 }

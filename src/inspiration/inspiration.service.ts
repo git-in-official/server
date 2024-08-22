@@ -17,7 +17,10 @@ export class InspirationService {
     }
 
     const index = this.getHashedIndex(dateString, length);
-    return titles[index];
+    return {
+      id: titles[index].id,
+      title: titles[index].title,
+    };
   }
 
   async getWord(date: Date) {
@@ -30,7 +33,10 @@ export class InspirationService {
     }
 
     const index = this.getHashedIndex(dateString, length);
-    return words[index];
+    return {
+      id: words[index].id,
+      word: words[index].word,
+    };
   }
 
   // range가 10이면 0~9까지의 숫자를 반환
