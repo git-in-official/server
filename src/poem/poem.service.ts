@@ -32,6 +32,7 @@ export class PoemService {
       isRecorded: createInput.audioFile ? true : false,
       originalContent: createInput.originalContent ?? null,
       originalTitle: createInput.originalTitle ?? null,
+      inspirationId: createInput.inspirationId,
       status: '교정중',
     };
 
@@ -85,6 +86,7 @@ export type CreateInput = {
   textFont: string;
   originalContent?: string;
   originalTitle?: string;
+  inspirationId: string;
   audioFile?: Express.Multer.File;
 };
 

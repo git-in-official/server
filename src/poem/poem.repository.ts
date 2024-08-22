@@ -14,6 +14,7 @@ export type CreateInput = {
   isRecorded: boolean;
   originalContent?: string | null;
   originalTitle?: string | null;
+  inspirationId: string;
   status: string;
 };
 
@@ -29,6 +30,7 @@ export type Poem = {
   isRecorded: boolean;
   status: string;
   createdAt: Date;
+  inspirationId: string;
   authorId: string;
 };
 

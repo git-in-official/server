@@ -7,7 +7,7 @@ import { PrismaService } from '../prisma/prisma.service';
 export class PoemPrismaRepository implements PoemRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string, data: Prisma.PoemCreateWithoutAuthorInput) {
+  async create(userId: string, data: CreateInput) {
     return this.prisma.poem.create({
       data: {
         ...data,
@@ -32,3 +32,18 @@ export class PoemPrismaRepository implements PoemRepository {
     });
   }
 }
+
+export type CreateInput = {
+  title: string;
+  content: string;
+  themes: string[];
+  interactions: string[];
+  textAlign: string;
+  textSize: number;
+  textFont: string;
+  isRecorded: boolean;
+  originalContent?: string | null;
+  originalTitle?: string | null;
+  inspirationId: string;
+  status: string;
+};
