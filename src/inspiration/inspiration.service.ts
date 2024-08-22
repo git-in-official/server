@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { InspirationRepository } from './inspiration.repository';
-import { title } from 'node:process';
 
 @Injectable()
 export class InspirationService {
