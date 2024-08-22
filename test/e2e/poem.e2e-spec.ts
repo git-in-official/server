@@ -7,6 +7,9 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { LlmService } from 'src/poem/llm.service';
 import { login } from './helpers/login';
+import * as fs from 'fs';
+import * as path from 'path';
+import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
@@ -36,6 +39,7 @@ describe('Poem (e2e)', () => {
   afterEach(async () => {
     await prisma.scrap.deleteMany();
     await prisma.poem.deleteMany();
+    await prisma.inspiration.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -45,6 +49,13 @@ describe('Poem (e2e)', () => {
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
         where: { name },
+      });
+
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
       });
 
       const poem = await prisma.poem.create({
@@ -58,6 +69,7 @@ describe('Poem (e2e)', () => {
           interactions: [],
           isRecorded: false,
           status: 'test-status',
+          inspirationId: titleInspiration.id,
           authorId: user!.id,
         },
       });
@@ -87,6 +99,13 @@ describe('Poem (e2e)', () => {
         where: { name },
       });
 
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
       const poem = await prisma.poem.create({
         data: {
           title: 'test-poem',
@@ -98,6 +117,7 @@ describe('Poem (e2e)', () => {
           interactions: [],
           isRecorded: false,
           status: 'test-status',
+          inspirationId: titleInspiration.id,
           authorId: user!.id,
         },
       });
@@ -229,6 +249,13 @@ describe('Poem (e2e)', () => {
       const user = await prisma.user.findFirst({
         where: { name },
       });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
       await prisma.poem.createMany({
         data: [
           {
@@ -241,6 +268,7 @@ describe('Poem (e2e)', () => {
             interactions: [],
             isRecorded: false,
             status: 'test-status1',
+            inspirationId: titleInspiration.id,
             authorId: user!.id,
           },
           {
@@ -253,6 +281,7 @@ describe('Poem (e2e)', () => {
             interactions: [],
             isRecorded: false,
             status: 'test-status2',
+            inspirationId: titleInspiration.id,
             authorId: user!.id,
           },
         ],
@@ -273,6 +302,12 @@ describe('Poem (e2e)', () => {
       const user = await prisma.user.findFirst({
         where: { name },
       });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
       await prisma.poem.create({
         data: {
           title: 'test-poem1',
@@ -284,6 +319,7 @@ describe('Poem (e2e)', () => {
           interactions: [],
           isRecorded: false,
           status: 'test-status1',
+          inspirationId: titleInspiration.id,
           authorId: user!.id,
         },
       });
@@ -295,6 +331,133 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(200);
+    });
+  });
+
+  describe('POST /poems - 시 탈고', async () => {
+    it('시를 탈고하면 201 응답과 함께 newPoemDto를 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      const createPoemDto = {
+        title: 'test-poem',
+        content: 'test-content',
+        textAlign: 'test-align',
+        textSize: 16,
+        textFont: 'test-font',
+        themes: [],
+        interactions: [],
+        isRecorded: false,
+        inspirationId: titleInspiration.id,
+      };
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .post('/poems')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .send(createPoemDto);
+
+      // then
+      expect(status).toEqual(201);
+      expect(body).toEqual({
+        id: expect.any(String),
+        title: 'test-poem',
+        content: 'test-content',
+        textAlign: 'test-align',
+        textSize: 16,
+        textFont: 'test-font',
+        themes: [],
+        interactions: [],
+        isRecorded: false,
+        status: '교정중',
+        createdAt: expect.any(String),
+        authorId: user!.id,
+        inspirationId: titleInspiration.id,
+      });
+    });
+
+    it('녹음 파일이 있는 경우, 녹음 파일의 URL도 함께 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      const filePath = path.join(__dirname, 'test.mp3');
+      fs.writeFileSync(filePath, 'test-audio');
+      const createPoemDto = {
+        title: 'test-poem',
+        content: 'test-content',
+        textAlign: 'test-align',
+        textSize: 16,
+        textFont: 'test-font',
+        themes: ['가족', '사랑'],
+        interactions: ['위로', '감성적'],
+        isRecorded: true,
+        inspirationId: titleInspiration.id,
+      };
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .post('/poems')
+        .set('Authorization', `Bearer ${accessToken}`)
+        .attach('audioFile', filePath)
+        .field('title', createPoemDto.title)
+        .field('content', createPoemDto.content)
+        .field('textAlign', createPoemDto.textAlign)
+        .field('textSize', createPoemDto.textSize)
+        .field('textFont', createPoemDto.textFont)
+        .field('themes', createPoemDto.themes)
+        .field('interactions', createPoemDto.interactions)
+        .field('isRecorded', createPoemDto.isRecorded)
+        .field('inspirationId', createPoemDto.inspirationId);
+
+      // then
+      console.log(body);
+      expect(status).toEqual(201);
+      expect(body).toEqual({
+        id: expect.any(String),
+        title: 'test-poem',
+        content: 'test-content',
+        textAlign: 'test-align',
+        textSize: 16,
+        textFont: 'test-font',
+        themes: ['가족', '사랑'],
+        interactions: ['위로', '감성적'],
+        isRecorded: true,
+        status: '교정중',
+        createdAt: expect.any(String),
+        authorId: user!.id,
+        inspirationId: titleInspiration.id,
+        audioUrl: expect.any(String),
+      });
+      expect(body.audioUrl).toEqual(
+        `${process.env.AWS_CLOUDFRONT_URL}/poems/audios/${body.id}`,
+      );
+
+      // cleanup
+      fs.unlinkSync(filePath);
+      const s3Client = new S3Client();
+      await s3Client.send(
+        new DeleteObjectCommand({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: `poems/audios/${body.id}`,
+        }),
+      );
     });
   });
 });
