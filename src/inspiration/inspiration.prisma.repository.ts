@@ -7,10 +7,26 @@ export class InspirationPrismaRepository implements InspirationRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAllTitles() {
-    return await this.prisma.titleInspiration.findMany();
+    const result = await this.prisma.inspiration.findMany({
+      where: {
+        type: 'TITLE',
+      },
+    });
+    return result.map((item) => ({
+      id: item.id,
+      title: item.displayName,
+    }));
   }
 
   async findAllWords() {
-    return await this.prisma.wordInspiration.findMany();
+    const result = await this.prisma.inspiration.findMany({
+      where: {
+        type: 'WORD',
+      },
+    });
+    return result.map((item) => ({
+      id: item.id,
+      word: item.displayName,
+    }));
   }
 }
