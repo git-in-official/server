@@ -89,11 +89,11 @@ export class PoemController {
   }
 
   @ApiOperation({
-    summary: '글을 쓸 수 있는지 확인하기 - 하루 두 번만 글쓸수있음',
+    summary: '시를 쓸 수 있는지 확인하기 - 하루 두 번만 글쓸수있음',
   })
   @ApiResponse({
     status: 200,
-    description: '글쓸 수 있음. 따로 응답 body는 없습니다.',
+    description: '시를 쓸 수 있음. 따로 응답 body는 없습니다.',
   })
   @ApiResponse({
     status: 400,

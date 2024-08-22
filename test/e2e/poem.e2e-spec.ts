@@ -223,7 +223,7 @@ describe('Poem (e2e)', () => {
   });
 
   describe('GET /poems/can-write - 시를 쓸 수 있는지 확인', () => {
-    it('이미 글을 두 번 썼을 때 400 에러를 반환한다', async () => {
+    it('이미 시를 두 번 썼을 때 400 에러를 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -267,7 +267,7 @@ describe('Poem (e2e)', () => {
       expect(status).toEqual(400);
     });
 
-    it('아직 글을 쓰지 않았거나 한 번만 썼을 때 200을 반환한다', async () => {
+    it('아직 시를 쓰지 않았거나 한 번만 썼을 때 200을 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
