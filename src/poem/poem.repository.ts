@@ -1,6 +1,7 @@
 export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<Poem>;
   countUserDaily(userId: string): Promise<number>;
+  findAllProofreading(): Promise<ProofreadingPoemList>;
 }
 
 export type CreateInput = {
@@ -33,5 +34,10 @@ export type Poem = {
   inspirationId: string;
   authorId: string;
 };
+
+export type ProofreadingPoemList = {
+  id: string;
+  title: string;
+}[];
 
 export const PoemRepository = Symbol('PoemRepository');

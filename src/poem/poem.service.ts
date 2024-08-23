@@ -74,6 +74,10 @@ export class PoemService {
       return false;
     }
   }
+
+  async getProofreadingList() {
+    return await this.poemRepository.findAllProofreading();
+  }
 }
 
 export type CreateInput = {

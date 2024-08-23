@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PoemRepository } from './poem.repository';
+import { Poem, PoemRepository } from './poem.repository';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -28,6 +28,18 @@ export class PoemPrismaRepository implements PoemRepository {
           gte: new Date(new Date().setHours(0, 0, 0, 0)),
           lt: new Date(new Date().setHours(23, 59, 59, 999)),
         },
+      },
+    });
+  }
+
+  async findAllProofreading() {
+    return this.prisma.poem.findMany({
+      where: {
+        status: '교정중',
+      },
+      select: {
+        id: true,
+        title: true,
       },
     });
   }
