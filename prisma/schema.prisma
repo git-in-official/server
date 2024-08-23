@@ -93,5 +93,5 @@ model Inspiration {
   id          String          @id @default(uuid())
   type        InspirationType
   displayName String
-  Poem        Poem[]
+  poems       Poem[]
 }
