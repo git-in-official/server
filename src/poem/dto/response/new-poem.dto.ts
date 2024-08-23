@@ -37,6 +37,9 @@ export class NewPoemDto {
   @ApiProperty()
   readonly authorId: string;
 
+  @ApiProperty({ description: '글감 ID' })
+  readonly inspirationId: string;
+
   @ApiProperty({ description: '녹음 파일 URL', required: false })
   readonly audioUrl?: string;
 }

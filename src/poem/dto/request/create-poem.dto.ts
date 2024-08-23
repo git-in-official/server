@@ -50,6 +50,10 @@ export class CreatePoemDto {
   @IsString()
   readonly originalTitle?: string;
 
+  @ApiProperty({ description: '글감의 ID' })
+  @IsString()
+  readonly inspirationId: string;
+
   @ApiProperty({
     type: 'string',
     format: 'binary',
