@@ -17,7 +17,7 @@ enum InspirationType {
   TITLE
   WORD
   AUDIO
-  VEDIO
+  VIDEO
 }
 
 model User {
