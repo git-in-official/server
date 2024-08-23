@@ -1,11 +1,13 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { InspirationRepository } from './inspiration.repository';
+import { AwsService } from 'src/aws/aws.service';
 
 @Injectable()
 export class InspirationService {
   constructor(
     @Inject(InspirationRepository)
     private readonly inspirationRepository: InspirationRepository,
+    private readonly awsService: AwsService,
   ) {}
   async getTitle(today: Date) {
     const titles = await this.inspirationRepository.findAllTitles();
@@ -47,5 +49,27 @@ export class InspirationService {
       hash = hash & hash; // 32비트 정수로 유지
     }
     return Math.abs(hash) % range;
+  }
+
+  async createTitle(title: string) {
+    await this.inspirationRepository.createTitle(title);
+    return;
+  }
+
+  async createWord(word: string) {
+    await this.inspirationRepository.createWord(word);
+    return;
+  }
+
+  async createAudio(file: Express.Multer.File) {
+    await this.awsService.uploadAudioInspiration(file);
+    await this.inspirationRepository.createAudio(file.originalname);
+    return;
+  }
+
+  async createVideo(file: Express.Multer.File) {
+    await this.awsService.uploadVideoInspiration(file);
+    await this.inspirationRepository.createVideo(file.originalname);
+    return;
   }
 }

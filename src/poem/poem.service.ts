@@ -42,7 +42,7 @@ export class PoemService {
       await this.awsService.uploadPoemAudio(newPoem.id, createInput.audioFile);
       return {
         ...newPoem,
-        audioUrl: this.awsService.getAudioUrl() + newPoem.id,
+        audioUrl: this.awsService.getPoemAudioUrl() + newPoem.id,
       };
     }
     return newPoem;
