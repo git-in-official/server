@@ -37,8 +37,8 @@ describe('Achievement (e2e)', () => {
     await prisma.user.deleteMany();
   });
 
-  describe('GET /achievements - 모든 업적 조회', async () => {
-    it('모든 업적 조회', async () => {
+  describe('GET /achievements - 자신이 획득한 업적 조회', async () => {
+    it('자신이 획득한 업적 조회', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -68,7 +68,7 @@ describe('Achievement (e2e)', () => {
 
       // when
       const response = await request(app.getHttpServer())
-        .get('/achievements')
+        .get('/achievements/my')
         .set('Authorization', `Bearer ${accessToken}`);
       const { status } = response;
       const body: AchievementsDto[] = response.body;
