@@ -28,7 +28,7 @@ export class InspirationController {
   @Get('title')
   async getTitle() {
     try {
-      return await this.inspirationService.getTitle(new Date());
+      return await this.inspirationService.getTitle();
     } catch (e) {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {
@@ -51,7 +51,7 @@ export class InspirationController {
   @Get('word')
   async getWord() {
     try {
-      return await this.inspirationService.getWord(new Date());
+      return await this.inspirationService.getWord();
     } catch (e) {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {
@@ -72,7 +72,7 @@ export class InspirationController {
   @Get('audio')
   async getAudio() {
     try {
-      return await this.inspirationService.getAudio(new Date());
+      return await this.inspirationService.getAudio();
     } catch (e) {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {
@@ -93,7 +93,7 @@ export class InspirationController {
   @Get('video')
   async getVideo() {
     try {
-      return await this.inspirationService.getVideo(new Date());
+      return await this.inspirationService.getVideo();
     } catch (e) {
       if (e instanceof Error) {
         if (e.message === 'no inspiration') {
