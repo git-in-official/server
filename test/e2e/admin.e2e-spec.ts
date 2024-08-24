@@ -330,7 +330,7 @@ describe('Admin (e2e)', () => {
     });
   });
 
-  describe('GET /admin/inspirations - 글감 전체 리스트 조회', () => {
+  describe('GET /admin/inspirations/titles - 제목 글감 전체 리스트 조회', () => {
     it('제목 글감 전체 리스트를 반환한다', async () => {
       // given
       await prisma.inspiration.createMany({
@@ -348,7 +348,7 @@ describe('Admin (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer()).get(
-        '/admin/inspirations?type=TITLE',
+        '/admin/inspirations/titles',
       );
 
       // then
@@ -356,7 +356,9 @@ describe('Admin (e2e)', () => {
       expect(body).toHaveLength(2);
       expect(body[1].title).toBeDefined();
     });
+  });
 
+  describe('GET /admin/inspirations/words - 단어 글감 전체 리스트 조회', () => {
     it('단어 글감 전체 리스트를 반환한다', async () => {
       // given
       await prisma.inspiration.createMany({
@@ -374,7 +376,7 @@ describe('Admin (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer()).get(
-        '/admin/inspirations?type=WORD',
+        '/admin/inspirations/words',
       );
 
       // then
@@ -382,7 +384,9 @@ describe('Admin (e2e)', () => {
       expect(body).toHaveLength(2);
       expect(body[1].word).toBeDefined();
     });
+  });
 
+  describe('GET /admin/inspirations/audios - 오디오 글감 전체 리스트 조회', () => {
     it('오디오 글감 전체 리스트를 반환한다', async () => {
       // given
       await prisma.inspiration.createMany({
@@ -400,7 +404,7 @@ describe('Admin (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer()).get(
-        '/admin/inspirations?type=AUDIO',
+        '/admin/inspirations/audios',
       );
 
       // then
@@ -409,7 +413,9 @@ describe('Admin (e2e)', () => {
       expect(body[1].filename).toBeDefined();
       expect(body[1].audioUrl).toBeDefined();
     });
+  });
 
+  describe('GET /admin/inspirations/videos - 비디오 글감 전체 리스트 조회', () => {
     it('비디오 글감 전체 리스트를 반환한다', async () => {
       // given
       await prisma.inspiration.createMany({
@@ -427,7 +433,7 @@ describe('Admin (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer()).get(
-        '/admin/inspirations?type=VIDEO',
+        '/admin/inspirations/videos',
       );
 
       // then
