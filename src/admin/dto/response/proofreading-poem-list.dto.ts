@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ProofreadingPoemDto {
   @ApiProperty()
-  id: string;
+  readonly id: string;
 
   @ApiProperty()
-  title: string;
+  readonly title: string;
 }

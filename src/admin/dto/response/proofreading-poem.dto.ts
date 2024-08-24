@@ -3,79 +3,79 @@ import { themes, interactions } from 'src/constants/tags';
 
 export class BaseInspirationDto {
   @ApiProperty()
-  id: string;
+  readonly id: string;
 
   @ApiProperty()
-  displayName: string;
+  readonly displayName: string;
 
   @ApiProperty()
-  type: string;
+  readonly type: string;
 }
 
 export class TextInspirationDto extends BaseInspirationDto {
   @ApiProperty({ enum: ['TITLE', 'WORD'] })
-  type: 'TITLE' | 'WORD';
+  readonly type: 'TITLE' | 'WORD';
 }
 
 export class AudioInspirationDto extends BaseInspirationDto {
   @ApiProperty()
-  type: 'AUDIO';
+  readonly type: 'AUDIO';
 
   @ApiProperty()
-  audioUrl: string;
+  readonly audioUrl: string;
 }
 
 export class VideoInspirationDto extends BaseInspirationDto {
   @ApiProperty()
-  type: 'VIDEO';
+  readonly type: 'VIDEO';
 
   @ApiProperty()
-  videoUrl: string;
+  readonly videoUrl: string;
 }
 
 @ApiExtraModels(TextInspirationDto, AudioInspirationDto, VideoInspirationDto)
 export class ProofreadingPoemDetailDto {
   @ApiProperty()
-  id: string;
+  readonly id: string;
 
   @ApiProperty()
-  title: string;
+  readonly title: string;
 
   @ApiProperty()
-  content: string;
+  readonly content: string;
 
   @ApiProperty()
-  textAlign: string;
+  readonly textAlign: string;
 
   @ApiProperty()
-  textSize: number;
+  readonly textSize: number;
 
   @ApiProperty()
-  textFont: string;
+  readonly textFont: string;
 
   @ApiProperty({ isArray: true, enum: themes })
-  themes: string[];
+  readonly themes: string[];
 
   @ApiProperty({ isArray: true, enum: interactions })
-  interactions: string[];
+  readonly interactions: string[];
 
   @ApiProperty()
-  isRecorded: boolean;
+  readonly isRecorded: boolean;
 
   @ApiProperty({ required: false })
-  audioUrl?: string;
+  readonly audioUrl?: string;
 
   @ApiProperty()
-  status: '교정중';
+  readonly status: '교정중';
 
   @ApiProperty({ type: 'string', nullable: true })
-  originalContent: string | null;
+  readonly originalContent: string | null;
 
   @ApiProperty({ type: 'string', nullable: true })
-  originalTitle: string | null;
+  readonly originalTitle: string | null;
 
   @ApiProperty({ description: 'ISO 8601' })
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @ApiProperty({
     oneOf: [
@@ -85,8 +85,11 @@ export class ProofreadingPoemDetailDto {
     ],
     discriminator: { propertyName: 'type' },
   })
-  inspiration: TextInspirationDto | AudioInspirationDto | VideoInspirationDto;
+  readonly inspiration:
+    | TextInspirationDto
+    | AudioInspirationDto
+    | VideoInspirationDto;
 
   @ApiProperty()
-  authorId: string;
+  readonly authorId: string;
 }
