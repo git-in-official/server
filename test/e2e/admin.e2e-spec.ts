@@ -356,5 +356,31 @@ describe('Admin (e2e)', () => {
       expect(body).toHaveLength(2);
       expect(body[1].title).toBeDefined();
     });
+
+    it('단어 글감 전체 리스트를 반환한다', async () => {
+      // given
+      await prisma.inspiration.createMany({
+        data: [
+          {
+            type: 'WORD',
+            displayName: 'test-word',
+          },
+          {
+            type: 'WORD',
+            displayName: 'test-word2',
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer()).get(
+        '/admin/inspirations?type=WORD',
+      );
+
+      // then
+      expect(status).toBe(200);
+      expect(body).toHaveLength(2);
+      expect(body[1].word).toBeDefined();
+    });
   });
 });
