@@ -329,4 +329,32 @@ describe('Admin (e2e)', () => {
       expect(publishedPoem?.status).toBe('출판');
     });
   });
+
+  describe('GET /admin/inspirations - 글감 전체 리스트 조회', () => {
+    it('제목 글감 전체 리스트를 반환한다', async () => {
+      // given
+      await prisma.inspiration.createMany({
+        data: [
+          {
+            type: 'TITLE',
+            displayName: 'test-title',
+          },
+          {
+            type: 'TITLE',
+            displayName: 'test-title2',
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer()).get(
+        '/admin/inspirations?type=TITLE',
+      );
+
+      // then
+      expect(status).toBe(200);
+      expect(body).toHaveLength(2);
+      expect(body[1].title).toBeDefined();
+    });
+  });
 });
