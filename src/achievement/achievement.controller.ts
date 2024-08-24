@@ -1,6 +1,8 @@
 import {
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   ParseUUIDPipe,
   Query,
   UseGuards,
@@ -30,9 +32,21 @@ export class AchievementController {
       '모든 업적을 조회하고 로그인 한 회원의 획득 유무를 isAquired로 표시합니다.',
   })
   @ApiResponse({ status: 200, type: [AchievementsDto] })
+  @ApiResponse({ status: 404, description: 'user not found' })
   @Get('my')
   async getAll(@CurrentUser() userId: string) {
-    return await this.achievementService.getAll(userId);
+    try {
+      return await this.achievementService.getAll(userId);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        if (e.message === 'user not found') {
+          throw new HttpException(e.message, HttpStatus.NOT_FOUND);
+        } else {
+          throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+      throw e;
+    }
   }
 
   @ApiOperation({
@@ -40,8 +54,20 @@ export class AchievementController {
     deprecated: true,
   })
   @ApiResponse({ status: 200, type: [AchievementsDto] })
+  @ApiResponse({ status: 404, description: 'user not found' })
   @Get('user')
   async getAllByUserId(@Query('userId', ParseUUIDPipe) userId: string) {
-    return await this.achievementService.getAllByUserId(userId);
+    try {
+      return await this.achievementService.getAllByUserId(userId);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        if (e.message === 'user not found') {
+          throw new HttpException(e.message, HttpStatus.NOT_FOUND);
+        } else {
+          throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+      throw e;
+    }
   }
 }
