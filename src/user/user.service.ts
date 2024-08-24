@@ -22,4 +22,16 @@ export class UserService {
       scrapUsers,
     };
   }
+
+  async update(userId: string, data: UpdateUserInput) {
+    const user = await this.userRepository.findOneById(userId);
+    if (!user) throw Error('user not found');
+
+    await this.userRepository.update(userId, data);
+  }
 }
+
+type UpdateUserInput = {
+  name: string;
+  introduction?: string | null;
+};

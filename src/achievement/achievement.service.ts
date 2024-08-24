@@ -1,16 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AchievementRepository } from './achievement.repository';
 import { Achievement } from './types';
+import { UserRepository } from '../user/user.repository';
 
 @Injectable()
 export class AchievementService {
   constructor(
     @Inject(AchievementRepository)
     private readonly achievementRepository: AchievementRepository,
+    @Inject(UserRepository)
+    private readonly userRepository: UserRepository,
   ) {}
 
-  // TODO 회원 검색 구현하면, 존재하는 회원인지 검증 코드 추가.
   async getAll(userId: string) {
+    await this.checkUserExist(userId);
     const achievements = await this.achievementRepository.findAll();
     const acquiredAchievements =
       await this.achievementRepository.findAllByUserId(userId);
@@ -18,9 +21,14 @@ export class AchievementService {
     return this.checkAcqusitionStatus(achievements, acquiredAchievements);
   }
 
-  // TODO 회원 검색 구현하면, 존재하는 회원인지 검증 코드 추가.
   async getAllByUserId(userId: string) {
+    await this.checkUserExist(userId);
     return await this.achievementRepository.findAllByUserId(userId);
+  }
+
+  async checkUserExist(userId: string) {
+    const user = await this.userRepository.findOneById(userId);
+    if (!user) throw 'user not found';
   }
 
   checkAcqusitionStatus(
