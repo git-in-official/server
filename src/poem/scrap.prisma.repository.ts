@@ -27,6 +27,7 @@ export class ScrapPrismaRepository implements ScrapRepository {
     });
   }
 
+  // TODO 쿼리 빌더 추가되면 변경하기.
   async findBestScrapUsersByAuthorId(authorId: string) {
     const result = await this.prisma.$queryRaw<
       { id: string; name: string; icon: string; count: BigInt }[]
