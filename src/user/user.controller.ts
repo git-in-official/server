@@ -28,6 +28,7 @@ export class UserController {
     description: '프로필 정보와 최다 스크랩 유저 10명을 조회합니다.',
   })
   @ApiResponse({ status: 200, type: ProfileDto })
+  @ApiResponse({ status: 404, description: 'user not found' })
   @Get('profile')
   async getOneDetailById(@CurrentUser() userId: string): Promise<ProfileDto> {
     try {
@@ -35,7 +36,7 @@ export class UserController {
     } catch (e: unknown) {
       if (e instanceof Error) {
         if (e.message === 'user not found') {
-          throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+          throw new HttpException(e.message, HttpStatus.NOT_ACCEPTABLE);
         } else {
           throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
