@@ -11,6 +11,7 @@ import {
   createPoemData,
   createUserData,
 } from './helpers';
+import { UpdateUserDto } from '../../src/user/dto/request/update-user.dto';
 
 describe('User (e2e)', () => {
   let app: INestApplication;
@@ -157,6 +158,37 @@ describe('User (e2e)', () => {
           },
         ],
       });
+    });
+  });
+
+  describe('PUT /user - 회원 정보 수정', () => {
+    it('회원 정보 수정', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const dto: UpdateUserDto = {
+        name: 'new-name',
+        introduction: 'new-introduction',
+      };
+
+      // when
+      const response = await request(app.getHttpServer())
+        .put('/user')
+        .send(dto)
+        .set('Authorization', `Bearer ${accessToken}`);
+      const { status } = response;
+
+      const updatedUser = await prisma.user.findUnique({
+        where: { id: user!.id },
+      });
+
+      // then
+      expect(status).toEqual(204);
+      expect(updatedUser!.name).toEqual(dto.name);
+      expect(updatedUser!.introduction).toEqual(dto.introduction);
     });
   });
 });
