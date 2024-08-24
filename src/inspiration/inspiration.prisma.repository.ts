@@ -30,6 +30,30 @@ export class InspirationPrismaRepository implements InspirationRepository {
     }));
   }
 
+  async findAllAudios() {
+    const result = await this.prisma.inspiration.findMany({
+      where: {
+        type: 'AUDIO',
+      },
+    });
+    return result.map((item) => ({
+      id: item.id,
+      filename: item.displayName,
+    }));
+  }
+
+  async findAllVideos() {
+    const result = await this.prisma.inspiration.findMany({
+      where: {
+        type: 'VIDEO',
+      },
+    });
+    return result.map((item) => ({
+      id: item.id,
+      filename: item.displayName,
+    }));
+  }
+
   async createTitle(title: string) {
     await this.prisma.inspiration.create({
       data: {

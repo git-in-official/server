@@ -5,13 +5,11 @@ import { AppModule } from 'src/app.module';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AuthService } from 'src/auth/auth.service';
 import { login } from './helpers/login';
-import { InspirationService } from 'src/inspiration/inspiration.service';
 
 describe('Inspiration (e2e)', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let authService: AuthService;
-  let inspirationService: InspirationService;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -20,8 +18,6 @@ describe('Inspiration (e2e)', () => {
 
     prisma = moduleFixture.get<PrismaService>(PrismaService);
     authService = moduleFixture.get<AuthService>(AuthService);
-    inspirationService =
-      moduleFixture.get<InspirationService>(InspirationService);
 
     app = moduleFixture.createNestApplication();
     await app.init();
@@ -110,6 +106,88 @@ describe('Inspiration (e2e)', () => {
 
       // then
       expect(status).toBe(404);
+    });
+  });
+
+  describe('GET /inspirations/audio - 오디오 글감 받기', () => {
+    it('오디오 글감을 반환한다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      await prisma.inspiration.create({
+        data: {
+          type: 'AUDIO',
+          displayName: 'test.mp3',
+        },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/inspirations/audio')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      const expectedData = {
+        filename: 'test.mp3',
+        id: expect.any(String),
+        audioUrl: expect.stringContaining(process.env.AWS_CLOUDFRONT_URL!),
+      };
+      expect(status).toBe(200);
+      expect(body).toEqual(expectedData);
+    });
+
+    it('오디오 글감이 없으면 404를 반환한다', async () => {
+      // given
+      const { accessToken } = await login(app);
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/inspirations/audio')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toBe(404);
+    });
+
+    describe('GET /inspirations/video - 비디오 글감 받기', () => {
+      it('비디오 글감을 반환한다', async () => {
+        // given
+        const { accessToken } = await login(app);
+
+        await prisma.inspiration.create({
+          data: {
+            type: 'VIDEO',
+            displayName: 'test.mp4',
+          },
+        });
+
+        // when
+        const { status, body } = await request(app.getHttpServer())
+          .get('/inspirations/video')
+          .set('Authorization', `Bearer ${accessToken}`);
+
+        // then
+        const expectedData = {
+          filename: 'test.mp4',
+          id: expect.any(String),
+          videoUrl: expect.stringContaining(process.env.AWS_CLOUDFRONT_URL!),
+        };
+        expect(status).toBe(200);
+        expect(body).toEqual(expectedData);
+      });
+
+      it('비디오 글감이 없으면 404를 반환한다', async () => {
+        // given
+        const { accessToken } = await login(app);
+
+        // when
+        const { status } = await request(app.getHttpServer())
+          .get('/inspirations/video')
+          .set('Authorization', `Bearer ${accessToken}`);
+
+        // then
+        expect(status).toBe(404);
+      });
     });
   });
 });

@@ -9,10 +9,10 @@ export class InspirationService {
     private readonly inspirationRepository: InspirationRepository,
     private readonly awsService: AwsService,
   ) {}
-  async getTitle(today: Date) {
+  async getTitle(date: Date = new Date()) {
     const titles = await this.inspirationRepository.findAllTitles();
     const length = titles.length;
-    const dateString = today.toISOString().split('T')[0];
+    const dateString = date.toISOString().split('T')[0];
 
     if (length === 0) {
       throw new Error('no inspiration');
@@ -25,7 +25,7 @@ export class InspirationService {
     };
   }
 
-  async getWord(date: Date) {
+  async getWord(date: Date = new Date()) {
     const words = await this.inspirationRepository.findAllWords();
     const length = words.length;
     const dateString = date.toISOString().split('T')[0];
@@ -38,6 +38,42 @@ export class InspirationService {
     return {
       id: words[index].id,
       word: words[index].word,
+    };
+  }
+
+  async getAudio(date: Date = new Date()) {
+    const audios = await this.inspirationRepository.findAllAudios();
+    const length = audios.length;
+    const dateString = date.toISOString().split('T')[0];
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
+
+    const index = this.getHashedIndex(dateString, length);
+    return {
+      id: audios[index].id,
+      filename: audios[index].filename,
+      audioUrl:
+        this.awsService.getAudioInspirationUrl() + audios[index].filename,
+    };
+  }
+
+  async getVideo(date: Date = new Date()) {
+    const videos = await this.inspirationRepository.findAllVideos();
+    const length = videos.length;
+    const dateString = date.toISOString().split('T')[0];
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
+
+    const index = this.getHashedIndex(dateString, length);
+    return {
+      id: videos[index].id,
+      filename: videos[index].filename,
+      videoUrl:
+        this.awsService.getVideoInspirationUrl() + videos[index].filename,
     };
   }
 
