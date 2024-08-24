@@ -26,7 +26,7 @@ export class AuthService {
         throw new Error('user not found');
       }
       const jwtAccessToken = await this.createAccessToken(user.id);
-      return { accessToken: jwtAccessToken };
+      return { accessToken: jwtAccessToken, name: user.name };
     }
   }
 
@@ -47,7 +47,7 @@ export class AuthService {
         name,
       });
       const jwtAccessToken = await this.createAccessToken(newUser.id);
-      return { accessToken: jwtAccessToken };
+      return { accessToken: jwtAccessToken, name: newUser.name };
     }
   }
 
