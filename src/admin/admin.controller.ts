@@ -6,6 +6,7 @@ import {
   Body,
   Get,
   Param,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -61,5 +62,13 @@ export class AdminController {
   @Get('poems/proofreading/:id')
   async findOneProofreading(@Param('id') id: string) {
     return await this.poemService.getOneProofreading(id);
+  }
+
+  @ApiOperation({ summary: '출판' })
+  @ApiResponse({ status: 200, description: '출판 성공' })
+  @Patch('poems/proofreading/:id/publish')
+  async publish(@Param('id') id: string) {
+    await this.poemService.publish(id);
+    return;
   }
 }

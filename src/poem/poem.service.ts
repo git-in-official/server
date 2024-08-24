@@ -114,6 +114,10 @@ export class PoemService {
       inspiration: inspirationData,
     };
   }
+
+  async publish(id: string) {
+    await this.poemRepository.updateStatus(id, '출판');
+  }
 }
 
 export type CreateInput = {

@@ -3,6 +3,7 @@ export interface PoemRepository {
   countUserDaily(userId: string): Promise<number>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
+  updateStatus(id: string, status: string): Promise<void>;
 }
 
 export type CreateInput = {

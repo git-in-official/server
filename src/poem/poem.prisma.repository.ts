@@ -57,6 +57,18 @@ export class PoemPrismaRepository implements PoemRepository {
       },
     });
   }
+
+  async updateStatus(id: string, status: string) {
+    await this.prisma.poem.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+    return;
+  }
 }
 
 export type CreateInput = {
