@@ -1,4 +1,10 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -24,6 +30,17 @@ export class UserController {
   @ApiResponse({ status: 200, type: ProfileDto })
   @Get('profile')
   async getOneDetailById(@CurrentUser() userId: string): Promise<ProfileDto> {
-    return await this.userService.getOneDetailById(userId);
+    try {
+      return await this.userService.getOneDetailById(userId);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        if (e.message === 'user not found') {
+          throw new HttpException(e.message, HttpStatus.BAD_REQUEST);
+        } else {
+          throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+      throw e;
+    }
   }
 }
