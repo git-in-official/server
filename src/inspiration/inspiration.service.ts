@@ -112,4 +112,8 @@ export class InspirationService {
   async getAllTitles() {
     return await this.inspirationRepository.findAllTitles();
   }
+
+  async getAllWords() {
+    return await this.inspirationRepository.findAllWords();
+  }
 }

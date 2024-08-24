@@ -79,6 +79,8 @@ export class AdminController {
   async getAllTitles(@Query() { type }: GetInspirationsDto) {
     if (type === 'TITLE') {
       return await this.inspirationService.getAllTitles();
+    } else if (type === 'WORD') {
+      return await this.inspirationService.getAllWords();
     }
   }
 }
