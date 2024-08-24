@@ -1,9 +1,13 @@
+import { themes, interactions } from '../constants/tags';
+
 export interface PoemRepository {
-  create(userId: string, data: CreateInput): Promise<Poem>;
+  create(userId: string, data: CreateInput): Promise<NewPoem>;
   countUserDaily(userId: string): Promise<number>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
   updateStatus(id: string, status: string): Promise<void>;
+  findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
+  findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
 }
 
 export type CreateInput = {
@@ -21,7 +25,7 @@ export type CreateInput = {
   status: string;
 };
 
-export type Poem = {
+export type NewPoem = {
   id: string;
   title: string;
   content: string;
@@ -43,7 +47,7 @@ export type ProofreadingPoemList = {
 }[];
 
 export type PoemWithOriginalContent = Omit<
-  Poem & {
+  NewPoem & {
     originalTitle: string | null;
     originalContent: string | null;
     inspiration: {
@@ -54,5 +58,34 @@ export type PoemWithOriginalContent = Omit<
   },
   'inspirationId'
 >;
+
+export type Poem = {
+  id: string;
+  title: string;
+  content: string;
+  textAlign: string;
+  textSize: number;
+  textFont: string;
+  themes: string[];
+  interactions: string[];
+  isRecorded: boolean;
+  createdAt: Date;
+  inspirationId: string;
+  authorId: string;
+  scraps: { id: string }[];
+};
+
+export type FindInputWithoutTags = {
+  userId: string;
+  index: number;
+};
+
+export type FindInputWithTags = {
+  userId: string;
+  index: number;
+  limit: number;
+  themes: (typeof themes)[number][];
+  interactions: (typeof interactions)[number][];
+};
 
 export const PoemRepository = Symbol('PoemRepository');
