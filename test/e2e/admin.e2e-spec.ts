@@ -382,5 +382,31 @@ describe('Admin (e2e)', () => {
       expect(body).toHaveLength(2);
       expect(body[1].word).toBeDefined();
     });
+
+    it('오디오 글감 전체 리스트를 반환한다', async () => {
+      // given
+      await prisma.inspiration.createMany({
+        data: [
+          {
+            type: 'AUDIO',
+            displayName: 'test.mp3',
+          },
+          {
+            type: 'AUDIO',
+            displayName: 'test.mp32',
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer()).get(
+        '/admin/inspirations?type=AUDIO',
+      );
+
+      // then
+      expect(status).toBe(200);
+      expect(body).toHaveLength(2);
+      expect(body[1].filename).toBeDefined();
+    });
   });
 });
