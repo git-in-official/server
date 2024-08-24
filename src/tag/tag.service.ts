@@ -9,10 +9,16 @@ export class TagService {
   }
 
   getFirstTags(emotion: (typeof emotions)[number]['emotion']) {
-    return firstTags.find((tag) => tag.emotion === emotion);
+    const { emotion: _, ...rest } = firstTags.find(
+      (tag) => tag.emotion === emotion,
+    )!;
+    return rest;
   }
 
   getSecondTags(emotion: (typeof emotions)[number]['emotion']) {
-    return secondTags.find((tag) => tag.emotion === emotion);
+    const { emotion: _, ...rest } = secondTags.find(
+      (tag) => tag.emotion === emotion,
+    )!;
+    return rest;
   }
 }

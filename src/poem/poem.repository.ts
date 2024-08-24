@@ -1,12 +1,13 @@
+import { themes, interactions } from '../constants/tags';
+
 export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<NewPoem>;
   countUserDaily(userId: string): Promise<number>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
   updateStatus(id: string, status: string): Promise<void>;
-  findThreeByIndex(
-    findInputWithoutEmotion: FindInputWithoutEmotion,
-  ): Promise<Poem[]>;
+  findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
+  findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
 }
 
 export type CreateInput = {
@@ -74,9 +75,17 @@ export type Poem = {
   scraps: { id: string }[];
 };
 
-export type FindInputWithoutEmotion = {
+export type FindInputWithoutTags = {
   userId: string;
   index: number;
+};
+
+export type FindInputWithTags = {
+  userId: string;
+  index: number;
+  limit: number;
+  themes: (typeof themes)[number][];
+  interactions: (typeof interactions)[number][];
 };
 
 export const PoemRepository = Symbol('PoemRepository');

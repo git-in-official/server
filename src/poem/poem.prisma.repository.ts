@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-import { Poem, PoemRepository } from './poem.repository';
+import { PoemRepository, FindInputWithTags } from './poem.repository';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -96,6 +95,53 @@ export class PoemPrismaRepository implements PoemRepository {
         scraps: {
           where: {
             userId,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findNByTagAndIndex(findInputWithTags: FindInputWithTags) {
+    return this.prisma.poem.findMany({
+      take: findInputWithTags.limit,
+      skip: findInputWithTags.index * findInputWithTags.limit,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        status: '출판',
+        OR: [
+          {
+            themes: {
+              hasSome: findInputWithTags.themes,
+            },
+          },
+          {
+            interactions: {
+              hasSome: findInputWithTags.interactions,
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        textAlign: true,
+        textSize: true,
+        textFont: true,
+        themes: true,
+        interactions: true,
+        isRecorded: true,
+        inspirationId: true,
+        createdAt: true,
+        authorId: true,
+        scraps: {
+          where: {
+            userId: findInputWithTags.userId,
           },
           select: {
             id: true,

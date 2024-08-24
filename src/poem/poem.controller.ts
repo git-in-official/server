@@ -80,7 +80,6 @@ export class PoemController {
     @Body() createPoemDto: CreatePoemDto,
     @UploadedFile() audioFile?: Express.Multer.File,
   ) {
-    console.log(audioFile);
     return await this.poemService.create(userId, {
       ...createPoemDto,
       audioFile,

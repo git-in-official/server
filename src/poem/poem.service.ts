@@ -3,6 +3,8 @@ import { PoemRepository } from './poem.repository';
 import { LlmService } from './llm.service';
 import { AwsService } from '../aws/aws.service';
 import { ScrapRepository } from './scrap.repository';
+import { TagService } from 'src/tag/tag.service';
+import { emotions } from 'src/constants/emotions';
 
 @Injectable()
 export class PoemService {
@@ -11,6 +13,7 @@ export class PoemService {
     @Inject(ScrapRepository) private readonly scrapRepository: ScrapRepository,
     private readonly awsService: AwsService,
     private readonly llmService: LlmService,
+    private readonly tagService: TagService,
   ) {}
   async analyzePoem(title: string, content: string) {
     return await this.llmService.analyzePoem(title, content);
@@ -120,13 +123,32 @@ export class PoemService {
   }
 
   async getThree(getPoemsInput: GetPoemsInput) {
-    let poems;
+    let poems = [];
     if (getPoemsInput.emotion) {
+      const tempPoems = [];
+      const firstTags = this.tagService.getFirstTags(getPoemsInput.emotion);
+      const secondTags = this.tagService.getSecondTags(getPoemsInput.emotion);
+      tempPoems.push(
+        await this.poemRepository.findNByTagAndIndex({
+          ...getPoemsInput,
+          ...firstTags,
+          limit: 2,
+        }),
+      );
+      tempPoems.push(
+        await this.poemRepository.findNByTagAndIndex({
+          ...getPoemsInput,
+          ...secondTags,
+          limit: 1,
+        }),
+      );
+      poems = tempPoems.flat();
+    } else {
+      poems = await this.poemRepository.findThreeByIndex({
+        userId: getPoemsInput.userId,
+        index: getPoemsInput.index,
+      });
     }
-    poems = await this.poemRepository.findThreeByIndex({
-      userId: getPoemsInput.userId,
-      index: getPoemsInput.index,
-    });
 
     return poems.map((poem) => {
       const { scraps, ...rest } = poem;
@@ -166,6 +188,6 @@ export type UpdateTagInput = {
 
 export type GetPoemsInput = {
   userId: string;
-  emotion?: string;
+  emotion?: (typeof emotions)[number]['emotion'];
   index: number;
 };

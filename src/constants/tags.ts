@@ -1,3 +1,45 @@
+import { emotions } from './emotions';
+export type Theme =
+  | '로맨틱'
+  | '우정'
+  | '가족'
+  | '성장'
+  | '희망'
+  | '자연'
+  | '외로움'
+  | '상실'
+  | '죽음'
+  | '그리움'
+  | '영적'
+  | '성공'
+  | '평화'
+  | '즐거움'
+  | '기쁨'
+  | '갈등'
+  | '화해'
+  | '불확실성'
+  | '추악함'
+  | '좌절'
+  | '불의'
+  | '사랑'
+  | '연민';
+
+export type Interaction =
+  | '위로'
+  | '카타르시스'
+  | '감사'
+  | '환희'
+  | '성찰'
+  | '격려'
+  | '노스텔지아'
+  | '자아비판'
+  | '연대감'
+  | '감성적'
+  | '이성적'
+  | '의문'
+  | '상상력'
+  | '축하';
+
 export const themes = [
   '로맨틱',
   '우정',
@@ -22,7 +64,7 @@ export const themes = [
   '불의',
   '사랑',
   '연민',
-] as const;
+] as Theme[];
 
 export const interactions = [
   '위로',
@@ -39,7 +81,7 @@ export const interactions = [
   '의문',
   '상상력',
   '축하',
-] as const;
+] as Interaction[];
 
 export const firstTags = [
   {
@@ -72,7 +114,11 @@ export const firstTags = [
     themes: ['갈등', '추악함', '불의', '상실'],
     interactions: ['자아비판', '이성적', '의문'],
   },
-] as const;
+] as {
+  emotion: (typeof emotions)[number]['emotion'];
+  themes: Theme[];
+  interactions: Interaction[];
+}[];
 
 export const secondTags = [
   {
@@ -105,4 +151,8 @@ export const secondTags = [
     themes: ['자연', '평화', '화해', '즐거움', '기쁨', '사랑'],
     interactions: ['위로', '카타르시스', '감사', '환희', '감성적'],
   },
-] as const;
+] as {
+  emotion: (typeof emotions)[number]['emotion'];
+  themes: Theme[];
+  interactions: Interaction[];
+}[];

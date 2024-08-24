@@ -21,10 +21,10 @@ export class PoemDto {
   textFont: string;
 
   @ApiProperty({ isArray: true, enum: themes })
-  themes: (typeof themes)[number][];
+  themes: string[];
 
   @ApiProperty({ isArray: true, enum: interactions })
-  interactions: (typeof interactions)[number][];
+  interactions: string[];
 
   @ApiProperty()
   isRecorded: boolean;
