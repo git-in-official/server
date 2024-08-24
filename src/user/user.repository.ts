@@ -10,6 +10,7 @@ export interface UserRepository {
   } | null>;
 
   findOneDetailById(id: string): Promise<User | null>;
+  findOneById(id: string): Promise<{ id: string } | null>;
 
   create({
     provider,
@@ -25,6 +26,7 @@ export interface UserRepository {
     providerId: string;
     name: string;
   }>;
+  update(userId: string, data: UpdateUserData): Promise<void>;
 }
 
 type Achievement = {
@@ -41,6 +43,11 @@ type User = {
   introduction?: string | null;
   mainAchievement?: Achievement | null;
   achievements: Achievement[];
+};
+
+export type UpdateUserData = {
+  name: string;
+  introduction?: string | null;
 };
 
 export const UserRepository = Symbol('UserRepository');
