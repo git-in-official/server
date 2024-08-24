@@ -14,7 +14,6 @@ export class UserService {
   async getOneDetailById(id: string) {
     const user = await this.userRepository.findOneDetailById(id);
     if (!user) throw Error('user not found');
-
     const scrapUsers = await this.scrapRepository.findBestScrapperByUserId(id);
 
     return {
