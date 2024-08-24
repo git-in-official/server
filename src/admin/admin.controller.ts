@@ -15,8 +15,6 @@ import {
   ApiConsumes,
   ApiBody,
   ApiResponse,
-  ApiExtraModels,
-  getSchemaPath,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadInspirationDto, GetInspirationsDto } from './dto/request';
@@ -87,46 +85,31 @@ export class AdminController {
     return;
   }
 
-  @ApiOperation({ summary: '글감 전체 리스트 조회' })
-  @ApiExtraModels(
-    TitleInspirationDto,
-    WordInspirationDto,
-    AudioInspirationDto,
-    VideoInspirationDto,
-  )
-  @ApiResponse({
-    status: 200,
-    schema: {
-      type: 'array',
-      items: {
-        oneOf: [
-          { $ref: getSchemaPath(TitleInspirationDto) },
-          { $ref: getSchemaPath(WordInspirationDto) },
-          { $ref: getSchemaPath(AudioInspirationDto) },
-          { $ref: getSchemaPath(VideoInspirationDto) },
-        ],
-      },
-    },
-  })
-  @Get('inspirations')
-  async getAllTitles(
-    @Query() { type }: GetInspirationsDto,
-  ): Promise<
-    (
-      | TitleInspirationDto
-      | WordInspirationDto
-      | AudioInspirationDto
-      | VideoInspirationDto
-    )[]
-  > {
-    if (type === 'TITLE') {
-      return await this.inspirationService.getAllTitles();
-    } else if (type === 'WORD') {
-      return await this.inspirationService.getAllWords();
-    } else if (type === 'AUDIO') {
-      return await this.inspirationService.getAllAudios();
-    } else {
-      return await this.inspirationService.getAllVideos();
-    }
+  @ApiOperation({ summary: '제목 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [TitleInspirationDto] })
+  @Get('inspirations/titles')
+  async getAllTitles(): Promise<TitleInspirationDto[]> {
+    return await this.inspirationService.getAllTitles();
+  }
+
+  @ApiOperation({ summary: '단어 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [WordInspirationDto] })
+  @Get('inspirations/words')
+  async getAllWords(): Promise<WordInspirationDto[]> {
+    return await this.inspirationService.getAllWords();
+  }
+
+  @ApiOperation({ summary: '음성 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [AudioInspirationDto] })
+  @Get('inspirations/audios')
+  async getAllAudios(): Promise<AudioInspirationDto[]> {
+    return await this.inspirationService.getAllAudios();
+  }
+
+  @ApiOperation({ summary: '영상 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [VideoInspirationDto] })
+  @Get('inspirations/videos')
+  async getAllVideos(): Promise<VideoInspirationDto[]> {
+    return await this.inspirationService.getAllVideos();
   }
 }
