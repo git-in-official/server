@@ -120,4 +120,8 @@ export class InspirationService {
   async getAllAudios() {
     return await this.inspirationRepository.findAllAudios();
   }
+
+  async getAllVideos() {
+    return await this.inspirationRepository.findAllVideos();
+  }
 }
