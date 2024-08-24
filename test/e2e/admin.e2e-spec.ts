@@ -286,4 +286,47 @@ describe('Admin (e2e)', () => {
       expect(body.inspiration.audioUrl).toBeDefined();
     });
   });
+
+  describe('PATCH /admin/poems/proofreading/:id/publish - 출판', () => {
+    it('시를 출판한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const inspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      const poem = await prisma.poem.create({
+        data: {
+          title: 'test-title',
+          content: 'test-content',
+          themes: ['test-theme'],
+          interactions: ['test-interaction'],
+          textAlign: 'center',
+          textSize: 16,
+          textFont: 'test-font',
+          isRecorded: false,
+          inspirationId: inspiration.id,
+          status: '교정중',
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      const { status } = await request(app.getHttpServer()).patch(
+        `/admin/poems/proofreading/${poem.id}/publish`,
+      );
+
+      // then
+      expect(status).toBe(200);
+      const publishedPoem = await prisma.poem.findUnique({
+        where: { id: poem.id },
+      });
+      expect(publishedPoem?.status).toBe('출판');
+    });
+  });
 });
