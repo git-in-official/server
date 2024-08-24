@@ -243,7 +243,7 @@ describe('Poem (e2e)', () => {
   });
 
   describe('GET /poems/can-write - 시를 쓸 수 있는지 확인', () => {
-    it('이미 시를 두 번 썼을 때 400 에러를 반환한다', async () => {
+    it('이미 시를 두 번 썼을 때 423 에러를 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -293,7 +293,7 @@ describe('Poem (e2e)', () => {
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
-      expect(status).toEqual(400);
+      expect(status).toEqual(423);
     });
 
     it('아직 시를 쓰지 않았거나 한 번만 썼을 때 200을 반환한다', async () => {
@@ -457,6 +457,262 @@ describe('Poem (e2e)', () => {
           Key: `poems/audios/${body.id}`,
         }),
       );
+    });
+  });
+
+  describe('GET /poems?emotion&index - 감정별 시 목록 조회', () => {
+    it('감정이 없을 때도 시를 3개씩 받을 수 있고, 상태가 출판 인 시만 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      await prisma.poem.createMany({
+        data: [
+          {
+            title: 'test-poem1',
+            content: 'test-content1',
+            textAlign: 'test-align1',
+            textSize: 16,
+            textFont: 'test-font1',
+            themes: [],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: 'test-poem2',
+            content: 'test-content2',
+            textAlign: 'test-align2',
+            textSize: 16,
+            textFont: 'test-font2',
+            themes: [],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: 'test-poem3',
+            content: 'test-content3',
+            textAlign: 'test-align3',
+            textSize: 16,
+            textFont: 'test-font3',
+            themes: [],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: 'test-poem4',
+            content: 'test-content4',
+            textAlign: 'test-align4',
+            textSize: 16,
+            textFont: 'test-font4',
+            themes: [],
+            interactions: [],
+            isRecorded: false,
+            status: '교정중',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toHaveLength(3);
+      expect(body[0].isScrapped).toBeFalsy();
+    });
+
+    it('스크랩한 시인 경우 isScrapped가 true로 반환된다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      const poem = await prisma.poem.create({
+        data: {
+          title: 'test-poem',
+          content: 'test-content',
+          textAlign: 'test-align',
+          textSize: 16,
+          textFont: 'test-font',
+          themes: [],
+          interactions: [],
+          isRecorded: false,
+          status: '출판',
+          inspirationId: titleInspiration.id,
+          authorId: user!.id,
+        },
+      });
+
+      await prisma.scrap.create({
+        data: {
+          poemId: poem.id,
+          userId: user!.id,
+        },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toHaveLength(1);
+      expect(body[0].isScrapped).toBeTruthy();
+    });
+
+    it('감정이 슬픔일 때, 슬픔에 알맞은 시를 3개씩 받을 수 있다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      const poems = await prisma.poem.createMany({
+        data: [
+          {
+            title: '테마가 상실',
+            content: 'test-content1',
+            textAlign: 'test-align1',
+            textSize: 16,
+            textFont: 'test-font1',
+            themes: ['상실'],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: '상호작용이 노스텔지아',
+            content: 'test-content2',
+            textAlign: 'test-align2',
+            textSize: 16,
+            textFont: 'test-font2',
+            themes: [],
+            interactions: ['노스텔지아'],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: '테마가 가족',
+            content: 'test-content3',
+            textAlign: 'test-align3',
+            textSize: 16,
+            textFont: 'test-font3',
+            themes: ['가족'],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ emotion: '슬픔', index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toHaveLength(3);
+      expect(body[2].title).toEqual('테마가 가족');
+    });
+
+    it('시가 있더라도 감정에 맞는 시가 없을 때는 빈 배열을 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      await prisma.poem.create({
+        data: {
+          title: 'test-poem',
+          content: 'test-content',
+          textAlign: 'test-align',
+          textSize: 16,
+          textFont: 'test-font',
+          themes: [],
+          interactions: [],
+          isRecorded: false,
+          status: '출판',
+          inspirationId: titleInspiration.id,
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ emotion: '슬픔', index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toHaveLength(0);
+    });
+
+    it('허용된 감정이 아닌 경우 400 에러를 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ emotion: '없는감정', index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(400);
     });
   });
 });
