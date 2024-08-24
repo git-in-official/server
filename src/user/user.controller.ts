@@ -36,7 +36,7 @@ export class UserController {
     } catch (e: unknown) {
       if (e instanceof Error) {
         if (e.message === 'user not found') {
-          throw new HttpException(e.message, HttpStatus.NOT_ACCEPTABLE);
+          throw new HttpException(e.message, HttpStatus.NOT_FOUND);
         } else {
           throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
