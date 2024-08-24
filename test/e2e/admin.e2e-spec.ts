@@ -408,5 +408,31 @@ describe('Admin (e2e)', () => {
       expect(body).toHaveLength(2);
       expect(body[1].filename).toBeDefined();
     });
+
+    it('비디오 글감 전체 리스트를 반환한다', async () => {
+      // given
+      await prisma.inspiration.createMany({
+        data: [
+          {
+            type: 'VIDEO',
+            displayName: 'test.mp4',
+          },
+          {
+            type: 'VIDEO',
+            displayName: 'test.mp4',
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer()).get(
+        '/admin/inspirations?type=VIDEO',
+      );
+
+      // then
+      expect(status).toBe(200);
+      expect(body).toHaveLength(2);
+      expect(body[1].filename).toBeDefined();
+    });
   });
 });
