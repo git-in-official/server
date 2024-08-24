@@ -118,6 +118,7 @@ describe('Auth (e2e)', () => {
       // then
       expect(response.status).toBe(201);
       expect(response.body.accessToken).toBeDefined();
+      expect(response.body.name).toBe(signupDto.name);
 
       const user = await prisma.user.findFirst({
         where: {
@@ -168,6 +169,7 @@ describe('Auth (e2e)', () => {
       // then
       expect(response.status).toBe(200);
       expect(response.body.accessToken).toBeDefined();
+      expect(response.body.name).toBe(user.name);
     });
 
     it('provider에 GOOGLE과 APPLE이 아닌 값이 들어오면 400을 반환한다', async () => {
