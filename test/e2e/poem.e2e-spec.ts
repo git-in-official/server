@@ -590,5 +590,129 @@ describe('Poem (e2e)', () => {
       expect(body).toHaveLength(1);
       expect(body[0].isScrapped).toBeTruthy();
     });
+
+    it('감정이 슬픔일 때, 슬픔에 알맞은 시를 3개씩 받을 수 있다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      const poems = await prisma.poem.createMany({
+        data: [
+          {
+            title: '테마가 상실',
+            content: 'test-content1',
+            textAlign: 'test-align1',
+            textSize: 16,
+            textFont: 'test-font1',
+            themes: ['상실'],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: '상호작용이 노스텔지아',
+            content: 'test-content2',
+            textAlign: 'test-align2',
+            textSize: 16,
+            textFont: 'test-font2',
+            themes: [],
+            interactions: ['노스텔지아'],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+          {
+            title: '테마가 가족',
+            content: 'test-content3',
+            textAlign: 'test-align3',
+            textSize: 16,
+            textFont: 'test-font3',
+            themes: ['가족'],
+            interactions: [],
+            isRecorded: false,
+            status: '출판',
+            inspirationId: titleInspiration.id,
+            authorId: user!.id,
+          },
+        ],
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ emotion: '슬픔', index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toHaveLength(3);
+      expect(body[2].title).toEqual('테마가 가족');
+    });
+
+    it('시가 있더라도 감정에 맞는 시가 없을 때는 빈 배열을 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+
+      await prisma.poem.create({
+        data: {
+          title: 'test-poem',
+          content: 'test-content',
+          textAlign: 'test-align',
+          textSize: 16,
+          textFont: 'test-font',
+          themes: [],
+          interactions: [],
+          isRecorded: false,
+          status: '출판',
+          inspirationId: titleInspiration.id,
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ emotion: '슬픔', index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      expect(body).toHaveLength(0);
+    });
+
+    it('허용된 감정이 아닌 경우 400 에러를 반환한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get('/poems')
+        .query({ emotion: '없는감정', index: 0 })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(400);
+    });
   });
 });
