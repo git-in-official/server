@@ -118,10 +118,20 @@ export class InspirationService {
   }
 
   async getAllAudios() {
-    return await this.inspirationRepository.findAllAudios();
+    const audios = await this.inspirationRepository.findAllAudios();
+    return audios.map((audio) => ({
+      id: audio.id,
+      filename: audio.filename,
+      audioUrl: this.awsService.getAudioInspirationUrl() + audio.filename,
+    }));
   }
 
   async getAllVideos() {
-    return await this.inspirationRepository.findAllVideos();
+    const videos = await this.inspirationRepository.findAllVideos();
+    return videos.map((video) => ({
+      id: video.id,
+      filename: video.filename,
+      videoUrl: this.awsService.getVideoInspirationUrl() + video.filename,
+    }));
   }
 }

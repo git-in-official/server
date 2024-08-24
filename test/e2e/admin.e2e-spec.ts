@@ -407,6 +407,7 @@ describe('Admin (e2e)', () => {
       expect(status).toBe(200);
       expect(body).toHaveLength(2);
       expect(body[1].filename).toBeDefined();
+      expect(body[1].audioUrl).toBeDefined();
     });
 
     it('비디오 글감 전체 리스트를 반환한다', async () => {
@@ -433,6 +434,7 @@ describe('Admin (e2e)', () => {
       expect(status).toBe(200);
       expect(body).toHaveLength(2);
       expect(body[1].filename).toBeDefined();
+      expect(body[1].videoUrl).toBeDefined();
     });
   });
 });
