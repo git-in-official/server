@@ -47,6 +47,7 @@ export class PoemPrismaRepository implements PoemRepository {
     return this.prisma.poem.findUnique({
       where: {
         id,
+        status: '교정중',
       },
       include: {
         inspiration: true,

@@ -90,20 +90,34 @@ export class PoemService {
     let inspirationData;
     if (poem.inspiration.type === 'AUDIO') {
       inspirationData = {
-        ...poem.inspiration,
+        id: poem.inspiration.id,
+        filename: poem.inspiration.displayName,
         audioUrl:
           this.awsService.getAudioInspirationUrl() +
           poem.inspiration.displayName,
+        type: poem.inspiration.type,
       };
     } else if (poem.inspiration.type === 'VIDEO') {
       inspirationData = {
-        ...poem.inspiration,
+        id: poem.inspiration.id,
+        filename: poem.inspiration.displayName,
         videoUrl:
           this.awsService.getVideoInspirationUrl() +
           poem.inspiration.displayName,
+        type: poem.inspiration.type,
+      };
+    } else if (poem.inspiration.type === 'TITLE') {
+      inspirationData = {
+        id: poem.inspiration.id,
+        title: poem.inspiration.displayName,
+        type: poem.inspiration.type,
       };
     } else {
-      inspirationData = poem.inspiration;
+      inspirationData = {
+        id: poem.inspiration.id,
+        word: poem.inspiration.displayName,
+        type: poem.inspiration.type,
+      };
     }
     if (poem.isRecorded) {
       return {
