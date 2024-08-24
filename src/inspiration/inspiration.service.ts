@@ -108,4 +108,30 @@ export class InspirationService {
     await this.inspirationRepository.createVideo(file.originalname);
     return;
   }
+
+  async getAllTitles() {
+    return await this.inspirationRepository.findAllTitles();
+  }
+
+  async getAllWords() {
+    return await this.inspirationRepository.findAllWords();
+  }
+
+  async getAllAudios() {
+    const audios = await this.inspirationRepository.findAllAudios();
+    return audios.map((audio) => ({
+      id: audio.id,
+      filename: audio.filename,
+      audioUrl: this.awsService.getAudioInspirationUrl() + audio.filename,
+    }));
+  }
+
+  async getAllVideos() {
+    const videos = await this.inspirationRepository.findAllVideos();
+    return videos.map((video) => ({
+      id: video.id,
+      filename: video.filename,
+      videoUrl: this.awsService.getVideoInspirationUrl() + video.filename,
+    }));
+  }
 }

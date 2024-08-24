@@ -1,39 +1,62 @@
 import { ApiProperty, getSchemaPath, ApiExtraModels } from '@nestjs/swagger';
 import { themes, interactions } from 'src/constants/tags';
 
-export class BaseInspirationDto {
+class TitleInspirationDto {
   @ApiProperty()
   readonly id: string;
 
   @ApiProperty()
-  readonly displayName: string;
+  readonly type: 'TITLE';
 
   @ApiProperty()
-  readonly type: string;
+  readonly title: string;
 }
 
-export class TextInspirationDto extends BaseInspirationDto {
-  @ApiProperty({ enum: ['TITLE', 'WORD'] })
-  readonly type: 'TITLE' | 'WORD';
+class WordInspirationDto {
+  @ApiProperty()
+  readonly id: string;
+
+  @ApiProperty()
+  readonly type: 'WORD';
+
+  @ApiProperty()
+  readonly word: string;
 }
 
-export class AudioInspirationDto extends BaseInspirationDto {
+class AudioInspirationDto {
+  @ApiProperty()
+  readonly id: string;
+
   @ApiProperty()
   readonly type: 'AUDIO';
+
+  @ApiProperty()
+  readonly filename: string;
 
   @ApiProperty()
   readonly audioUrl: string;
 }
 
-export class VideoInspirationDto extends BaseInspirationDto {
+class VideoInspirationDto {
+  @ApiProperty()
+  readonly id: string;
+
   @ApiProperty()
   readonly type: 'VIDEO';
+
+  @ApiProperty()
+  readonly filename: string;
 
   @ApiProperty()
   readonly videoUrl: string;
 }
 
-@ApiExtraModels(TextInspirationDto, AudioInspirationDto, VideoInspirationDto)
+@ApiExtraModels(
+  TitleInspirationDto,
+  WordInspirationDto,
+  AudioInspirationDto,
+  VideoInspirationDto,
+)
 export class ProofreadingPoemDetailDto {
   @ApiProperty()
   readonly id: string;
@@ -66,7 +89,7 @@ export class ProofreadingPoemDetailDto {
   readonly audioUrl?: string;
 
   @ApiProperty()
-  readonly status: '교정중';
+  readonly status: string;
 
   @ApiProperty({ type: 'string', nullable: true })
   readonly originalContent: string | null;
@@ -79,14 +102,16 @@ export class ProofreadingPoemDetailDto {
 
   @ApiProperty({
     oneOf: [
-      { $ref: getSchemaPath(TextInspirationDto) },
+      { $ref: getSchemaPath(TitleInspirationDto) },
+      { $ref: getSchemaPath(WordInspirationDto) },
       { $ref: getSchemaPath(AudioInspirationDto) },
       { $ref: getSchemaPath(VideoInspirationDto) },
     ],
     discriminator: { propertyName: 'type' },
   })
   readonly inspiration:
-    | TextInspirationDto
+    | TitleInspirationDto
+    | WordInspirationDto
     | AudioInspirationDto
     | VideoInspirationDto;
 

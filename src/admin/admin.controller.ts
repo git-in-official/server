@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,8 +17,15 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadInspirationDto } from './dto/request';
-import { ProofreadingPoemDto, ProofreadingPoemDetailDto } from './dto/response';
+import { UploadInspirationDto, GetInspirationsDto } from './dto/request';
+import {
+  ProofreadingPoemDto,
+  ProofreadingPoemDetailDto,
+  TitleInspirationDto,
+  WordInspirationDto,
+  AudioInspirationDto,
+  VideoInspirationDto,
+} from './dto/response';
 import { InspirationService } from 'src/inspiration/inspiration.service';
 import { PoemService } from 'src/poem/poem.service';
 
@@ -58,9 +66,14 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: '교정중인 시 조회' })
-  @ApiResponse({ status: 200, type: ProofreadingPoemDetailDto })
+  @ApiResponse({
+    status: 200,
+    type: ProofreadingPoemDetailDto,
+  })
   @Get('poems/proofreading/:id')
-  async findOneProofreading(@Param('id') id: string) {
+  async findOneProofreading(
+    @Param('id') id: string,
+  ): Promise<ProofreadingPoemDetailDto> {
     return await this.poemService.getOneProofreading(id);
   }
 
@@ -70,5 +83,33 @@ export class AdminController {
   async publish(@Param('id') id: string) {
     await this.poemService.publish(id);
     return;
+  }
+
+  @ApiOperation({ summary: '제목 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [TitleInspirationDto] })
+  @Get('inspirations/titles')
+  async getAllTitles(): Promise<TitleInspirationDto[]> {
+    return await this.inspirationService.getAllTitles();
+  }
+
+  @ApiOperation({ summary: '단어 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [WordInspirationDto] })
+  @Get('inspirations/words')
+  async getAllWords(): Promise<WordInspirationDto[]> {
+    return await this.inspirationService.getAllWords();
+  }
+
+  @ApiOperation({ summary: '음성 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [AudioInspirationDto] })
+  @Get('inspirations/audios')
+  async getAllAudios(): Promise<AudioInspirationDto[]> {
+    return await this.inspirationService.getAllAudios();
+  }
+
+  @ApiOperation({ summary: '영상 글감 리스트 조회' })
+  @ApiResponse({ status: 200, type: [VideoInspirationDto] })
+  @Get('inspirations/videos')
+  async getAllVideos(): Promise<VideoInspirationDto[]> {
+    return await this.inspirationService.getAllVideos();
   }
 }
