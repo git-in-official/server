@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Patch,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -16,7 +17,7 @@ import {
   ApiResponse,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadInspirationDto } from './dto/request';
+import { UploadInspirationDto, GetInspirationsDto } from './dto/request';
 import { ProofreadingPoemDto, ProofreadingPoemDetailDto } from './dto/response';
 import { InspirationService } from 'src/inspiration/inspiration.service';
 import { PoemService } from 'src/poem/poem.service';
@@ -70,5 +71,14 @@ export class AdminController {
   async publish(@Param('id') id: string) {
     await this.poemService.publish(id);
     return;
+  }
+
+  @ApiOperation({ summary: '제목 글감 전체 리스트 조회' })
+  @ApiResponse({ status: 200 })
+  @Get('inspirations')
+  async getAllTitles(@Query() { type }: GetInspirationsDto) {
+    if (type === 'TITLE') {
+      return await this.inspirationService.getAllTitles();
+    }
   }
 }

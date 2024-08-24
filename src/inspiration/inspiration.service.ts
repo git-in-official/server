@@ -108,4 +108,8 @@ export class InspirationService {
     await this.inspirationRepository.createVideo(file.originalname);
     return;
   }
+
+  async getAllTitles() {
+    return await this.inspirationRepository.findAllTitles();
+  }
 }
