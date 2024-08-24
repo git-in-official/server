@@ -116,4 +116,8 @@ export class InspirationService {
   async getAllWords() {
     return await this.inspirationRepository.findAllWords();
   }
+
+  async getAllAudios() {
+    return await this.inspirationRepository.findAllAudios();
+  }
 }

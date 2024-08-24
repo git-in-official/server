@@ -81,6 +81,8 @@ export class AdminController {
       return await this.inspirationService.getAllTitles();
     } else if (type === 'WORD') {
       return await this.inspirationService.getAllWords();
+    } else if (type === 'AUDIO') {
+      return await this.inspirationService.getAllAudios();
     }
   }
 }
