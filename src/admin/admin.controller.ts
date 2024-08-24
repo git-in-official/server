@@ -5,6 +5,7 @@ import {
   UploadedFile,
   Body,
   Get,
+  Param,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,7 +16,7 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadInspirationDto } from './dto/request';
-import { ProofreadingPoemDto } from './dto/response';
+import { ProofreadingPoemDto, ProofreadingPoemDetailDto } from './dto/response';
 import { InspirationService } from 'src/inspiration/inspiration.service';
 import { PoemService } from 'src/poem/poem.service';
 
@@ -53,5 +54,12 @@ export class AdminController {
   @Get('poems/proofreading')
   async findAllProofreading() {
     return await this.poemService.getProofreadingList();
+  }
+
+  @ApiOperation({ summary: '교정중인 시 조회' })
+  @ApiResponse({ status: 200, type: ProofreadingPoemDetailDto })
+  @Get('poems/proofreading/:id')
+  async findOneProofreading(@Param('id') id: string) {
+    return await this.poemService.getOneProofreading(id);
   }
 }

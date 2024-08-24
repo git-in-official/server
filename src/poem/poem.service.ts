@@ -78,6 +78,42 @@ export class PoemService {
   async getProofreadingList() {
     return await this.poemRepository.findAllProofreading();
   }
+
+  async getOneProofreading(id: string) {
+    const poem = await this.poemRepository.findOneProofreading(id);
+    if (!poem) {
+      throw new Error('해당 시가 존재하지 않습니다.');
+    }
+    let inspirationData;
+    if (poem.inspiration.type === 'AUDIO') {
+      inspirationData = {
+        ...poem.inspiration,
+        audioUrl:
+          this.awsService.getAudioInspirationUrl() +
+          poem.inspiration.displayName,
+      };
+    } else if (poem.inspiration.type === 'VIDEO') {
+      inspirationData = {
+        ...poem.inspiration,
+        videoUrl:
+          this.awsService.getVideoInspirationUrl() +
+          poem.inspiration.displayName,
+      };
+    } else {
+      inspirationData = poem.inspiration;
+    }
+    if (poem.isRecorded) {
+      return {
+        ...poem,
+        audioUrl: this.awsService.getPoemAudioUrl() + poem.id,
+        inspiration: inspirationData,
+      };
+    }
+    return {
+      ...poem,
+      inspiration: inspirationData,
+    };
+  }
 }
 
 export type CreateInput = {

@@ -2,6 +2,7 @@ export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<Poem>;
   countUserDaily(userId: string): Promise<number>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
+  findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
 }
 
 export type CreateInput = {
@@ -39,5 +40,18 @@ export type ProofreadingPoemList = {
   id: string;
   title: string;
 }[];
+
+export type PoemWithOriginalContent = Omit<
+  Poem & {
+    originalTitle: string | null;
+    originalContent: string | null;
+    inspiration: {
+      id: string;
+      displayName: string;
+      type: 'TITLE' | 'WORD' | 'AUDIO' | 'VIDEO';
+    };
+  },
+  'inspirationId'
+>;
 
 export const PoemRepository = Symbol('PoemRepository');

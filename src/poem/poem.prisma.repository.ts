@@ -43,6 +43,20 @@ export class PoemPrismaRepository implements PoemRepository {
       },
     });
   }
+
+  async findOneProofreading(id: string) {
+    return this.prisma.poem.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        inspiration: true,
+      },
+      omit: {
+        inspirationId: true,
+      },
+    });
+  }
 }
 
 export type CreateInput = {
