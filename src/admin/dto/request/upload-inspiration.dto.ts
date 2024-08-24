@@ -8,7 +8,7 @@ export class UploadInspirationDto {
   @ApiProperty({ enum: typeList, description: 'TITLE, WORD, AUDIO, VIDEO' })
   @Transform(({ value }) => value.toUpperCase())
   @IsEnum(typeList)
-  type: 'TITLE' | 'WORD' | 'AUDIO' | 'VIDEO';
+  readonly type: 'TITLE' | 'WORD' | 'AUDIO' | 'VIDEO';
 
   @ApiProperty({
     required: false,
@@ -17,12 +17,12 @@ export class UploadInspirationDto {
   })
   @IsOptional()
   @IsString()
-  text?: string | null;
+  readonly text?: string | null;
 
   @ApiProperty({
     required: false,
     description: '타입이 AUDIO, VIDEO일 경우에만 필수',
     type: 'file',
   })
-  file?: Express.Multer.File | null;
+  readonly file?: Express.Multer.File | null;
 }

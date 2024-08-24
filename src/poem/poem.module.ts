@@ -23,5 +23,6 @@ import { ScrapPrismaRepository } from './scrap.prisma.repository';
       useClass: ScrapPrismaRepository,
     },
   ],
+  exports: [PoemService],
 })
 export class PoemModule {}
