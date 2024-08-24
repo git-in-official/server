@@ -27,7 +27,7 @@ export class ScrapPrismaRepository implements ScrapRepository {
     });
   }
 
-  async findBestScrapperByUserId(authorId: string) {
+  async findBestScrapUsersByAuthorId(authorId: string) {
     const result = await this.prisma.$queryRaw<
       { id: string; name: string; icon: string; count: BigInt }[]
     >`

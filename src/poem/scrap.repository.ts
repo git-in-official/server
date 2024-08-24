@@ -7,7 +7,7 @@ export interface ScrapRepository {
     userId: string,
   ): Promise<Scrap | null>;
   delete(id: string): Promise<void>;
-  findBestScrapperByUserId(userId: string): Promise<ScrapUser[]>;
+  findBestScrapUsersByAuthorId(userId: string): Promise<ScrapUser[]>;
 }
 
 export type Scrap = {
