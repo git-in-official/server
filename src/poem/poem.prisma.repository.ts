@@ -69,6 +69,41 @@ export class PoemPrismaRepository implements PoemRepository {
     });
     return;
   }
+
+  async findThreeByIndex({ userId, index }: FindInputWithoutEmotion) {
+    return this.prisma.poem.findMany({
+      take: 3,
+      skip: index * 3,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      where: {
+        status: '출판',
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        textAlign: true,
+        textSize: true,
+        textFont: true,
+        themes: true,
+        interactions: true,
+        isRecorded: true,
+        inspirationId: true,
+        createdAt: true,
+        authorId: true,
+        scraps: {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+  }
 }
 
 export type CreateInput = {
@@ -84,4 +119,9 @@ export type CreateInput = {
   originalTitle?: string | null;
   inspirationId: string;
   status: string;
+};
+
+export type FindInputWithoutEmotion = {
+  userId: string;
+  index: number;
 };

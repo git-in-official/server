@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   HttpException,
+  Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -19,15 +20,23 @@ import {
   ApiBody,
   ApiResponse,
   ApiConsumes,
+  ApiQuery,
 } from '@nestjs/swagger';
-import { AnalyzePoemDto, UpdateTagDto, CreatePoemDto } from './dto/request';
-import { TagsDto, ContentDto, NewPoemDto } from './dto/response';
+import {
+  AnalyzePoemDto,
+  UpdateTagDto,
+  CreatePoemDto,
+  GetPoemsDto,
+} from './dto/request';
+import { TagsDto, ContentDto, NewPoemDto, PoemDto } from './dto/response';
 import { PoemService } from './poem.service';
 import { CurrentUser } from '../common/decorators';
 import { JwtGuard } from '../auth/guards';
 
 @ApiTags('poems')
 @ApiBearerAuth()
+@ApiResponse({ status: 401, description: '인증되지 않은 사용자입니다.' })
+@ApiResponse({ status: 400, description: '유효성검사 실패' })
 @UseGuards(JwtGuard)
 @Controller('poems')
 export class PoemController {
@@ -96,7 +105,7 @@ export class PoemController {
     description: '시를 쓸 수 있음. 따로 응답 body는 없습니다.',
   })
   @ApiResponse({
-    status: 400,
+    status: 423,
     description: '하루에 두 번만 작성할 수 있습니다.',
   })
   @Get('can-write')
@@ -105,7 +114,23 @@ export class PoemController {
     if (result) {
       return;
     } else {
-      throw new HttpException('하루에 두 번만 작성할 수 있습니다.', 400);
+      throw new HttpException('하루에 두 번만 작성할 수 있습니다.', 423);
     }
+  }
+
+  @ApiOperation({ summary: '알고리즘에 의해 시를 3개씩 반환해줌' })
+  @ApiQuery({
+    name: 'emotion',
+    required: false,
+    description: '기분이 모르겠음 일때는 안보내주시면 됩니다.',
+  })
+  @ApiQuery({ name: 'index', required: true, description: '0부터 시작합니다.' })
+  @ApiResponse({ status: 200, type: PoemDto, isArray: true })
+  @Get()
+  async getThree(
+    @Query() { emotion, index }: GetPoemsDto,
+    @CurrentUser() userId: string,
+  ): Promise<PoemDto[]> {
+    return await this.poemService.getThree({ emotion, index, userId });
   }
 }

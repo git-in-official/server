@@ -118,6 +118,27 @@ export class PoemService {
   async publish(id: string) {
     await this.poemRepository.updateStatus(id, '출판');
   }
+
+  async getThree(getPoemsInput: GetPoemsInput) {
+    let poems;
+    if (getPoemsInput.emotion) {
+    }
+    poems = await this.poemRepository.findThreeByIndex({
+      userId: getPoemsInput.userId,
+      index: getPoemsInput.index,
+    });
+
+    return poems.map((poem) => {
+      const { scraps, ...rest } = poem;
+      return {
+        ...rest,
+        isScrapped: scraps.length > 0,
+        audioUrl: rest.isRecorded
+          ? this.awsService.getPoemAudioUrl() + rest.id
+          : null,
+      };
+    });
+  }
 }
 
 export type CreateInput = {
@@ -141,4 +162,10 @@ export type UpdateTagInput = {
   afterThemes: string[];
   afterInteractions: string[];
   content: string;
+};
+
+export type GetPoemsInput = {
+  userId: string;
+  emotion?: string;
+  index: number;
 };
