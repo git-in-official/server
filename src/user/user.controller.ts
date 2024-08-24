@@ -17,7 +17,10 @@ import { ProfileDto } from './dto/response/profile';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @ApiOperation({ summary: '자신의 프로필 정보 조회', description: '' })
+  @ApiOperation({
+    summary: '자신의 프로필 정보 조회',
+    description: '프로필 정보와 최다 스크랩 유저 10명을 조회합니다.',
+  })
   @ApiResponse({ status: 200, type: ProfileDto })
   @Get('profile')
   async getOneDetailById(@CurrentUser() userId: string): Promise<ProfileDto> {
