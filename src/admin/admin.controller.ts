@@ -15,10 +15,19 @@ import {
   ApiConsumes,
   ApiBody,
   ApiResponse,
+  ApiExtraModels,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadInspirationDto, GetInspirationsDto } from './dto/request';
-import { ProofreadingPoemDto, ProofreadingPoemDetailDto } from './dto/response';
+import {
+  ProofreadingPoemDto,
+  ProofreadingPoemDetailDto,
+  TitleInspirationDto,
+  WordInspirationDto,
+  AudioInspirationDto,
+  VideoInspirationDto,
+} from './dto/response';
 import { InspirationService } from 'src/inspiration/inspiration.service';
 import { PoemService } from 'src/poem/poem.service';
 
@@ -59,9 +68,14 @@ export class AdminController {
   }
 
   @ApiOperation({ summary: '교정중인 시 조회' })
-  @ApiResponse({ status: 200, type: ProofreadingPoemDetailDto })
+  @ApiResponse({
+    status: 200,
+    type: ProofreadingPoemDetailDto,
+  })
   @Get('poems/proofreading/:id')
-  async findOneProofreading(@Param('id') id: string) {
+  async findOneProofreading(
+    @Param('id') id: string,
+  ): Promise<ProofreadingPoemDetailDto> {
     return await this.poemService.getOneProofreading(id);
   }
 
@@ -73,10 +87,38 @@ export class AdminController {
     return;
   }
 
-  @ApiOperation({ summary: '제목 글감 전체 리스트 조회' })
-  @ApiResponse({ status: 200 })
+  @ApiOperation({ summary: '글감 전체 리스트 조회' })
+  @ApiExtraModels(
+    TitleInspirationDto,
+    WordInspirationDto,
+    AudioInspirationDto,
+    VideoInspirationDto,
+  )
+  @ApiResponse({
+    status: 200,
+    schema: {
+      type: 'array',
+      items: {
+        oneOf: [
+          { $ref: getSchemaPath(TitleInspirationDto) },
+          { $ref: getSchemaPath(WordInspirationDto) },
+          { $ref: getSchemaPath(AudioInspirationDto) },
+          { $ref: getSchemaPath(VideoInspirationDto) },
+        ],
+      },
+    },
+  })
   @Get('inspirations')
-  async getAllTitles(@Query() { type }: GetInspirationsDto) {
+  async getAllTitles(
+    @Query() { type }: GetInspirationsDto,
+  ): Promise<
+    (
+      | TitleInspirationDto
+      | WordInspirationDto
+      | AudioInspirationDto
+      | VideoInspirationDto
+    )[]
+  > {
     if (type === 'TITLE') {
       return await this.inspirationService.getAllTitles();
     } else if (type === 'WORD') {
