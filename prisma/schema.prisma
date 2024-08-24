@@ -21,10 +21,12 @@ enum InspirationType {
 }
 
 model User {
-  id         String   @id @default(uuid())
-  provider   Provider
-  providerId String
-  name       String
+  id           String   @id @default(uuid())
+  provider     Provider
+  providerId   String
+  name         String
+  introduction String?
+  ink          Int      @default(0)
 
   mainAchievementId String?
   mainAchievement   Achievement?             @relation(fields: [mainAchievementId], references: [id])

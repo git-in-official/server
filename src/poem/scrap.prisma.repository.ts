@@ -27,6 +27,24 @@ export class ScrapPrismaRepository implements ScrapRepository {
     });
   }
 
+  // TODO 쿼리 빌더 추가되면 변경하기.
+  async findBestScrapUsersByAuthorId(authorId: string) {
+    const result = await this.prisma.$queryRaw<
+      { id: string; name: string; icon: string; count: BigInt }[]
+    >`
+    SELECT u.id, u.name, a.icon, COUNT(s.id)
+    FROM "Scrap" s
+    JOIN "Poem" p ON s."poemId" = p.id
+    JOIN "User" u ON s."userId" = u.id
+    LEFT JOIN "Achievement" a ON u.id = a.id
+    WHERE p."authorId" = ${authorId}
+    GROUP BY u.id, u.name, a.icon
+    ORDER BY count DESC
+    LIMIT 10;
+  `;
+    return result.map((data) => ({ ...data, count: Number(data.count) }));
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.scrap.delete({
       where: {
