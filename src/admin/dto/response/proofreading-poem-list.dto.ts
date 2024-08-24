@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class JwtDto {
+export class ProofreadingPoemDto {
   @ApiProperty()
-  readonly accessToken: string;
+  readonly id: string;
 
   @ApiProperty()
-  readonly name: string;
+  readonly title: string;
 }

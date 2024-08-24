@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PoemRepository } from './poem.repository';
+import { Poem, PoemRepository } from './poem.repository';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -30,6 +30,44 @@ export class PoemPrismaRepository implements PoemRepository {
         },
       },
     });
+  }
+
+  async findAllProofreading() {
+    return this.prisma.poem.findMany({
+      where: {
+        status: '교정중',
+      },
+      select: {
+        id: true,
+        title: true,
+      },
+    });
+  }
+
+  async findOneProofreading(id: string) {
+    return this.prisma.poem.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        inspiration: true,
+      },
+      omit: {
+        inspirationId: true,
+      },
+    });
+  }
+
+  async updateStatus(id: string, status: string) {
+    await this.prisma.poem.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+    return;
   }
 }
 

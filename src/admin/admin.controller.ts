@@ -4,6 +4,9 @@ import {
   UseInterceptors,
   UploadedFile,
   Body,
+  Get,
+  Param,
+  Patch,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -14,12 +17,17 @@ import {
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadInspirationDto } from './dto/request';
+import { ProofreadingPoemDto, ProofreadingPoemDetailDto } from './dto/response';
 import { InspirationService } from 'src/inspiration/inspiration.service';
+import { PoemService } from 'src/poem/poem.service';
 
 @ApiTags('admin')
 @Controller('admin')
 export class AdminController {
-  constructor(private readonly inspirationService: InspirationService) {}
+  constructor(
+    private readonly inspirationService: InspirationService,
+    private readonly poemService: PoemService,
+  ) {}
 
   @ApiOperation({ summary: '글감 업로드' })
   @ApiConsumes('multipart/form-data')
@@ -40,5 +48,27 @@ export class AdminController {
     } else if (body.type === 'VIDEO') {
       await this.inspirationService.createVideo(file!);
     }
+  }
+
+  @ApiOperation({ summary: '교정중인 시 목록 조회 (탈고만 된거)' })
+  @ApiResponse({ status: 200, type: [ProofreadingPoemDto] })
+  @Get('poems/proofreading')
+  async findAllProofreading() {
+    return await this.poemService.getProofreadingList();
+  }
+
+  @ApiOperation({ summary: '교정중인 시 조회' })
+  @ApiResponse({ status: 200, type: ProofreadingPoemDetailDto })
+  @Get('poems/proofreading/:id')
+  async findOneProofreading(@Param('id') id: string) {
+    return await this.poemService.getOneProofreading(id);
+  }
+
+  @ApiOperation({ summary: '출판' })
+  @ApiResponse({ status: 200, description: '출판 성공' })
+  @Patch('poems/proofreading/:id/publish')
+  async publish(@Param('id') id: string) {
+    await this.poemService.publish(id);
+    return;
   }
 }
