@@ -41,6 +41,42 @@ export class InspirationService {
     };
   }
 
+  async getAudio(date: Date) {
+    const audios = await this.inspirationRepository.findAllAudios();
+    const length = audios.length;
+    const dateString = date.toISOString().split('T')[0];
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
+
+    const index = this.getHashedIndex(dateString, length);
+    return {
+      id: audios[index].id,
+      filename: audios[index].filename,
+      audioUrl:
+        this.awsService.getAudioInspirationUrl() + audios[index].filename,
+    };
+  }
+
+  async getVideo(date: Date) {
+    const videos = await this.inspirationRepository.findAllVideos();
+    const length = videos.length;
+    const dateString = date.toISOString().split('T')[0];
+
+    if (length === 0) {
+      throw new Error('no inspiration');
+    }
+
+    const index = this.getHashedIndex(dateString, length);
+    return {
+      id: videos[index].id,
+      filename: videos[index].filename,
+      videoUrl:
+        this.awsService.getVideoInspirationUrl() + videos[index].filename,
+    };
+  }
+
   // range가 10이면 0~9까지의 숫자를 반환
   getHashedIndex(dateString: string, range: number) {
     let hash = 0;
