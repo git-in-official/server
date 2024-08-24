@@ -17,44 +17,42 @@ export class UserPrismaRepository implements UserRepository {
   }
 
   async findOneDetailById(id: string) {
-    return this.prisma.user
-      .findUnique({
-        where: { id },
-        select: {
-          id: true,
-          name: true,
-          ink: true,
-          introduction: true,
-          mainAchievement: {
-            select: {
-              id: true,
-              name: true,
-              icon: true,
-              description: true,
-            },
+    const result = await this.prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        name: true,
+        ink: true,
+        introduction: true,
+        mainAchievement: {
+          select: {
+            id: true,
+            name: true,
+            icon: true,
+            description: true,
           },
-          achievements: {
-            select: {
-              achievement: {
-                select: {
-                  id: true,
-                  name: true,
-                  icon: true,
-                  description: true,
-                },
+        },
+        achievements: {
+          select: {
+            achievement: {
+              select: {
+                id: true,
+                name: true,
+                icon: true,
+                description: true,
               },
             },
           },
         },
-      })
-      .then((data) =>
-        data
-          ? {
-              ...data,
-              achievements: data.achievements.map((a) => a.achievement),
-            }
-          : null,
-      );
+      },
+    });
+
+    return result
+      ? {
+          ...result,
+          achievements: result.achievements.map((a) => a.achievement),
+        }
+      : null;
   }
 
   async create({

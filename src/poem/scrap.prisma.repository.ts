@@ -28,7 +28,7 @@ export class ScrapPrismaRepository implements ScrapRepository {
   }
 
   async findBestScrapperByUserId(authorId: string) {
-    return await this.prisma.$queryRaw<
+    const result = await this.prisma.$queryRaw<
       { id: string; name: string; icon: string; count: BigInt }[]
     >`
     SELECT u.id, u.name, a.icon, COUNT(s.id)
@@ -40,9 +40,8 @@ export class ScrapPrismaRepository implements ScrapRepository {
     GROUP BY u.id, u.name, a.icon
     ORDER BY count DESC
     LIMIT 10;
-  `.then((list) =>
-      list.map((data) => ({ ...data, count: Number(data.count) })),
-    );
+  `;
+    return result.map((data) => ({ ...data, count: Number(data.count) }));
   }
 
   async delete(id: string): Promise<void> {
