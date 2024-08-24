@@ -7,6 +7,7 @@ export interface ScrapRepository {
     userId: string,
   ): Promise<Scrap | null>;
   delete(id: string): Promise<void>;
+  findBestScrapUsersByAuthorId(userId: string): Promise<ScrapUser[]>;
 }
 
 export type Scrap = {
@@ -15,5 +16,7 @@ export type Scrap = {
   poemId: string;
   createdAt: Date;
 };
+
+type ScrapUser = { id: string; name: string; icon: string; count: number };
 
 export const ScrapRepository = Symbol('ScrapRepository');
