@@ -1,9 +1,10 @@
-import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsNumber, IsOptional, IsEnum } from 'class-validator';
+import { emotions } from 'src/constants/emotions';
 
 export class GetPoemsDto {
   @IsOptional()
-  @IsString()
-  readonly emotion?: string;
+  @IsEnum(emotions.map((emotion) => emotion.emotion))
+  readonly emotion?: (typeof emotions)[number]['emotion'];
 
   @IsNumber()
   readonly index: number;
