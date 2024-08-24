@@ -23,4 +23,4 @@ export const emotions = [
     emotion: '분노',
     description: ['격노', '좌절', '경멸'],
   },
-];
+] as const;
