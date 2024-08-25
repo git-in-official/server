@@ -39,6 +39,24 @@ export class PoemPrismaRepository implements PoemRepository {
       select: {
         id: true,
         title: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+        themes: true,
+        interactions: true,
+        isRecorded: true,
+        createdAt: true,
+        status: true,
+        content: true,
+        inspiration: {
+          select: {
+            id: true,
+            type: true,
+            displayName: true,
+          },
+        },
       },
     });
   }

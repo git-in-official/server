@@ -79,7 +79,48 @@ export class PoemService {
   }
 
   async getProofreadingList() {
-    return await this.poemRepository.findAllProofreading();
+    const peomList = await this.poemRepository.findAllProofreading();
+    return peomList.map((poem) => {
+      const { inspiration, author, ...rest } = poem;
+      let inspirationData;
+      if (inspiration.type === 'TITLE') {
+        inspirationData = {
+          id: inspiration.id,
+          type: inspiration.type,
+          title: inspiration.displayName,
+        };
+      } else if (inspiration.type === 'WORD') {
+        inspirationData = {
+          id: inspiration.id,
+          type: inspiration.type,
+          word: inspiration.displayName,
+        };
+      } else if (inspiration.type === 'AUDIO') {
+        inspirationData = {
+          id: inspiration.id,
+          type: inspiration.type,
+          filename: inspiration.displayName,
+          audioUrl:
+            this.awsService.getAudioInspirationUrl() + inspiration.displayName,
+        };
+      } else {
+        inspirationData = {
+          id: inspiration.id,
+          type: inspiration.type,
+          filename: inspiration.displayName,
+          videoUrl:
+            this.awsService.getVideoInspirationUrl() + inspiration.displayName,
+        };
+      }
+      return {
+        ...rest,
+        authorName: author.name,
+        inspiration: inspirationData,
+        audioUrl: rest.isRecorded
+          ? this.awsService.getPoemAudioUrl() + rest.id
+          : null,
+      };
+    });
   }
 
   async getOneProofreading(id: string) {

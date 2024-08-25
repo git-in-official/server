@@ -5,6 +5,9 @@ export class AudioInspirationDto {
   id: string;
 
   @ApiProperty()
+  type: string;
+
+  @ApiProperty()
   filename: string;
 
   @ApiProperty()

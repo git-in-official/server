@@ -1,8 +1,8 @@
 export interface InspirationRepository {
-  findAllTitles(): Promise<{ id: string; title: string }[]>;
-  findAllWords(): Promise<{ id: string; word: string }[]>;
-  findAllAudios(): Promise<{ id: string; filename: string }[]>;
-  findAllVideos(): Promise<{ id: string; filename: string }[]>;
+  findAllTitles(): Promise<{ id: string; type: string; title: string }[]>;
+  findAllWords(): Promise<{ id: string; type: string; word: string }[]>;
+  findAllAudios(): Promise<{ id: string; type: string; filename: string }[]>;
+  findAllVideos(): Promise<{ id: string; type: string; filename: string }[]>;
   createTitle(title: string): Promise<void>;
   createWord(word: string): Promise<void>;
   createAudio(filename: string): Promise<void>;

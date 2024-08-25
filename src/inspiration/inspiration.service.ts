@@ -121,6 +121,7 @@ export class InspirationService {
     const audios = await this.inspirationRepository.findAllAudios();
     return audios.map((audio) => ({
       id: audio.id,
+      type: audio.type,
       filename: audio.filename,
       audioUrl: this.awsService.getAudioInspirationUrl() + audio.filename,
     }));
@@ -130,6 +131,7 @@ export class InspirationService {
     const videos = await this.inspirationRepository.findAllVideos();
     return videos.map((video) => ({
       id: video.id,
+      type: video.type,
       filename: video.filename,
       videoUrl: this.awsService.getVideoInspirationUrl() + video.filename,
     }));

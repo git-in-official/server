@@ -14,6 +14,7 @@ export class InspirationPrismaRepository implements InspirationRepository {
     });
     return result.map((item) => ({
       id: item.id,
+      type: item.type,
       title: item.displayName,
     }));
   }
@@ -26,6 +27,7 @@ export class InspirationPrismaRepository implements InspirationRepository {
     });
     return result.map((item) => ({
       id: item.id,
+      type: item.type,
       word: item.displayName,
     }));
   }
@@ -38,6 +40,7 @@ export class InspirationPrismaRepository implements InspirationRepository {
     });
     return result.map((item) => ({
       id: item.id,
+      type: item.type,
       filename: item.displayName,
     }));
   }
@@ -50,6 +53,7 @@ export class InspirationPrismaRepository implements InspirationRepository {
     });
     return result.map((item) => ({
       id: item.id,
+      type: item.type,
       filename: item.displayName,
     }));
   }

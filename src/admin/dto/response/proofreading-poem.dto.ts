@@ -57,7 +57,7 @@ class VideoInspirationDto {
   AudioInspirationDto,
   VideoInspirationDto,
 )
-export class ProofreadingPoemDetailDto {
+export class ProofreadingPoemDto {
   @ApiProperty()
   readonly id: string;
 
@@ -65,16 +65,7 @@ export class ProofreadingPoemDetailDto {
   readonly title: string;
 
   @ApiProperty()
-  readonly content: string;
-
-  @ApiProperty()
-  readonly textAlign: string;
-
-  @ApiProperty()
-  readonly textSize: number;
-
-  @ApiProperty()
-  readonly textFont: string;
+  readonly authorName: string;
 
   @ApiProperty({ isArray: true, enum: themes })
   readonly themes: string[];
@@ -85,20 +76,17 @@ export class ProofreadingPoemDetailDto {
   @ApiProperty()
   readonly isRecorded: boolean;
 
-  @ApiProperty({ required: false })
-  readonly audioUrl?: string;
+  @ApiProperty()
+  readonly createdAt: Date;
 
   @ApiProperty()
   readonly status: string;
 
-  @ApiProperty({ type: 'string', nullable: true })
-  readonly originalContent: string | null;
+  @ApiProperty()
+  readonly content: string;
 
-  @ApiProperty({ type: 'string', nullable: true })
-  readonly originalTitle: string | null;
-
-  @ApiProperty({ description: 'ISO 8601' })
-  readonly createdAt: Date;
+  @ApiProperty({ nullable: true })
+  readonly audioUrl: string | null;
 
   @ApiProperty({
     oneOf: [
@@ -107,14 +95,10 @@ export class ProofreadingPoemDetailDto {
       { $ref: getSchemaPath(AudioInspirationDto) },
       { $ref: getSchemaPath(VideoInspirationDto) },
     ],
-    discriminator: { propertyName: 'type' },
   })
   readonly inspiration:
     | TitleInspirationDto
     | WordInspirationDto
     | AudioInspirationDto
     | VideoInspirationDto;
-
-  @ApiProperty()
-  readonly authorId: string;
 }

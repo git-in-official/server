@@ -5,5 +5,8 @@ export class TitleInspirationDto {
   id: string;
 
   @ApiProperty()
+  type: string;
+
+  @ApiProperty()
   title: string;
 }
