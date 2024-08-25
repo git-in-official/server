@@ -1,53 +1,55 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { EmotionModule } from 'src/emotion/emotion.module';
+import { AppModule } from 'src/app.module';
+import { AuthService } from 'src/auth/auth.service';
+import { login } from './helpers';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { emotions } from 'src/constants/emotions';
 
 describe('EmotionController (e2e)', () => {
   let app: INestApplication;
+  let authService: AuthService;
+  let prisma: PrismaService;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [EmotionModule],
+      imports: [AppModule],
     }).compile();
 
+    prisma = moduleFixture.get<PrismaService>(PrismaService);
+    authService = moduleFixture.get<AuthService>(AuthService);
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    jest.spyOn(authService, 'getGoogleProfile').mockResolvedValue({
+      id: 'test-id',
+      email: 'test@test.com',
+      picture: 'https://picture.com',
+      verified_email: true,
+    });
+  });
+
+  afterEach(async () => {
+    await prisma.user.deleteMany();
   });
 
   describe('GET /emotions - 감정 리스트 반환', () => {
-    it('미리 정의해둔 감정과 description 리스트를 반환한다.', () => {
-      const expectedEmotions = [
-        {
-          emotion: '슬픔',
-          description: ['슬픔', '실패', '이별'],
-        },
-        {
-          emotion: '기쁨',
-          description: ['사랑', '성공', '즐거움'],
-        },
-        {
-          emotion: '두려움',
-          description: ['불안', '긴장', '불확실성'],
-        },
-        {
-          emotion: '신뢰',
-          description: ['의지', '안정감', '친밀감'],
-        },
-        {
-          emotion: '기대',
-          description: ['동기부여', '설렘'],
-        },
-        {
-          emotion: '분노',
-          description: ['격노', '좌절', '경멸'],
-        },
-      ];
+    it('미리 정의해둔 감정과 description 리스트를 반환한다.', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
 
-      return request(app.getHttpServer())
+      // when
+      const response = await request(app.getHttpServer())
         .get('/emotions')
-        .expect(200)
-        .expect(expectedEmotions);
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual(emotions);
     });
   });
 });
