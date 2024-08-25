@@ -15,5 +15,6 @@ import { UserPrismaRepository } from '../user/user.prisma.repository';
     { provide: AchievementRepository, useClass: AchievementPrismaRepository },
     { provide: UserRepository, useClass: UserPrismaRepository },
   ],
+  exports: [AchievementRepository],
 })
 export class AchievementModule {}
