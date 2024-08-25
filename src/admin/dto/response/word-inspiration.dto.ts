@@ -5,5 +5,8 @@ export class WordInspirationDto {
   id: string;
 
   @ApiProperty()
+  type: string;
+
+  @ApiProperty()
   word: string;
 }

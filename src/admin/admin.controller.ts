@@ -20,7 +20,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadInspirationDto, GetInspirationsDto } from './dto/request';
 import {
   ProofreadingPoemDto,
-  ProofreadingPoemDetailDto,
+  // ProofreadingPoemDetailDto,
   TitleInspirationDto,
   WordInspirationDto,
   AudioInspirationDto,
@@ -61,21 +61,21 @@ export class AdminController {
   @ApiOperation({ summary: '교정중인 시 목록 조회 (탈고만 된거)' })
   @ApiResponse({ status: 200, type: [ProofreadingPoemDto] })
   @Get('poems/proofreading')
-  async findAllProofreading() {
+  async findAllProofreading(): Promise<ProofreadingPoemDto[]> {
     return await this.poemService.getProofreadingList();
   }
 
-  @ApiOperation({ summary: '교정중인 시 조회' })
-  @ApiResponse({
-    status: 200,
-    type: ProofreadingPoemDetailDto,
-  })
-  @Get('poems/proofreading/:id')
-  async findOneProofreading(
-    @Param('id') id: string,
-  ): Promise<ProofreadingPoemDetailDto> {
-    return await this.poemService.getOneProofreading(id);
-  }
+  // @ApiOperation({ summary: '교정중인 시 조회' })
+  // @ApiResponse({
+  //   status: 200,
+  //   type: ProofreadingPoemDetailDto,
+  // })
+  // @Get('poems/proofreading/:id')
+  // async findOneProofreading(
+  //   @Param('id') id: string,
+  // ): Promise<ProofreadingPoemDetailDto> {
+  //   return await this.poemService.getOneProofreading(id);
+  // }
 
   @ApiOperation({ summary: '출판' })
   @ApiResponse({ status: 200, description: '출판 성공' })

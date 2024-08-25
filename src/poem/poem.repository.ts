@@ -44,6 +44,20 @@ export type NewPoem = {
 export type ProofreadingPoemList = {
   id: string;
   title: string;
+  author: {
+    name: string;
+  };
+  themes: string[];
+  interactions: string[];
+  isRecorded: boolean;
+  createdAt: Date;
+  status: string;
+  content: string;
+  inspiration: {
+    id: string;
+    type: 'TITLE' | 'WORD' | 'AUDIO' | 'VIDEO';
+    displayName: string;
+  };
 }[];
 
 export type PoemWithOriginalContent = Omit<
