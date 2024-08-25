@@ -33,6 +33,7 @@ model User {
   poems             Poem[]
   achievements      AchievementAcquisition[]
   scraps            Scrap[]
+  EmotionSelection  EmotionSelection[]
 
   @@unique([provider, providerId])
 }
@@ -98,4 +99,13 @@ model Inspiration {
   poems       Poem[]
 
   @@unique([type, displayName])
+}
+
+model EmotionSelection {
+  userId  String
+  emotion String
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId, emotion])
 }
