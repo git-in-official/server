@@ -22,7 +22,7 @@ export class EmotionController {
   @ApiResponse({ status: 200, type: [EmotionDto] })
   @Get()
   async getAll(@CurrentUser() userId: string) {
-    return this.emotionService.getAll(userId);
+    return await this.emotionService.getAll(userId);
   }
 
   @ApiOperation({ summary: '감정 선택했을 때 내역 저장하는 API' })
@@ -32,6 +32,6 @@ export class EmotionController {
     @Body() { emotion }: EmotionSelectDto,
     @CurrentUser() userId: string,
   ) {
-    return this.emotionService.select(userId, emotion);
+    return await this.emotionService.select(userId, emotion);
   }
 }
