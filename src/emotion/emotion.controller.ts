@@ -1,9 +1,19 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { EmotionService } from './emotion.service';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { EmotionDto } from './dto/response';
+import { EmotionSelectDto } from './dto/request';
+import { JwtGuard } from 'src/auth/guards';
+import { CurrentUser } from 'src/common/decorators';
 
 @ApiTags('emotions')
+@ApiBearerAuth()
+@UseGuards(JwtGuard)
 @Controller('emotions')
 export class EmotionController {
   constructor(private readonly emotionService: EmotionService) {}
@@ -13,5 +23,15 @@ export class EmotionController {
   @Get()
   async getAll() {
     return this.emotionService.getAll();
+  }
+
+  @ApiOperation({ summary: '감정 선택했을 때 내역 저장하는 API' })
+  @ApiResponse({ status: 201 })
+  @Post('select')
+  async select(
+    @Body() { emotion }: EmotionSelectDto,
+    @CurrentUser() userId: string,
+  ) {
+    return this.emotionService.select(userId, emotion);
   }
 }
