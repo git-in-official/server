@@ -30,8 +30,7 @@ export class LoggingInterceptor implements NestInterceptor {
     const bodyMsg = `\nbody: ${JSON.stringify(body, null, 2)}`;
     const paramsMsg = `\nparams: ${JSON.stringify(params, null, 2)}`;
     const queryMsg = `\nquery: ${JSON.stringify(query, null, 2)}`;
-    const timestamp = `\n${Date.now() - now}ms`;
-    const message = `${ipMsg}${pathMsg}${timestamp}${bodyMsg}${paramsMsg}${queryMsg}`;
+    const message = `${ipMsg}${pathMsg}${bodyMsg}${paramsMsg}${queryMsg}`;
 
     return next
       .handle()
