@@ -11,6 +11,7 @@ import { TagModule } from './tag/tag.module';
 import { PipesModule } from './common/pipes/pipes.module';
 import { AchievementModule } from './achievement/achievement.module';
 import { AdminModule } from './admin/admin.module';
+import { InterceptorsModule } from './common/intercetors/interceptors.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AdminModule } from './admin/admin.module';
       expandVariables: true,
       cache: true,
     }),
+    InterceptorsModule,
     PipesModule,
     AuthModule,
     UserModule,
