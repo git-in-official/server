@@ -72,7 +72,7 @@ model Scrap {
 
 model Achievement {
   id          String   @id @default(uuid())
-  name        String
+  name        String   @unique
   icon        String
   description String
   createdAt   DateTime @default(now())
@@ -96,4 +96,6 @@ model Inspiration {
   type        InspirationType
   displayName String
   poems       Poem[]
+
+  @@unique([type, displayName])
 }

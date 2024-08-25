@@ -427,7 +427,7 @@ describe('Admin (e2e)', () => {
           },
           {
             type: 'VIDEO',
-            displayName: 'test.mp4',
+            displayName: 'test2.mp4',
           },
         ],
       });
