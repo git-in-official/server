@@ -4,9 +4,10 @@ import { EmotionService } from './emotion.service';
 import { EmotionRepository } from './emotion.repository';
 import { EmotionPrismaRepository } from './emotion.prisma.repository';
 import { AchievementModule } from 'src/achievement/achievement.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [AchievementModule],
+  imports: [AchievementModule, UserModule],
   controllers: [EmotionController],
   providers: [
     EmotionService,

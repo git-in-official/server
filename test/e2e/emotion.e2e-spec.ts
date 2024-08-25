@@ -34,6 +34,7 @@ describe('EmotionController (e2e)', () => {
     await prisma.achievementAcquisition.deleteMany();
     await prisma.achievement.deleteMany();
     await prisma.emotionSelection.deleteMany();
+    await prisma.userAccessHistory.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -54,6 +55,116 @@ describe('EmotionController (e2e)', () => {
       expect(response.status).toBe(200);
       expect(response.body).toEqual(emotions);
     });
+
+    it('10일 연속으로 api를 호출하면 매일 그대와 업적을 획득한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      await prisma.achievement.create({
+        data: {
+          name: '매일 그대와',
+          description: '10일 연속 접속한 경우',
+          icon: 'https://icon.com',
+        },
+      });
+
+      await prisma.userAccessHistory.createMany({
+        data: Array.from({ length: 9 }, (_, i) => {
+          const date = new Date();
+          date.setDate(date.getDate() - (i + 1)); // 현재일로부터 (i+1)일 전의 날짜를 설정
+          return {
+            userId: user!.id,
+            date: date,
+          };
+        }),
+      });
+
+      // when
+      await request(app.getHttpServer())
+        .get('/emotions')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      const achievements = await prisma.achievementAcquisition.findMany({
+        where: { userId: user!.id },
+        select: {
+          userId: true,
+          achievement: true,
+        },
+      });
+      expect(achievements.length).toBe(1);
+      expect(achievements[0].achievement.name).toBe('매일 그대와');
+    });
+
+    it('10일 연속을 채우지 못하면 매일 그대와 업적을 획득하지 못한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      await prisma.achievement.create({
+        data: {
+          name: '매일 그대와',
+          description: '10일 연속 접속한 경우',
+          icon: 'https://icon.com',
+        },
+      });
+
+      await prisma.userAccessHistory.createMany({
+        data: Array.from({ length: 5 }, (_, i) => {
+          const date = new Date();
+          date.setDate(date.getDate() - (i + 1)); // 현재일로부터 (i+1)일 전의 날짜를 설정
+          return {
+            userId: user!.id,
+            date: date,
+          };
+        }),
+      });
+
+      // when
+      await request(app.getHttpServer())
+        .get('/emotions')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      const achievements = await prisma.achievementAcquisition.findMany({
+        where: { userId: user!.id },
+        select: {
+          userId: true,
+          achievement: true,
+        },
+      });
+      expect(achievements.length).toBe(0);
+    });
+
+    it('두 번 요청해도 에러가 나지 않는다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .get('/emotions')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(response.status).toBe(200);
+
+      // when
+      const response2 = await request(app.getHttpServer())
+        .get('/emotions')
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(response2.status).toBe(200);
+      expect(response2.body).toEqual(emotions);
+    });
   });
 
   describe('POST /emotions/select - 감정 선택', () => {
@@ -72,7 +183,6 @@ describe('EmotionController (e2e)', () => {
 
       // then
       expect(status).toBe(201);
-      console.log(status);
     });
 
     it('모든 감정을 한 번씩 선택하면 업적을 획득한다', async () => {

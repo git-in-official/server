@@ -33,7 +33,8 @@ model User {
   poems             Poem[]
   achievements      AchievementAcquisition[]
   scraps            Scrap[]
-  EmotionSelection  EmotionSelection[]
+  emotionSelections EmotionSelection[]
+  userAccessDates   UserAccessHistory[]
 
   @@unique([provider, providerId])
 }
@@ -110,4 +111,13 @@ model EmotionSelection {
   user User @relation(fields: [userId], references: [id])
 
   @@id([userId, emotion])
+}
+
+model UserAccessHistory {
+  userId String
+  date   DateTime @default(now()) @db.Date
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@id([userId, date])
 }

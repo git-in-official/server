@@ -21,8 +21,8 @@ export class EmotionController {
   @ApiOperation({ summary: '감정 리스트 조회' })
   @ApiResponse({ status: 200, type: [EmotionDto] })
   @Get()
-  async getAll() {
-    return this.emotionService.getAll();
+  async getAll(@CurrentUser() userId: string) {
+    return this.emotionService.getAll(userId);
   }
 
   @ApiOperation({ summary: '감정 선택했을 때 내역 저장하는 API' })
