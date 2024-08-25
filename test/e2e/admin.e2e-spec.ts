@@ -205,7 +205,6 @@ describe('Admin (e2e)', () => {
       expect(body[1].title).toBeDefined();
       expect(body[1].authorName).toBeDefined();
       expect(body[1].themes).toBeDefined();
-      console.log(body);
     });
   });
 
