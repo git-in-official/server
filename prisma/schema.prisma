@@ -90,6 +90,8 @@ model AchievementAcquisition {
   user          User        @relation(fields: [userId], references: [id])
   achievementId String
   achievement   Achievement @relation(fields: [achievementId], references: [id])
+
+  @@unique([userId, achievementId])
 }
 
 model Inspiration {
