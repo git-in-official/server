@@ -31,6 +31,9 @@ describe('EmotionController (e2e)', () => {
   });
 
   afterEach(async () => {
+    await prisma.achievementAcquisition.deleteMany();
+    await prisma.achievement.deleteMany();
+    await prisma.emotionSelection.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -50,6 +53,67 @@ describe('EmotionController (e2e)', () => {
       // then
       expect(response.status).toBe(200);
       expect(response.body).toEqual(emotions);
+    });
+  });
+
+  describe('POST /emotions/select - 감정 선택', () => {
+    it('감정을 선택하면 해당 내역을 저장한다.', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      // when
+      const { status, body } = await request(app.getHttpServer())
+        .post('/emotions/select')
+        .send({ emotion: '슬픔' })
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toBe(201);
+      console.log(status);
+    });
+
+    it('모든 감정을 한 번씩 선택하면 업적을 획득한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      await prisma.achievement.create({
+        data: {
+          name: '들쑥날쑥',
+          description: '모든 감정을 한 번씩 선택했습니다.',
+          icon: 'https://icon.com',
+        },
+      });
+
+      // when
+      for (const emotion of emotions) {
+        await request(app.getHttpServer())
+          .post('/emotions/select')
+          .send({ emotion: emotion.emotion })
+          .set('Authorization', `Bearer ${accessToken}`);
+      }
+      for (const emotion of emotions) {
+        await request(app.getHttpServer())
+          .post('/emotions/select')
+          .send({ emotion: emotion.emotion })
+          .set('Authorization', `Bearer ${accessToken}`);
+      }
+
+      // then
+      const achievements = await prisma.achievementAcquisition.findMany({
+        where: { userId: user!.id },
+        select: {
+          userId: true,
+          achievement: true,
+        },
+      });
+      expect(achievements.length).toBe(1);
+      expect(achievements[0].achievement.name).toBe('들쑥날쑥');
     });
   });
 });
