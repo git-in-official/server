@@ -96,4 +96,6 @@ model Inspiration {
   type        InspirationType
   displayName String
   poems       Poem[]
+
+  @@unique([type, displayName])
 }
