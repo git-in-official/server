@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserData, UserRepository } from './user.repository';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class UserPrismaRepository implements UserRepository {
@@ -86,6 +87,40 @@ export class UserPrismaRepository implements UserRepository {
     await this.prisma.user.update({
       where: { id: userId },
       data,
+    });
+  }
+
+  async createAccessHistory(userId: string): Promise<void> {
+    try {
+      await this.prisma.userAccessHistory.create({
+        data: {
+          userId,
+        },
+      });
+    } catch (e) {
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        return;
+      }
+      throw e;
+    }
+  }
+
+  async countAccessHistoryRecentTenDays(
+    userId: string,
+    date: Date = new Date(),
+  ): Promise<number> {
+    const tenDaysAgo = new Date(date);
+    tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
+    return this.prisma.userAccessHistory.count({
+      where: {
+        userId,
+        date: {
+          gte: tenDaysAgo,
+        },
+      },
     });
   }
 }
