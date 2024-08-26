@@ -226,6 +226,15 @@ export class PoemService {
       };
     });
   }
+
+  async play(id: string) {
+    const { authorId, playCount } =
+      await this.poemRepository.increasePlayCount(id);
+    if (playCount === 30) {
+      await this.achievementRepository.acquire(authorId, '목소리의 주인공');
+    }
+    return;
+  }
 }
 
 export type CreateInput = {

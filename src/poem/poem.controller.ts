@@ -27,6 +27,7 @@ import {
   UpdateTagDto,
   CreatePoemDto,
   GetPoemsDto,
+  PlayDto,
 } from './dto/request';
 import { TagsDto, ContentDto, NewPoemDto, PoemDto } from './dto/response';
 import { PoemService } from './poem.service';
@@ -131,5 +132,13 @@ export class PoemController {
     @CurrentUser() userId: string,
   ): Promise<PoemDto[]> {
     return await this.poemService.getThree({ emotion, index, userId });
+  }
+
+  @ApiOperation({ summary: '낭독 오디오 플레이' })
+  @ApiResponse({ status: 200 })
+  @Get(':id/play')
+  async play(@Param() { id }: PlayDto) {
+    await this.poemService.play(id);
+    return;
   }
 }

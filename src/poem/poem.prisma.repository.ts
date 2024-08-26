@@ -15,6 +15,7 @@ export class PoemPrismaRepository implements PoemRepository {
       omit: {
         originalContent: true,
         originalTitle: true,
+        playCount: true,
       },
     });
   }
@@ -178,6 +179,23 @@ export class PoemPrismaRepository implements PoemRepository {
       where: {
         authorId: userId,
         status: '출판',
+      },
+    });
+  }
+
+  async increasePlayCount(id: string) {
+    return await this.prisma.poem.update({
+      where: {
+        id,
+      },
+      data: {
+        playCount: {
+          increment: 1,
+        },
+      },
+      select: {
+        authorId: true,
+        playCount: true,
       },
     });
   }

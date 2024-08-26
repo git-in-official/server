@@ -9,6 +9,9 @@ export interface PoemRepository {
   findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
   findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
   countPublishedByUserId(userId: string): Promise<number>;
+  increasePlayCount(
+    id: string,
+  ): Promise<{ authorId: string; playCount: number }>;
 }
 
 export type CreateInput = {
