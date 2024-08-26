@@ -55,6 +55,8 @@ model Poem {
 
   createdAt DateTime @default(now())
 
+  playCount Int @default(0)
+
   inspirationId String
   inspiration   Inspiration @relation(fields: [inspirationId], references: [id], onDelete: NoAction)
   authorId      String
