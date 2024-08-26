@@ -40,6 +40,8 @@ describe('Poem (e2e)', () => {
     await prisma.scrap.deleteMany();
     await prisma.poem.deleteMany();
     await prisma.inspiration.deleteMany();
+    await prisma.achievementAcquisition.deleteMany();
+    await prisma.achievement.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -713,6 +715,117 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(400);
+    });
+  });
+
+  describe('GET /poems/:id/play - 낭독 오디오 플레이', () => {
+    it('오디오가 한 번 플레이되면 데이터베이스에 playCount가 1이 된다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      await prisma.achievement.create({
+        data: {
+          name: '목소리의 주인공',
+          description: '30회 낭독',
+          icon: 'test-icon',
+        },
+      });
+
+      const poem = await prisma.poem.create({
+        data: {
+          title: 'test-poem',
+          content: 'test-content',
+          textAlign: 'test-align',
+          textSize: 16,
+          textFont: 'test-font',
+          themes: [],
+          interactions: [],
+          isRecorded: true,
+          status: '출판',
+          inspirationId: titleInspiration.id,
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      const { status } = await request(app.getHttpServer())
+        .get(`/poems/${poem.id}/play`)
+        .set('Authorization', `Bearer ${accessToken}`);
+
+      // then
+      expect(status).toEqual(200);
+      const updatedPoem = await prisma.poem.findUnique({
+        where: { id: poem.id },
+      });
+      expect(updatedPoem!.playCount).toEqual(1);
+    });
+
+    it('오디오가 30회 플레이되면 목소리의 주인공 업적을 획득한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      await prisma.achievement.create({
+        data: {
+          name: '목소리의 주인공',
+          description: '30회 낭독',
+          icon: 'test-icon',
+        },
+      });
+
+      const poem = await prisma.poem.create({
+        data: {
+          title: 'test-poem',
+          content: 'test-content',
+          textAlign: 'test-align',
+          textSize: 16,
+          textFont: 'test-font',
+          themes: [],
+          interactions: [],
+          isRecorded: true,
+          status: '출판',
+          inspirationId: titleInspiration.id,
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      for (let i = 0; i < 30; i++) {
+        await request(app.getHttpServer())
+          .get(`/poems/${poem.id}/play`)
+          .set('Authorization', `Bearer ${accessToken}`);
+      }
+
+      // then
+      const updatedPoem = await prisma.poem.findUnique({
+        where: { id: poem.id },
+      });
+      const achievements = await prisma.achievementAcquisition.findMany({
+        where: {
+          userId: user!.id,
+        },
+        select: {
+          achievement: true,
+        },
+      });
+      expect(updatedPoem!.playCount).toEqual(30);
+      expect(achievements).toHaveLength(1);
+      expect(achievements[0].achievement.name).toEqual('목소리의 주인공');
     });
   });
 });
