@@ -5,12 +5,15 @@ import { AwsService } from '../aws/aws.service';
 import { ScrapRepository } from './scrap.repository';
 import { TagService } from 'src/tag/tag.service';
 import { emotions } from 'src/constants/emotions';
+import { AchievementRepository } from 'src/achievement/achievement.repository';
 
 @Injectable()
 export class PoemService {
   constructor(
     @Inject(PoemRepository) private readonly poemRepository: PoemRepository,
     @Inject(ScrapRepository) private readonly scrapRepository: ScrapRepository,
+    @Inject(AchievementRepository)
+    private readonly achievementRepository: AchievementRepository,
     private readonly awsService: AwsService,
     private readonly llmService: LlmService,
     private readonly tagService: TagService,
@@ -173,8 +176,15 @@ export class PoemService {
     };
   }
 
+  // 첫 발자국 업적 획득 로직 포함
   async publish(id: string) {
-    await this.poemRepository.updateStatus(id, '출판');
+    const { authorId } = await this.poemRepository.updateStatus(id, '출판');
+    const publishedCount =
+      await this.poemRepository.countPublishedByUserId(authorId);
+    if (publishedCount === 1) {
+      await this.achievementRepository.acquire(authorId, '첫 발자국');
+    }
+    return;
   }
 
   async getThree(getPoemsInput: GetPoemsInput) {
