@@ -36,6 +36,8 @@ describe('Admin (e2e)', () => {
   afterEach(async () => {
     await prisma.poem.deleteMany();
     await prisma.inspiration.deleteMany();
+    await prisma.achievementAcquisition.deleteMany();
+    await prisma.achievement.deleteMany();
     await prisma.user.deleteMany();
   });
 
@@ -301,6 +303,13 @@ describe('Admin (e2e)', () => {
           displayName: 'test-title',
         },
       });
+      await prisma.achievement.create({
+        data: {
+          name: '첫 발자국',
+          description: '첫 시를 출판했습니다.',
+          icon: 'test-icon',
+        },
+      });
       const poem = await prisma.poem.create({
         data: {
           title: 'test-title',
@@ -328,6 +337,60 @@ describe('Admin (e2e)', () => {
         where: { id: poem.id },
       });
       expect(publishedPoem?.status).toBe('출판');
+    });
+
+    it('시를 출판하면 해당 유저는 첫 발자국 업적을 획득한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      await prisma.achievement.create({
+        data: {
+          name: '첫 발자국',
+          description: '첫 시를 출판했습니다.',
+          icon: 'test-icon',
+        },
+      });
+      const inspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      const poem = await prisma.poem.create({
+        data: {
+          title: 'test-title',
+          content: 'test-content',
+          themes: ['test-theme'],
+          interactions: ['test-interaction'],
+          textAlign: 'center',
+          textSize: 16,
+          textFont: 'test-font',
+          isRecorded: false,
+          inspirationId: inspiration.id,
+          status: '교정중',
+          authorId: user!.id,
+        },
+      });
+
+      // when
+      const { status } = await request(app.getHttpServer()).patch(
+        `/admin/poems/proofreading/${poem.id}/publish`,
+      );
+
+      // then
+      expect(status).toBe(200);
+      const achievementAcquisitions =
+        await prisma.achievementAcquisition.findMany({
+          where: { userId: user!.id },
+          select: {
+            userId: true,
+            achievement: true,
+          },
+        });
+      expect(achievementAcquisitions).toHaveLength(1);
+      expect(achievementAcquisitions[0].achievement.name).toBe('첫 발자국');
     });
   });
 

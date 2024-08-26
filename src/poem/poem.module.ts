@@ -8,9 +8,10 @@ import { AwsModule } from '../aws/aws.module';
 import { ScrapRepository } from './scrap.repository';
 import { ScrapPrismaRepository } from './scrap.prisma.repository';
 import { TagModule } from 'src/tag/tag.module';
+import { AchievementModule } from 'src/achievement/achievement.module';
 
 @Module({
-  imports: [AwsModule, TagModule],
+  imports: [AwsModule, TagModule, AchievementModule],
   controllers: [PoemController],
   providers: [
     PoemService,

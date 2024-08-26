@@ -77,15 +77,18 @@ export class PoemPrismaRepository implements PoemRepository {
   }
 
   async updateStatus(id: string, status: string) {
-    await this.prisma.poem.update({
+    const { authorId } = await this.prisma.poem.update({
       where: {
         id,
       },
       data: {
         status,
       },
+      select: {
+        authorId: true,
+      },
     });
-    return;
+    return { authorId };
   }
 
   async findThreeByIndex({ userId, index }: FindInputWithoutEmotion) {
@@ -166,6 +169,15 @@ export class PoemPrismaRepository implements PoemRepository {
             id: true,
           },
         },
+      },
+    });
+  }
+
+  async countPublishedByUserId(userId: string) {
+    return this.prisma.poem.count({
+      where: {
+        authorId: userId,
+        status: '출판',
       },
     });
   }

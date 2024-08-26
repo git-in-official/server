@@ -5,9 +5,10 @@ export interface PoemRepository {
   countUserDaily(userId: string): Promise<number>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
-  updateStatus(id: string, status: string): Promise<void>;
+  updateStatus(id: string, status: string): Promise<{ authorId: string }>;
   findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
   findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
+  countPublishedByUserId(userId: string): Promise<number>;
 }
 
 export type CreateInput = {
