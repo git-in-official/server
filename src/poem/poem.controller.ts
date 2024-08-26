@@ -135,7 +135,10 @@ export class PoemController {
   }
 
   @ApiOperation({ summary: '낭독 오디오 플레이' })
-  @ApiResponse({ status: 200 })
+  @ApiResponse({
+    status: 200,
+    description: '낭독 횟수 증가, responsebody는 없습니다.',
+  })
   @Get(':id/play')
   async play(@Param() { id }: PlayDto) {
     await this.poemService.play(id);
