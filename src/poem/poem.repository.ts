@@ -2,19 +2,22 @@ import { themes, interactions } from '../constants/tags';
 
 export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<NewPoem>;
-  countUserDaily(userId: string): Promise<number>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
+  findOneById(id: string): Promise<{ id: string } | null>;
   updateToPublishedStatus(
     id: string,
     ink: number,
   ): Promise<{ authorId: string }>;
   findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
   findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
-  countPublishedByUserId(userId: string): Promise<number>;
   increasePlayCount(
     id: string,
   ): Promise<{ authorId: string; playCount: number }>;
+  increaseScrapCount(id: string): Promise<number>;
+  decreaseScrapCount(id: string): Promise<number>;
+  countUserDaily(userId: string): Promise<number>;
+  countPublishedByUserId(userId: string): Promise<number>;
 }
 
 export type CreateInput = {

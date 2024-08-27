@@ -52,6 +52,7 @@ model Poem {
   status          String
   originalContent String?
   originalTitle   String?
+  scrapCount Int @default(0)
 
   createdAt DateTime @default(now())
 

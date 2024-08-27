@@ -146,6 +146,62 @@ describe('Poem (e2e)', () => {
       expect(unScrapStatus).toEqual(201);
       expect(scrap).toBeFalsy();
     });
+
+    it('시가 10회 이상 스크랩 되면 별이된 시 업적을 획득한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const titleInspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      await prisma.achievement.create({
+        data: {
+          name: '별이 된 시',
+          description: '10회 스크랩',
+          icon: 'test-icon',
+        },
+      });
+
+      const poem = await prisma.poem.create({
+        data: {
+          title: 'test-poem',
+          content: 'test-content',
+          textAlign: 'test-align',
+          textSize: 16,
+          textFont: 'test-font',
+          themes: [],
+          interactions: [],
+          isRecorded: true,
+          status: '출판',
+          inspirationId: titleInspiration.id,
+          authorId: user!.id,
+          scrapCount: 9,
+        },
+      });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(`/poems/${poem.id}/scrap`)
+        .set('Authorization', `Bearer ${accessToken}`);
+      const { status } = response;
+      const achievements = await prisma.achievementAcquisition.findFirst({
+        where: {
+          userId: user!.id,
+        },
+        select: {
+          achievement: true,
+        },
+      });
+
+      // then
+      expect(status).toEqual(201);
+      expect(achievements?.achievement.name).toEqual('별이 된 시');
+    });
   });
 
   describe('POST /poems/analyze - 시 태그 분석', async () => {

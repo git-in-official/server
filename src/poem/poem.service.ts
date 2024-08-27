@@ -55,21 +55,33 @@ export class PoemService {
   }
 
   async scrap(poemId: string, userId: string) {
+    const poem = await this.poemRepository.findOneById(poemId);
+    if (!poem) throw Error('poem not found');
+
     const scrap = await this.scrapRepository.findOneByPoemIdAndUserId(
       poemId,
       userId,
     );
+
     return scrap
-      ? await this.unScrap(scrap.id)
+      ? await this.unScrap(poemId, scrap.id)
       : await this.doScrap(poemId, userId);
   }
 
   async doScrap(poemId: string, userId: string) {
+    // Transaction
     await this.scrapRepository.create(poemId, userId);
+    const count = await this.poemRepository.increaseScrapCount(poemId);
+
+    if (count >= 10) {
+      await this.achievementRepository.acquire(userId, '별이 된 시');
+    }
   }
 
-  async unScrap(id: string) {
-    await this.scrapRepository.delete(id);
+  async unScrap(poemId: string, scrapId: string) {
+    // Transaction
+    await this.scrapRepository.delete(scrapId);
+    await this.poemRepository.decreaseScrapCount(poemId);
   }
 
   async canWrite(userId: string) {

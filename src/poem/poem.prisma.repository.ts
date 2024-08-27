@@ -12,10 +12,12 @@ export class PoemPrismaRepository implements PoemRepository {
         ...data,
         authorId: userId,
       },
+      // TODO select으로 변경하기
       omit: {
         originalContent: true,
         originalTitle: true,
         playCount: true,
+        scrapCount: true,
       },
     });
   }
@@ -29,6 +31,12 @@ export class PoemPrismaRepository implements PoemRepository {
           lt: new Date(new Date().setHours(23, 59, 59, 999)),
         },
       },
+    });
+  }
+
+  async findOneById(id: string): Promise<{ id: string } | null> {
+    return await this.prisma.poem.findUnique({
+      where: { id },
     });
   }
 
@@ -71,8 +79,10 @@ export class PoemPrismaRepository implements PoemRepository {
       include: {
         inspiration: true,
       },
+      // TODO select으로 변경하기
       omit: {
         inspirationId: true,
+        scrapCount: true,
       },
     });
   }
@@ -184,7 +194,7 @@ export class PoemPrismaRepository implements PoemRepository {
   }
 
   async countPublishedByUserId(userId: string) {
-    return this.prisma.poem.count({
+    return await this.prisma.poem.count({
       where: {
         authorId: userId,
         status: '출판',
@@ -207,6 +217,42 @@ export class PoemPrismaRepository implements PoemRepository {
         playCount: true,
       },
     });
+  }
+
+  async increaseScrapCount(id: string): Promise<number> {
+    const result = await this.prisma.poem.update({
+      where: {
+        id,
+      },
+      data: {
+        scrapCount: {
+          increment: 1,
+        },
+      },
+      select: {
+        scrapCount: true,
+      },
+    });
+
+    return result.scrapCount;
+  }
+
+  async decreaseScrapCount(id: string): Promise<number> {
+    const result = await this.prisma.poem.update({
+      where: {
+        id,
+      },
+      data: {
+        scrapCount: {
+          decrement: 1,
+        },
+      },
+      select: {
+        scrapCount: true,
+      },
+    });
+
+    return result.scrapCount;
   }
 }
 
