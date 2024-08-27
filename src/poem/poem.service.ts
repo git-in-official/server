@@ -190,7 +190,12 @@ export class PoemService {
 
   // 첫 발자국 업적 획득 로직 포함
   async publish(id: string) {
-    const { authorId } = await this.poemRepository.updateStatus(id, '출판');
+    const toAddInk = 10;
+    const { authorId } = await this.poemRepository.updateToPublishedStatus(
+      id,
+      toAddInk,
+    );
+
     const publishedCount =
       await this.poemRepository.countPublishedByUserId(authorId);
     if (publishedCount === 1) {

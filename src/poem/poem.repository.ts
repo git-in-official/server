@@ -5,9 +5,12 @@ export interface PoemRepository {
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
   findOneById(id: string): Promise<{ id: string } | null>;
+  updateToPublishedStatus(
+    id: string,
+    ink: number,
+  ): Promise<{ authorId: string }>;
   findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
   findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
-  updateStatus(id: string, status: string): Promise<{ authorId: string }>;
   increasePlayCount(
     id: string,
   ): Promise<{ authorId: string; playCount: number }>;

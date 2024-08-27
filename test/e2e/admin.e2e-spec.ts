@@ -291,7 +291,7 @@ describe('Admin (e2e)', () => {
   // });
 
   describe('PATCH /admin/poems/proofreading/:id/publish - 출판', () => {
-    it('시를 출판한다', async () => {
+    it('시를 출판하면 ink가 10 추가된다.', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -337,6 +337,10 @@ describe('Admin (e2e)', () => {
         where: { id: poem.id },
       });
       expect(publishedPoem?.status).toBe('출판');
+      const updatedUser = await prisma.user.findFirst({
+        where: { name },
+      });
+      expect(updatedUser?.ink).toBe(10);
     });
 
     it('시를 출판하면 해당 유저는 첫 발자국 업적을 획득한다', async () => {

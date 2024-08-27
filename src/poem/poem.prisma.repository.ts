@@ -87,13 +87,22 @@ export class PoemPrismaRepository implements PoemRepository {
     });
   }
 
-  async updateStatus(id: string, status: string) {
+  async updateToPublishedStatus(id: string, ink: number) {
     const { authorId } = await this.prisma.poem.update({
       where: {
         id,
       },
       data: {
-        status,
+        status: '출판',
+        author: {
+          update: {
+            data: {
+              ink: {
+                increment: ink,
+              },
+            },
+          },
+        },
       },
       select: {
         authorId: true,
