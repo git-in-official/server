@@ -4,7 +4,7 @@ export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<NewPoem>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
-  findOneById(id: string): Promise<{ id: string } | null>;
+  findOneById(id: string): Promise<Omit<Poem, 'scraps'> | null>;
   updateToPublishedStatus(
     id: string,
     ink: number,
