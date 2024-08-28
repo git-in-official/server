@@ -69,11 +69,16 @@ export class PoemService {
   async doScrap(poemId: string, userId: string) {
     // Transaction
     await this.scrapRepository.create(poemId, userId);
-    const count = await this.poemRepository.increaseScrapCount(poemId);
+    const poemScrapcount = await this.poemRepository.increaseScrapCount(poemId);
+    const userScrapCount = await this.scrapRepository.countByUserId(userId);
 
-    if (count >= 10) {
+    if (poemScrapcount >= 10) {
       const poem = await this.getPoemOrThrow(poemId);
       await this.achievementRepository.acquire(poem.authorId, '별이 된 시');
+    }
+
+    if (userScrapCount >= 10) {
+      await this.achievementRepository.acquire(userId, '열 번 찍어 넘어간 나무');
     }
   }
 
