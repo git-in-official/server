@@ -50,7 +50,7 @@ export class PoemPrismaRepository implements PoemRepository {
         inspirationId: true,
         createdAt: true,
         authorId: true,
-      }
+      },
     });
   }
 
@@ -147,7 +147,12 @@ export class PoemPrismaRepository implements PoemRepository {
         isRecorded: true,
         inspirationId: true,
         createdAt: true,
-        authorId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         scraps: {
           where: {
             userId,
@@ -194,7 +199,12 @@ export class PoemPrismaRepository implements PoemRepository {
         isRecorded: true,
         inspirationId: true,
         createdAt: true,
-        authorId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         scraps: {
           where: {
             userId: findInputWithTags.userId,
