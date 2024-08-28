@@ -89,7 +89,7 @@ export class PoemController {
 
   @ApiOperation({
     summary: '시 스크랩',
-    description: '응답 body x, 상태 코드로 성공 실패 판별.',
+    description: '스크랩, 스크랩 취소 모두 이 api 사용합니다. (토글)',
   })
   @ApiResponse({ status: 201 })
   @Post(':id/scrap')
