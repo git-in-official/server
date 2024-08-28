@@ -55,9 +55,7 @@ export class PoemService {
   }
 
   async scrap(poemId: string, userId: string) {
-    const poem = await this.poemRepository.findOneById(poemId);
-    if (!poem) throw Error('poem not found');
-
+    await this.getPoemOrThrow(poemId);
     const scrap = await this.scrapRepository.findOneByPoemIdAndUserId(
       poemId,
       userId,
@@ -74,7 +72,8 @@ export class PoemService {
     const count = await this.poemRepository.increaseScrapCount(poemId);
 
     if (count >= 10) {
-      await this.achievementRepository.acquire(userId, '별이 된 시');
+      const poem = await this.getPoemOrThrow(poemId);
+      await this.achievementRepository.acquire(poem.authorId, '별이 된 시');
     }
   }
 
@@ -82,6 +81,13 @@ export class PoemService {
     // Transaction
     await this.scrapRepository.delete(scrapId);
     await this.poemRepository.decreaseScrapCount(poemId);
+  }
+
+  private async getPoemOrThrow(poemId: string) {
+    const poem = await this.poemRepository.findOneById(poemId);
+    if (!poem) throw Error('poem not found');
+
+    return poem;
   }
 
   async canWrite(userId: string) {
