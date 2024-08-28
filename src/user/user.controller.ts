@@ -5,7 +5,9 @@ import {
   HttpCode,
   HttpException,
   HttpStatus,
+  Patch,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -60,6 +62,32 @@ export class UserController {
   async update(@Body() dto: UpdateUserDto, @CurrentUser() userId: string) {
     try {
       await this.userService.update(userId, dto);
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        if (e.message === 'user not found') {
+          throw new HttpException(e.message, HttpStatus.NOT_FOUND);
+        } else {
+          throw new HttpException(e.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+      }
+      throw e;
+    }
+  }
+
+  @ApiOperation({
+    summary: '메인 업적 변경',
+    description: '업데이트 성공 시 body는 없습니다.',
+  })
+  @ApiResponse({ status: 204 })
+  @ApiResponse({ status: 404, description: 'user not found' })
+  @HttpCode(204)
+  @Patch('achievement')
+  async updateMainAchievement(
+    @Query('achievementId') achievementId: string,
+    @CurrentUser() userId: string,
+  ) {
+    try {
+      await this.userService.updateMainAchievement(userId, achievementId);
     } catch (e: unknown) {
       if (e instanceof Error) {
         if (e.message === 'user not found') {
