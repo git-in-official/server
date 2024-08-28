@@ -207,6 +207,55 @@ describe('Poem (e2e)', () => {
       expect(status).toEqual(201);
       expect(achievements?.achievement.name).toEqual('별이 된 시');
     });
+
+    it('시를 10회 이상 스크랩 하면 열 번 찍어 넘어간 나무 업적을 획득한다', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+      const inspiration = await prisma.inspiration.create({
+        data: {
+          type: 'TITLE',
+          displayName: 'test-title',
+        },
+      });
+      await prisma.achievement.create({
+        data: {
+          name: '열 번 찍어 넘어간 나무',
+          description: '시 10회 스크랩 하기',
+          icon: 'test-icon',
+        },
+      });
+
+      for (let i = 0; i < 9; i++) {
+        const poemData = createPoemData(user!.id, inspiration.id, '출판');
+        const poem = await prisma.poem.create({ data: poemData });
+        await prisma.scrap.create({
+          data: { userId: user!.id, poemId: poem.id },
+        });
+      }
+      const poemData = createPoemData(user!.id, inspiration.id, '출판');
+      const poem = await prisma.poem.create({ data: poemData });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .post(`/poems/${poem.id}/scrap`)
+        .set('Authorization', `Bearer ${accessToken}`);
+      const { status } = response;
+      const achievements = await prisma.achievementAcquisition.findFirst({
+        where: {
+          userId: user!.id,
+        },
+        select: {
+          achievement: true,
+        },
+      });
+
+      // then
+      expect(status).toEqual(201);
+      expect(achievements?.achievement.name).toEqual('열 번 찍어 넘어간 나무');
+    });
   });
 
   describe('POST /poems/analyze - 시 태그 분석', async () => {
