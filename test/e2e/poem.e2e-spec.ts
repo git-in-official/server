@@ -10,6 +10,7 @@ import { login } from './helpers/login';
 import * as fs from 'fs';
 import * as path from 'path';
 import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import { createPoemData, createUserData } from './helpers';
 
 describe('Poem (e2e)', () => {
   let app: INestApplication;
@@ -147,12 +148,16 @@ describe('Poem (e2e)', () => {
       expect(scrap).toBeFalsy();
     });
 
-    it('시가 10회 이상 스크랩 되면 별이된 시 업적을 획득한다', async () => {
+    it('시가 10회 이상 스크랩 되면 작성자는 별이된 시 업적을 획득한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
         where: { name },
       });
+      const poemAuthor = await prisma.user.create({
+        data: createUserData('poems author', 'test-provider-id'),
+      });
+
       const titleInspiration = await prisma.inspiration.create({
         data: {
           type: 'TITLE',
@@ -162,7 +167,7 @@ describe('Poem (e2e)', () => {
       await prisma.achievement.create({
         data: {
           name: '별이 된 시',
-          description: '10회 스크랩',
+          description: '작성한 시가 10회 스크랩 되면 획득.',
           icon: 'test-icon',
         },
       });
@@ -179,7 +184,7 @@ describe('Poem (e2e)', () => {
           isRecorded: true,
           status: '출판',
           inspirationId: titleInspiration.id,
-          authorId: user!.id,
+          authorId: poemAuthor.id,
           scrapCount: 9,
         },
       });
@@ -191,7 +196,7 @@ describe('Poem (e2e)', () => {
       const { status } = response;
       const achievements = await prisma.achievementAcquisition.findFirst({
         where: {
-          userId: user!.id,
+          userId: poemAuthor.id,
         },
         select: {
           achievement: true,
