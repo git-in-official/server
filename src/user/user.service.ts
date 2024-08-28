@@ -29,6 +29,18 @@ export class UserService {
 
     await this.userRepository.update(userId, data);
   }
+
+  async updateMainAchievement(userId: string, achievementId: string) {
+    await this.getUserOrThrow(userId);
+    await this.userRepository.updateMainAchievement(userId, achievementId);
+  }
+
+  private async getUserOrThrow(userId: string) {
+    const user = await this.userRepository.findOneById(userId);
+    if (!user) throw Error('user not found');
+
+    return user;
+  }
 }
 
 type UpdateUserInput = {

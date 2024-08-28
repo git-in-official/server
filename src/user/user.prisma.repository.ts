@@ -90,6 +90,18 @@ export class UserPrismaRepository implements UserRepository {
     });
   }
 
+  async updateMainAchievement(
+    userId: string,
+    achievementId: string,
+  ): Promise<void> {
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        mainAchievementId: achievementId,
+      },
+    });
+  }
+
   async createAccessHistory(userId: string): Promise<void> {
     try {
       await this.prisma.userAccessHistory.create({
