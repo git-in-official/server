@@ -84,13 +84,12 @@ export class PoemService {
     await this.poemRepository.decreaseScrapCount(poemId);
   }
 
-  async canWrite(userId: string) {
+  async checkRemain(userId: string) {
+    const maximum = 2;
     const count = await this.poemRepository.countUserDaily(userId);
-    if (count < 2) {
-      return true;
-    } else {
-      return false;
-    }
+    return {
+      count: maximum - count,
+    };
   }
 
   async getProofreadingList() {

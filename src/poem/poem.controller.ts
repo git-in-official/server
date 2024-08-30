@@ -9,7 +9,6 @@ import {
   UploadedFile,
   Param,
   Get,
-  HttpException,
   Query,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -29,7 +28,13 @@ import {
   GetPoemsDto,
   PlayDto,
 } from './dto/request';
-import { TagsDto, ContentDto, NewPoemDto, PoemDto } from './dto/response';
+import {
+  TagsDto,
+  ContentDto,
+  NewPoemDto,
+  PoemDto,
+  RemainPoemCountDto,
+} from './dto/response';
 import { PoemService } from './poem.service';
 import { CurrentUser } from '../common/decorators';
 import { JwtGuard } from '../auth/guards';
@@ -98,24 +103,16 @@ export class PoemController {
   }
 
   @ApiOperation({
-    summary: '시를 쓸 수 있는지 확인하기 - 하루 두 번만 글쓸수있음',
+    summary: '몇 개의 시를 더 쓸 수 있는지 확인하기 - 하루 두 번만 글쓸수있음',
   })
   @ApiResponse({
     status: 200,
-    description: '시를 쓸 수 있음. 따로 응답 body는 없습니다.',
+    type: RemainPoemCountDto,
+    description: '더 쓸 수 있는 시의 개수를 반환합니다. (0, 1, 2)',
   })
-  @ApiResponse({
-    status: 423,
-    description: '하루에 두 번만 작성할 수 있습니다.',
-  })
-  @Get('can-write')
-  async canWrite(@CurrentUser() userId: string) {
-    const result = await this.poemService.canWrite(userId);
-    if (result) {
-      return;
-    } else {
-      throw new HttpException('하루에 두 번만 작성할 수 있습니다.', 423);
-    }
+  @Get('remain')
+  async getRemain(@CurrentUser() userId: string): Promise<RemainPoemCountDto> {
+    return await this.poemService.checkRemain(userId);
   }
 
   @ApiOperation({ summary: '알고리즘에 의해 시를 3개씩 반환해줌' })
