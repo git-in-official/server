@@ -42,16 +42,9 @@ export class PoemService {
       status: '교정중',
     };
 
-    const newPoem = await this.poemRepository.create(userId, poemData);
+    await this.poemRepository.create(userId, poemData);
 
-    if (createInput.audioFile) {
-      await this.awsService.uploadPoemAudio(newPoem.id, createInput.audioFile);
-      return {
-        ...newPoem,
-        audioUrl: this.awsService.getPoemAudioUrl() + newPoem.id,
-      };
-    }
-    return newPoem;
+    return this.getRemain(userId);
   }
 
   async scrap(poemId: string, userId: string) {
@@ -98,7 +91,7 @@ export class PoemService {
     return poem;
   }
 
-  async checkRemain(userId: string) {
+  async getRemain(userId: string) {
     const maximum = 2;
     const count = await this.poemRepository.countUserDaily(userId);
     return {

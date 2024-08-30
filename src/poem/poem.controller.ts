@@ -31,7 +31,6 @@ import {
 import {
   TagsDto,
   ContentDto,
-  NewPoemDto,
   PoemDto,
   RemainPoemCountDto,
 } from './dto/response';
@@ -78,14 +77,18 @@ export class PoemController {
   @ApiOperation({ summary: '탈고' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreatePoemDto })
-  @ApiResponse({ status: 201, type: NewPoemDto })
+  @ApiResponse({
+    status: 201,
+    type: RemainPoemCountDto,
+    description: '오늘 남은 시간동안 더 쓸 수 있는 시의 개수',
+  })
   @Post()
   @UseInterceptors(FileInterceptor('audioFile'))
   async create(
     @CurrentUser() userId: string,
     @Body() createPoemDto: CreatePoemDto,
     @UploadedFile() audioFile?: Express.Multer.File,
-  ) {
+  ): Promise<RemainPoemCountDto> {
     return await this.poemService.create(userId, {
       ...createPoemDto,
       audioFile,
@@ -112,7 +115,7 @@ export class PoemController {
   })
   @Get('remain')
   async getRemain(@CurrentUser() userId: string): Promise<RemainPoemCountDto> {
-    return await this.poemService.checkRemain(userId);
+    return await this.poemService.getRemain(userId);
   }
 
   @ApiOperation({ summary: '알고리즘에 의해 시를 3개씩 반환해줌' })
