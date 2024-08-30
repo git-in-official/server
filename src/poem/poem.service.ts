@@ -78,7 +78,10 @@ export class PoemService {
     }
 
     if (userScrapCount >= 10) {
-      await this.achievementRepository.acquire(userId, '열 번 찍어 넘어간 나무');
+      await this.achievementRepository.acquire(
+        userId,
+        '열 번 찍어 넘어간 나무',
+      );
     }
   }
 
@@ -95,13 +98,12 @@ export class PoemService {
     return poem;
   }
 
-  async canWrite(userId: string) {
+  async checkRemain(userId: string) {
+    const maximum = 2;
     const count = await this.poemRepository.countUserDaily(userId);
-    if (count < 2) {
-      return true;
-    } else {
-      return false;
-    }
+    return {
+      count: maximum - count,
+    };
   }
 
   async getProofreadingList() {
