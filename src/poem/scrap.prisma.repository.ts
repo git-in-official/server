@@ -52,4 +52,12 @@ export class ScrapPrismaRepository implements ScrapRepository {
       },
     });
   }
+
+  async countByUserId(userId: string): Promise<number> {
+    return await this.prisma.scrap.count({
+      where: {
+        userId,
+      },
+    })
+  }
 }

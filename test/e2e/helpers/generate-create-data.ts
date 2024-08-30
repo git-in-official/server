@@ -25,6 +25,7 @@ export const createUserData = (
 export const createPoemData = (
   authorId: string,
   inspirationId: string,
+  status: string = 'test-status',
   title: string = 'test-poem',
   content: string = 'test-content',
   textAlign: string = 'test-align',
@@ -33,7 +34,6 @@ export const createPoemData = (
   themes: string[] = [],
   interactions: string[] = [],
   isRecorded: boolean = false,
-  status: string = 'test-status',
 ) => {
   return {
     title,

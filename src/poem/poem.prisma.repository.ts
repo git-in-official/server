@@ -34,9 +34,23 @@ export class PoemPrismaRepository implements PoemRepository {
     });
   }
 
-  async findOneById(id: string): Promise<{ id: string } | null> {
+  async findOneById(id: string) {
     return await this.prisma.poem.findUnique({
       where: { id },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        textAlign: true,
+        textSize: true,
+        textFont: true,
+        themes: true,
+        interactions: true,
+        isRecorded: true,
+        inspirationId: true,
+        createdAt: true,
+        authorId: true,
+      },
     });
   }
 
@@ -133,7 +147,12 @@ export class PoemPrismaRepository implements PoemRepository {
         isRecorded: true,
         inspirationId: true,
         createdAt: true,
-        authorId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         scraps: {
           where: {
             userId,
@@ -180,7 +199,12 @@ export class PoemPrismaRepository implements PoemRepository {
         isRecorded: true,
         inspirationId: true,
         createdAt: true,
-        authorId: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
         scraps: {
           where: {
             userId: findInputWithTags.userId,

@@ -1,46 +1,53 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { themes, interactions } from 'src/constants/tags';
+export class Author {
+  @ApiProperty()
+  readonly id: string;
+
+  @ApiProperty()
+  readonly name: string;
+}
 
 export class PoemDto {
   @ApiProperty()
-  id: string;
+  readonly id: string;
 
   @ApiProperty()
-  title: string;
+  readonly title: string;
 
   @ApiProperty()
-  content: string;
+  readonly content: string;
 
   @ApiProperty()
-  textAlign: string;
+  readonly textAlign: string;
 
   @ApiProperty()
-  textSize: number;
+  readonly textSize: number;
 
   @ApiProperty()
-  textFont: string;
+  readonly textFont: string;
 
   @ApiProperty({ isArray: true, enum: themes })
-  themes: string[];
+  readonly themes: string[];
 
   @ApiProperty({ isArray: true, enum: interactions })
-  interactions: string[];
+  readonly interactions: string[];
 
   @ApiProperty()
-  isRecorded: boolean;
+  readonly isRecorded: boolean;
 
   @ApiProperty({ nullable: true, type: 'string' })
-  audioUrl: string | null;
+  readonly audioUrl: string | null;
 
   @ApiProperty()
-  createdAt: Date;
+  readonly createdAt: Date;
 
   @ApiProperty()
-  inspirationId: string;
+  readonly inspirationId: string;
 
   @ApiProperty()
-  authorId: string;
+  readonly author: Author;
 
   @ApiProperty({ description: '로그인한 사용자가 스크랩한 시인지 여부' })
-  isScrapped: boolean;
+  readonly isScrapped: boolean;
 }

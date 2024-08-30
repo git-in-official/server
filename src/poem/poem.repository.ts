@@ -4,7 +4,10 @@ export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<NewPoem>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
-  findOneById(id: string): Promise<{ id: string } | null>;
+  // TODO 타입 나중에 변경
+  findOneById(
+    id: string,
+  ): Promise<(Omit<Poem, 'scraps' | 'author'> & { authorId: string }) | null>;
   updateToPublishedStatus(
     id: string,
     ink: number,
@@ -95,7 +98,7 @@ export type Poem = {
   isRecorded: boolean;
   createdAt: Date;
   inspirationId: string;
-  authorId: string;
+  author: { id: string; name: string };
   scraps: { id: string }[];
 };
 

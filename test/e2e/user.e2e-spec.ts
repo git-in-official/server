@@ -190,5 +190,35 @@ describe('User (e2e)', () => {
       expect(updatedUser!.name).toEqual(dto.name);
       expect(updatedUser!.introduction).toEqual(dto.introduction);
     });
+
+    it('대표 업적 변경', async () => {
+      // given
+      const { accessToken, name } = await login(app);
+      const user = await prisma.user.findFirst({
+        where: { name },
+      });
+
+      const achievement = await prisma.achievement.create({
+        data: {
+          icon: 'https://icon.com',
+          description: '획득 조건',
+          name: '멋진 업적',
+        },
+      });
+
+      // when
+      const response = await request(app.getHttpServer())
+        .patch(`/user/achievement?achievementId=${achievement.id}`)
+        .set('Authorization', `Bearer ${accessToken}`);
+      const { status } = response;
+
+      const updatedUser = await prisma.user.findUnique({
+        where: { id: user!.id },
+      });
+
+      // then
+      expect(status).toEqual(204);
+      expect(updatedUser?.mainAchievementId).toEqual(achievement.id);
+    });
   });
 });

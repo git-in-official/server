@@ -27,6 +27,7 @@ export interface UserRepository {
     name: string;
   }>;
   update(userId: string, data: UpdateUserData): Promise<void>;
+  updateMainAchievement(userId: string, achievementId: string): Promise<void>;
 
   createAccessHistory(userId: string): Promise<void>;
   countAccessHistoryRecentTenDays(userId: string, date?: Date): Promise<number>;
