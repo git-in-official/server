@@ -46,12 +46,8 @@ export class PoemService {
 
     if (createInput.audioFile) {
       await this.awsService.uploadPoemAudio(newPoem.id, createInput.audioFile);
-      return {
-        ...newPoem,
-        audioUrl: this.awsService.getPoemAudioUrl() + newPoem.id,
-      };
     }
-    return newPoem;
+    return await this.getRemain(userId);
   }
 
   async scrap(poemId: string, userId: string) {
@@ -98,7 +94,7 @@ export class PoemService {
     return poem;
   }
 
-  async checkRemain(userId: string) {
+  async getRemain(userId: string) {
     const maximum = 2;
     const count = await this.poemRepository.countUserDaily(userId);
     return {

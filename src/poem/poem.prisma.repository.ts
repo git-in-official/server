@@ -12,12 +12,8 @@ export class PoemPrismaRepository implements PoemRepository {
         ...data,
         authorId: userId,
       },
-      // TODO select으로 변경하기
-      omit: {
-        originalContent: true,
-        originalTitle: true,
-        playCount: true,
-        scrapCount: true,
+      select: {
+        id: true,
       },
     });
   }

@@ -9,7 +9,11 @@ import { LlmService } from 'src/poem/llm.service';
 import { login } from './helpers/login';
 import * as fs from 'fs';
 import * as path from 'path';
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  DeleteObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import { createPoemData, createUserData } from './helpers';
 
 describe('Poem (e2e)', () => {
@@ -449,7 +453,7 @@ describe('Poem (e2e)', () => {
   });
 
   describe('POST /poems - 시 탈고', async () => {
-    it('시를 탈고하면 201 응답과 함께 newPoemDto를 반환한다', async () => {
+    it('시를 탈고하면 201 응답과 함께 오늘하루동안 더 쓸 수 있는 시의 개수를 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -482,24 +486,10 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(201);
-      expect(body).toEqual({
-        id: expect.any(String),
-        title: 'test-poem',
-        content: 'test-content',
-        textAlign: 'test-align',
-        textSize: 16,
-        textFont: 'test-font',
-        themes: [],
-        interactions: [],
-        isRecorded: false,
-        status: '교정중',
-        createdAt: expect.any(String),
-        authorId: user!.id,
-        inspirationId: titleInspiration.id,
-      });
+      expect(body).toEqual({ count: 1 });
     });
 
-    it('녹음 파일이 있는 경우, 녹음 파일의 URL도 함께 반환한다', async () => {
+    it('녹음 파일이 있는 경우, S3에 녹음파일이 업로드된다.', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -542,33 +532,26 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(201);
-      expect(body).toEqual({
-        id: expect.any(String),
-        title: 'test-poem',
-        content: 'test-content',
-        textAlign: 'test-align',
-        textSize: 16,
-        textFont: 'test-font',
-        themes: ['가족', '사랑'],
-        interactions: ['위로', '감성적'],
-        isRecorded: true,
-        status: '교정중',
-        createdAt: expect.any(String),
-        authorId: user!.id,
-        inspirationId: titleInspiration.id,
-        audioUrl: expect.any(String),
+      expect(body.count).toEqual(1);
+      const s3Client = new S3Client();
+      const newPoem = await prisma.poem.findFirst({
+        where: { title: 'test-poem' },
       });
-      expect(body.audioUrl).toEqual(
-        `${process.env.AWS_CLOUDFRONT_URL}/poems/audios/${body.id}`,
-      );
+      expect(newPoem).toBeTruthy();
+      const { Body } = (await s3Client.send(
+        new GetObjectCommand({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: `poems/audios/${newPoem!.id}`,
+        }),
+      )) as any;
+      expect(Body.statusCode).toEqual(200);
 
       // cleanup
       fs.unlinkSync(filePath);
-      const s3Client = new S3Client();
       await s3Client.send(
         new DeleteObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
-          Key: `poems/audios/${body.id}`,
+          Key: `poems/audios/${newPoem!.id}`,
         }),
       );
     });

@@ -1,7 +1,7 @@
 import { themes, interactions } from '../constants/tags';
 
 export interface PoemRepository {
-  create(userId: string, data: CreateInput): Promise<NewPoem>;
+  create(userId: string, data: CreateInput): Promise<{ id: string }>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
   findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
   // TODO 타입 나중에 변경
@@ -38,22 +38,6 @@ export type CreateInput = {
   status: string;
 };
 
-export type NewPoem = {
-  id: string;
-  title: string;
-  content: string;
-  textAlign: string;
-  textSize: number;
-  textFont: string;
-  themes: string[];
-  interactions: string[];
-  isRecorded: boolean;
-  status: string;
-  createdAt: Date;
-  inspirationId: string;
-  authorId: string;
-};
-
 export type ProofreadingPoemList = {
   id: string;
   title: string;
@@ -73,18 +57,27 @@ export type ProofreadingPoemList = {
   };
 }[];
 
-export type PoemWithOriginalContent = Omit<
-  NewPoem & {
-    originalTitle: string | null;
-    originalContent: string | null;
-    inspiration: {
-      id: string;
-      displayName: string;
-      type: 'TITLE' | 'WORD' | 'AUDIO' | 'VIDEO';
-    };
-  },
-  'inspirationId'
->;
+export type PoemWithOriginalContent = {
+  id: string;
+  title: string;
+  content: string;
+  textAlign: string;
+  textSize: number;
+  textFont: string;
+  themes: string[];
+  interactions: string[];
+  isRecorded: boolean;
+  status: string;
+  createdAt: Date;
+  authorId: string;
+  originalTitle: string | null;
+  originalContent: string | null;
+  inspiration: {
+    id: string;
+    displayName: string;
+    type: 'TITLE' | 'WORD' | 'AUDIO' | 'VIDEO';
+  };
+};
 
 export type Poem = {
   id: string;
