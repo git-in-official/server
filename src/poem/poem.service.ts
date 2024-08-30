@@ -42,9 +42,12 @@ export class PoemService {
       status: '교정중',
     };
 
-    await this.poemRepository.create(userId, poemData);
+    const newPoem = await this.poemRepository.create(userId, poemData);
 
-    return this.getRemain(userId);
+    if (createInput.audioFile) {
+      await this.awsService.uploadPoemAudio(newPoem.id, createInput.audioFile);
+    }
+    return await this.getRemain(userId);
   }
 
   async scrap(poemId: string, userId: string) {
