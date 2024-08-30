@@ -12,7 +12,7 @@ import * as path from 'path';
 import {
   S3Client,
   DeleteObjectCommand,
-  GetObjectCommand,
+  HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 import { createPoemData, createUserData } from './helpers';
 
@@ -538,13 +538,13 @@ describe('Poem (e2e)', () => {
         where: { title: 'test-poem' },
       });
       expect(newPoem).toBeTruthy();
-      const { Body } = (await s3Client.send(
-        new GetObjectCommand({
+      const response = (await s3Client.send(
+        new HeadObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
           Key: `poems/audios/${newPoem!.id}`,
         }),
       )) as any;
-      expect(Body.statusCode).toEqual(200);
+      expect(response.$metadata.httpStatusCode).toEqual(200);
 
       // cleanup
       fs.unlinkSync(filePath);
