@@ -9,7 +9,11 @@ import { LlmService } from 'src/poem/llm.service';
 import { login } from './helpers/login';
 import * as fs from 'fs';
 import * as path from 'path';
-import { S3Client, DeleteObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  DeleteObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
 import { createPoemData, createUserData } from './helpers';
 
 describe('Poem (e2e)', () => {
@@ -485,7 +489,7 @@ describe('Poem (e2e)', () => {
       expect(body).toEqual({ count: 1 });
     });
 
-    it('녹음 파일이 있는 경우, 녹음 파일의 URL도 함께 반환한다', async () => {
+    it('녹음 파일이 있는 경우, S3에 녹음파일이 업로드된다.', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -529,14 +533,25 @@ describe('Poem (e2e)', () => {
       // then
       expect(status).toEqual(201);
       expect(body.count).toEqual(1);
+      const s3Client = new S3Client();
+      const newPoem = await prisma.poem.findFirst({
+        where: { title: 'test-poem' },
+      });
+      expect(newPoem).toBeTruthy();
+      const { Body } = (await s3Client.send(
+        new GetObjectCommand({
+          Bucket: process.env.AWS_BUCKET_NAME,
+          Key: `poems/audios/${newPoem!.id}`,
+        }),
+      )) as any;
+      expect(Body.statusCode).toEqual(200);
 
       // cleanup
       fs.unlinkSync(filePath);
-      const s3Client = new S3Client();
       await s3Client.send(
         new DeleteObjectCommand({
           Bucket: process.env.AWS_BUCKET_NAME,
-          Key: `poems/audios/${body.id}`,
+          Key: `poems/audios/${newPoem!.id}`,
         }),
       );
     });
