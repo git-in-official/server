@@ -300,8 +300,8 @@ describe('Poem (e2e)', () => {
     });
   });
 
-  describe('GET /poems/can-write - 시를 쓸 수 있는지 확인', () => {
-    it('이미 시를 두 번 썼을 때 423 에러를 반환한다', async () => {
+  describe('GET /poems/remain - 남은 시 개수 반환', () => {
+    it('이미 시를 두 번 썼을 때 0을 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -346,15 +346,16 @@ describe('Poem (e2e)', () => {
       });
 
       // when
-      const { status } = await request(app.getHttpServer())
-        .get('/poems/can-write')
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems/remain')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
-      expect(status).toEqual(423);
+      expect(status).toEqual(200);
+      expect(body).toEqual({ count: 0 });
     });
 
-    it('아직 시를 쓰지 않았거나 한 번만 썼을 때 200을 반환한다', async () => {
+    it('시를 한번만 썼을 때 1을 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -383,12 +384,13 @@ describe('Poem (e2e)', () => {
       });
 
       // when
-      const { status } = await request(app.getHttpServer())
-        .get('/poems/can-write')
+      const { status, body } = await request(app.getHttpServer())
+        .get('/poems/remain')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
       expect(status).toEqual(200);
+      expect(body).toEqual({ count: 1 });
     });
   });
 
