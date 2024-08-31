@@ -1,13 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsString, IsNumber, IsOptional } from 'class-validator';
+import {
+  IsArray,
+  IsString,
+  IsNumber,
+  IsOptional,
+  IsNotEmpty,
+  IsUUID,
+} from 'class-validator';
 
 export class CreatePoemDto {
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   readonly title: string;
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   readonly content: string;
 
   @ApiProperty()
@@ -22,6 +31,7 @@ export class CreatePoemDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   readonly textAlign: string;
 
   @ApiProperty({ type: 'number' })
@@ -30,6 +40,7 @@ export class CreatePoemDto {
 
   @ApiProperty()
   @IsString()
+  @IsNotEmpty()
   readonly textFont: string;
 
   @ApiProperty({
@@ -51,7 +62,8 @@ export class CreatePoemDto {
   readonly originalTitle?: string;
 
   @ApiProperty({ description: '글감의 ID' })
-  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
   readonly inspirationId: string;
 
   @ApiProperty({
