@@ -45,52 +45,34 @@ export class LlmService {
   }
 
   async updateTag(updateTagInput: UpdateTagInput) {
-    const result = await this.anthropic.messages.create({
-      model: this.configService.get<string>('ANTHROPIC_MODEL')!,
-      max_tokens: 1024,
-      temperature: 0.5,
-      tools: [
-        {
-          name: 'modify_poem',
-          description:
-            '시가 현재 가지고 있는 테마와 상호작용을 줄건데 이 시를 새로운 테마와 상호작용이 적용된 시로 수정해줘',
-          input_schema: {
-            type: 'object',
-            properties: {
-              title: {
-                type: 'string',
-                description:
-                  '제목은 꼭 바꿀 필요는 없는데, 바꾸고 싶다면 새로운 제목을 입력해',
-              },
-              content: {
-                type: 'string',
-                description:
-                  '새로운 테마와 상호작용이 적용된 시로 수정해줘. 최대한 원본의 내용을 유지해줘',
-              },
-            },
-            required: ['content'],
+    try {
+      const result = await this.anthropic.messages.create({
+        model: this.configService.get<string>('ANTHROPIC_MODEL')!,
+        max_tokens: 1024,
+        temperature: 0.5,
+        system:
+          '시의 제목, 내용, 원래 가지고 있는 테마태그와 상호작용 태그, 그리고 새로운 테마태그와 상호작용 태그를 입력하면 새로운 테마태그와 상호작용 태그에 맞춰서 시의 제목과 내용을 수정한다. 하지만 시의 제목은 꼭 수정할 필요는 없다. 반환값은 {title: string, content: string} 형태로 주면 되고 수정한 이유는 절대 설명하지 말고 그저 json 형태로만 반환한다',
+        messages: [
+          {
+            role: 'user',
+            content: JSON.stringify(updateTagInput),
           },
-        },
-      ],
-      tool_choice: { type: 'tool', name: 'modify_poem' },
-      messages: [
-        {
-          role: 'user',
-          content: JSON.stringify(updateTagInput),
-        },
-      ],
-    });
+        ],
+      });
 
-    if (result.content[0].type === 'tool_use') {
-      return result.content[0].input as {
-        title: string;
-        content: string;
-      };
-    } else {
-      console.error('Anthropic api response error');
+      if (result.content[0].type === 'text') {
+        return JSON.parse(result.content[0].text) as {
+          title: string;
+          content: string;
+        };
+      }
+      throw result;
+    } catch (error) {
+      console.error('Anthropic api error');
       console.error(updateTagInput);
-      console.error(result);
-      throw new Error('Anthropic api response error');
+      console.error(error);
+      console.error(typeof error);
+      throw new Error('Anthropic api error');
     }
   }
 }
