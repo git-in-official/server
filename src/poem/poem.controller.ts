@@ -118,20 +118,19 @@ export class PoemController {
     return await this.poemService.getRemain(userId);
   }
 
-  @ApiOperation({ summary: '알고리즘에 의해 시를 3개씩 반환해줌' })
+  @ApiOperation({ summary: '알고리즘에 의해 시를 한번에 다 보내줌' })
   @ApiQuery({
     name: 'emotion',
     required: false,
     description: '기분이 모르겠음 일때는 안보내주시면 됩니다.',
   })
-  @ApiQuery({ name: 'index', required: true, description: '0부터 시작합니다.' })
   @ApiResponse({ status: 200, type: PoemDto, isArray: true })
   @Get()
-  async getThree(
-    @Query() { emotion, index }: GetPoemsDto,
+  async getAllByEmotion(
+    @Query() { emotion }: GetPoemsDto,
     @CurrentUser() userId: string,
   ): Promise<PoemDto[]> {
-    return await this.poemService.getThree({ emotion, index, userId });
+    return await this.poemService.getAllByEmotion({ emotion, userId });
   }
 
   @ApiOperation({ summary: '낭독 오디오 플레이' })

@@ -12,8 +12,6 @@ export interface PoemRepository {
     id: string,
     ink: number,
   ): Promise<{ authorId: string }>;
-  findThreeByIndex(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
-  findNByTagAndIndex(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
   increasePlayCount(
     id: string,
   ): Promise<{ authorId: string; playCount: number }>;
@@ -21,6 +19,8 @@ export interface PoemRepository {
   decreaseScrapCount(id: string): Promise<number>;
   countUserDaily(userId: string): Promise<number>;
   countPublishedByUserId(userId: string): Promise<number>;
+  findAllPublishedByTag(findInputWithTags: FindInputWithTags): Promise<Poem[]>;
+  findAllPublished(findInputWithoutTags: FindInputWithoutTags): Promise<Poem[]>;
 }
 
 export type CreateInput = {
@@ -97,13 +97,10 @@ export type Poem = {
 
 export type FindInputWithoutTags = {
   userId: string;
-  index: number;
 };
 
 export type FindInputWithTags = {
   userId: string;
-  index: number;
-  limit: number;
   themes: (typeof themes)[number][];
   interactions: (typeof interactions)[number][];
 };

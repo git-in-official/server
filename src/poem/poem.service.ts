@@ -213,31 +213,22 @@ export class PoemService {
     return;
   }
 
-  async getThree(getPoemsInput: GetPoemsInput) {
-    let poems = [];
+  async getAllByEmotion(getPoemsInput: GetPoemsInput) {
+    let poems;
     if (getPoemsInput.emotion) {
-      const tempPoems = [];
       const firstTags = this.tagService.getFirstTags(getPoemsInput.emotion);
       const secondTags = this.tagService.getSecondTags(getPoemsInput.emotion);
-      tempPoems.push(
-        await this.poemRepository.findNByTagAndIndex({
-          ...getPoemsInput,
-          ...firstTags,
-          limit: 2,
-        }),
-      );
-      tempPoems.push(
-        await this.poemRepository.findNByTagAndIndex({
-          ...getPoemsInput,
-          ...secondTags,
-          limit: 1,
-        }),
-      );
-      poems = tempPoems.flat();
-    } else {
-      poems = await this.poemRepository.findThreeByIndex({
+      const allTags = {
+        themes: [...firstTags.themes, ...secondTags.themes],
+        interactions: [...firstTags.interactions, ...secondTags.interactions],
+      };
+      poems = await this.poemRepository.findAllPublishedByTag({
         userId: getPoemsInput.userId,
-        index: getPoemsInput.index,
+        ...allTags,
+      });
+    } else {
+      poems = await this.poemRepository.findAllPublished({
+        userId: getPoemsInput.userId,
       });
     }
 
@@ -289,5 +280,4 @@ export type UpdateTagInput = {
 export type GetPoemsInput = {
   userId: string;
   emotion?: (typeof emotions)[number]['emotion'];
-  index: number;
 };
