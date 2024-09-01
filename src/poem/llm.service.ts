@@ -13,52 +13,34 @@ export class LlmService {
   }
 
   async analyzePoem(title: string, content: string) {
-    const response = await this.anthropic.messages.create({
-      model: this.configService.get<string>('ANTHROPIC_MODEL')!,
-      max_tokens: 200,
-      temperature: 0,
-      tools: [
-        {
-          name: 'poem_analyzer',
-          description: '시의 제목과 내용을 입력하면 테마와 상호작용을 분석해',
-          input_schema: {
-            type: 'object',
-            properties: {
-              themes: {
-                type: 'array',
-                items: { type: 'string' },
-                description:
-                  '테마의 종류: 로맨틱,우정,가족,성장,희망,자연,외로움,상실,죽음,그리움,영적,성공,평화,즐거움,기쁨,갈등,화해,불확실성,추악함,좌절,불의,사랑,연민. 이 중에서 0~2개의 테마를 선택해. 고를 테마가 없으면 그냥 빈 배열로 주면 돼',
-              },
-              interactions: {
-                type: 'array',
-                items: { type: 'string' },
-                description:
-                  '상호작용의 종류: 위로,카타르시스,감사,환희,성찰,격려,노스텔지아,자아비판,연대감,감성적,이성적,의문,상상력,축하. 이 중에서 0~2개의 상호작용을 선택해. 고를 상호작용이 없으면 그냥 빈 배열로 주면 돼.',
-              },
-            },
+    try {
+      const response = await this.anthropic.messages.create({
+        model: this.configService.get<string>('ANTHROPIC_MODEL')!,
+        max_tokens: 200,
+        temperature: 0,
+        system:
+          '테마태그는 [로맨틱,우정,가족,성장,희망,자연,외로움,상실,죽음,그리움,영적,성공,평화,즐거움,기쁨,갈등,화해,불확실성,추악함,좌절,불의,사랑,연민] 이 있다. 상호작용 태그는 [위로,카타르시스,감사,환희,성찰,격려,노스텔지아,자아비판,연대감,감성적,이성적,의문,상상력,축하] 이 있다. 입력받은 시의 제목과 내용을 기반으로 {themes: [], interactions: []} 형태로 반환하는데 themes엔 테마태그중에서 0~2개, interactions엔 상호작용 태그중에서 0~2개를 선택하지만 마땅히 고를 태그가 없을 경우엔 빈 배열로 반환한다. 선택의 이유는 절대 설명하지 않고 그저 json형태로만 반환한다.',
+        messages: [
+          {
+            role: 'user',
+            content: `제목: ${title}\n내용: ${content}`,
           },
-        },
-      ],
-      tool_choice: { type: 'tool', name: 'poem_analyzer' },
-      messages: [
-        {
-          role: 'user',
-          content: `제목: ${title}\n내용: ${content}`,
-        },
-      ],
-    });
+        ],
+      });
 
-    if (response.content[0].type === 'tool_use') {
-      return response.content[0].input as {
-        themes: string[];
-        interactions: string[];
-      };
-    } else {
-      console.error('Anthropic api response error');
+      if (response.content[0].type === 'text') {
+        return JSON.parse(response.content[0].text) as {
+          themes: string[];
+          interactions: string[];
+        };
+      }
+      throw response;
+    } catch (error) {
+      console.error('Anthropic api error');
       console.error(title, content);
-      console.error(response);
-      throw new Error('Anthropic api response error');
+      console.error(error);
+      console.error(typeof error);
+      throw new Error('Anthropic api error');
     }
   }
 
