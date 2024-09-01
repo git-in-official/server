@@ -557,7 +557,7 @@ describe('Poem (e2e)', () => {
     });
   });
 
-  describe('GET /poems?emotion&index - 감정별 시 목록 조회', () => {
+  describe('GET /poems?emotion - 감정별 시 목록 조회', () => {
     it('감정이 없을 때도 시를 3개씩 받을 수 있고, 상태가 출판 인 시만 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
@@ -754,7 +754,6 @@ describe('Poem (e2e)', () => {
       // then
       expect(status).toEqual(200);
       expect(body).toHaveLength(3);
-      expect(body[2].title).toEqual('테마가 가족');
     });
 
     it('시가 있더라도 감정에 맞는 시가 없을 때는 빈 배열을 반환한다', async () => {

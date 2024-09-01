@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PoemRepository, FindInputWithTags } from './poem.repository';
+import { PoemRepository } from './poem.repository';
 import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
@@ -121,98 +121,6 @@ export class PoemPrismaRepository implements PoemRepository {
     return { authorId };
   }
 
-  async findThreeByIndex({ userId, index }: FindInputWithoutEmotion) {
-    return this.prisma.poem.findMany({
-      take: 3,
-      skip: index * 3,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where: {
-        status: '출판',
-      },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        textAlign: true,
-        textSize: true,
-        textFont: true,
-        themes: true,
-        interactions: true,
-        isRecorded: true,
-        inspirationId: true,
-        createdAt: true,
-        author: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        scraps: {
-          where: {
-            userId,
-          },
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
-  }
-
-  async findNByTagAndIndex(findInputWithTags: FindInputWithTags) {
-    return this.prisma.poem.findMany({
-      take: findInputWithTags.limit,
-      skip: findInputWithTags.index * findInputWithTags.limit,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      where: {
-        status: '출판',
-        OR: [
-          {
-            themes: {
-              hasSome: findInputWithTags.themes,
-            },
-          },
-          {
-            interactions: {
-              hasSome: findInputWithTags.interactions,
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        title: true,
-        content: true,
-        textAlign: true,
-        textSize: true,
-        textFont: true,
-        themes: true,
-        interactions: true,
-        isRecorded: true,
-        inspirationId: true,
-        createdAt: true,
-        author: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        scraps: {
-          where: {
-            userId: findInputWithTags.userId,
-          },
-          select: {
-            id: true,
-          },
-        },
-      },
-    });
-  }
-
   async countPublishedByUserId(userId: string) {
     return await this.prisma.poem.count({
       where: {
@@ -273,6 +181,98 @@ export class PoemPrismaRepository implements PoemRepository {
     });
 
     return result.scrapCount;
+  }
+
+  async findAllPublished({ userId }: { userId: string }) {
+    return this.prisma.poem.findMany({
+      where: {
+        status: '출판',
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        textAlign: true,
+        textSize: true,
+        textFont: true,
+        themes: true,
+        interactions: true,
+        isRecorded: true,
+        inspirationId: true,
+        createdAt: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        scraps: {
+          where: {
+            userId,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
+  }
+
+  async findAllPublishedByTag(findInput: {
+    userId: string;
+    themes: string[];
+    interactions: string[];
+  }) {
+    return this.prisma.poem.findMany({
+      where: {
+        status: '출판',
+        OR: [
+          {
+            themes: {
+              hasSome: findInput.themes,
+            },
+          },
+          {
+            interactions: {
+              hasSome: findInput.interactions,
+            },
+          },
+        ],
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: {
+        id: true,
+        title: true,
+        content: true,
+        textAlign: true,
+        textSize: true,
+        textFont: true,
+        themes: true,
+        interactions: true,
+        isRecorded: true,
+        inspirationId: true,
+        createdAt: true,
+        author: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+        scraps: {
+          where: {
+            userId: findInput.userId,
+          },
+          select: {
+            id: true,
+          },
+        },
+      },
+    });
   }
 }
 
