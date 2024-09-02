@@ -9,11 +9,11 @@ export const emotions = [
   },
   {
     emotion: '두려움',
-    description: ['불안', '긴장', '불확실성'],
+    description: ['불안', '긴장', '불확실'],
   },
   {
     emotion: '신뢰',
-    description: ['의지', '안정감', '친밀감'],
+    description: ['의지', '안정', '친밀감'],
   },
   {
     emotion: '기대',
