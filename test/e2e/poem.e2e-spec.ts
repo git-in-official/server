@@ -359,7 +359,7 @@ describe('Poem (e2e)', () => {
   });
 
   describe('GET /poems/remain - 남은 시 개수 반환', () => {
-    it('이미 시를 두 번 썼을 때 0을 반환한다', async () => {
+    it('이미 시를 두 번 썼을 때 8을 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -410,10 +410,10 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(200);
-      expect(body).toEqual({ count: 0 });
+      expect(body).toEqual({ count: 8 });
     });
 
-    it('시를 한번만 썼을 때 1을 반환한다', async () => {
+    it('시를 한번만 썼을 때 9을 반환한다', async () => {
       // given
       const { accessToken, name } = await login(app);
       const user = await prisma.user.findFirst({
@@ -448,7 +448,7 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(200);
-      expect(body).toEqual({ count: 1 });
+      expect(body).toEqual({ count: 9 });
     });
   });
 
@@ -486,7 +486,7 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(201);
-      expect(body).toEqual({ count: 1 });
+      expect(body).toEqual({ count: 9 });
     });
 
     it('녹음 파일이 있는 경우, S3에 녹음파일이 업로드된다.', async () => {
@@ -532,7 +532,7 @@ describe('Poem (e2e)', () => {
 
       // then
       expect(status).toEqual(201);
-      expect(body.count).toEqual(1);
+      expect(body.count).toEqual(9);
       const s3Client = new S3Client();
       const newPoem = await prisma.poem.findFirst({
         where: { title: 'test-poem' },
