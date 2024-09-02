@@ -77,6 +77,9 @@ export class PoemPrismaRepository implements PoemRepository {
           },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
   }
 
