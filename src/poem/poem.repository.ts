@@ -3,7 +3,6 @@ import { themes, interactions } from '../constants/tags';
 export interface PoemRepository {
   create(userId: string, data: CreateInput): Promise<{ id: string }>;
   findAllProofreading(): Promise<ProofreadingPoemList>;
-  findOneProofreading(id: string): Promise<PoemWithOriginalContent | null>;
   // TODO 타입 나중에 변경
   findOneById(
     id: string,

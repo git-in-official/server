@@ -1,5 +1,4 @@
 export * from './proofreading-poem.dto';
-// export * from './proofreading-poem-detail.dto';
 export * from './title-inspiration.dto';
 export * from './word-inspiration.dto';
 export * from './audio-inspiration.dto';

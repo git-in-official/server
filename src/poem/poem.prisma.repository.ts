@@ -80,23 +80,6 @@ export class PoemPrismaRepository implements PoemRepository {
     });
   }
 
-  async findOneProofreading(id: string) {
-    return this.prisma.poem.findUnique({
-      where: {
-        id,
-        status: '교정중',
-      },
-      include: {
-        inspiration: true,
-      },
-      // TODO select으로 변경하기
-      omit: {
-        inspirationId: true,
-        scrapCount: true,
-      },
-    });
-  }
-
   async updateToPublishedStatus(id: string, ink: number) {
     const { authorId } = await this.prisma.poem.update({
       where: {
