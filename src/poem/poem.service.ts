@@ -97,8 +97,6 @@ export class PoemService {
   async getRemain(userId: string) {
     const maximum = 10;
     const count = await this.poemRepository.countUserDaily(userId);
-    console.log('userId', userId);
-    console.log('count', maximum - count);
     return {
       count: maximum - count,
     };
