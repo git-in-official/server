@@ -11,7 +11,7 @@ export class TagController {
   @ApiOperation({ summary: '테마와 상호작용 목록 조회' })
   @ApiResponse({ status: 200, type: TagsDto })
   @Get()
-  getAll() {
+  getAll(): TagsDto {
     return this.tagService.getAll();
   }
 }

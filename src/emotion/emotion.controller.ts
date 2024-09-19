@@ -21,7 +21,7 @@ export class EmotionController {
   @ApiOperation({ summary: '감정 리스트 조회' })
   @ApiResponse({ status: 200, type: [EmotionDto] })
   @Get()
-  async getAll(@CurrentUser() userId: string) {
+  async getAll(@CurrentUser() userId: string): Promise<EmotionDto[]> {
     return await this.emotionService.getAll(userId);
   }
 
@@ -32,6 +32,7 @@ export class EmotionController {
     @Body() { emotion }: EmotionSelectDto,
     @CurrentUser() userId: string,
   ) {
-    return await this.emotionService.select(userId, emotion);
+    await this.emotionService.select(userId, emotion);
+    return;
   }
 }

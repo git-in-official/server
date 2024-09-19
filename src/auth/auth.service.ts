@@ -27,6 +27,8 @@ export class AuthService {
       }
       const jwtAccessToken = await this.createAccessToken(user.id);
       return { accessToken: jwtAccessToken, name: user.name };
+    } else {
+      throw new Error('invalid provider');
     }
   }
 
@@ -35,7 +37,7 @@ export class AuthService {
     providerAccessToken,
     name,
   }: {
-    provider: 'GOOGLE' | 'APPLE';
+    provider: 'GOOGLE';
     providerAccessToken: string;
     name: string;
   }) {
@@ -48,6 +50,8 @@ export class AuthService {
       });
       const jwtAccessToken = await this.createAccessToken(newUser.id);
       return { accessToken: jwtAccessToken, name: newUser.name };
+    } else {
+      throw new Error('invalid provider');
     }
   }
 

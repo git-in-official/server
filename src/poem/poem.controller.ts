@@ -54,7 +54,7 @@ export class PoemController {
   @ApiResponse({ status: 200, type: TagsDto })
   @HttpCode(200)
   @Post('analyze')
-  async analysis(@Body() analyzePoemDto: AnalyzePoemDto) {
+  async analysis(@Body() analyzePoemDto: AnalyzePoemDto): Promise<TagsDto> {
     return await this.poemService.analyzePoem(
       analyzePoemDto.title,
       analyzePoemDto.content,
@@ -68,7 +68,7 @@ export class PoemController {
   @ApiResponse({ status: 200, type: ContentDto })
   @HttpCode(200)
   @Patch('tag')
-  async updateTag(@Body() updateTagDto: UpdateTagDto) {
+  async updateTag(@Body() updateTagDto: UpdateTagDto): Promise<ContentDto> {
     return await this.poemService.updateTag({
       ...updateTagDto,
     });
@@ -105,7 +105,8 @@ export class PoemController {
     @Param('id', ParseUUIDPipe) poemId: string,
     @CurrentUser() userId: string,
   ) {
-    return await this.poemService.scrap(poemId, userId);
+    await this.poemService.scrap(poemId, userId);
+    return;
   }
 
   @ApiOperation({
