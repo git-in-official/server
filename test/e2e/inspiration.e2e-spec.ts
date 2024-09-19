@@ -35,7 +35,7 @@ describe('Inspiration (e2e)', () => {
     await prisma.user.deleteMany();
   });
 
-  describe('GET /inspirations/title - 제목 글감 받기', () => {
+  describe('GET /inspirations - 제목 글감 받기', () => {
     it('제목 글감을 반환한다', async () => {
       // given
       const { accessToken } = await login(app);
@@ -49,12 +49,12 @@ describe('Inspiration (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer())
-        .get('/inspirations/title')
+        .get('/inspirations?type=TITLE')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
       expect(status).toBe(200);
-      expect(body.title).toBe('test-title');
+      expect(body.text).toBe('test-title');
       expect(body.id).toBeDefined();
     });
   });
@@ -65,14 +65,14 @@ describe('Inspiration (e2e)', () => {
 
     // when
     const { status } = await request(app.getHttpServer())
-      .get('/inspirations/title')
+      .get('/inspirations?type=TITLE')
       .set('Authorization', `Bearer ${accessToken}`);
 
     // then
     expect(status).toBe(404);
   });
 
-  describe('GET /inspirations/word - 단어 글감 받기', () => {
+  describe('GET /inspirations - 단어 글감 받기', () => {
     it('단어 글감을 반환한다', async () => {
       // given
       const { accessToken } = await login(app);
@@ -86,12 +86,12 @@ describe('Inspiration (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer())
-        .get('/inspirations/word')
+        .get('/inspirations?type=WORD')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
       expect(status).toBe(200);
-      expect(body.word).toBe('test-word');
+      expect(body.text).toBe('test-word');
       expect(body.id).toBeDefined();
     });
 
@@ -101,7 +101,7 @@ describe('Inspiration (e2e)', () => {
 
       // when
       const { status } = await request(app.getHttpServer())
-        .get('/inspirations/word')
+        .get('/inspirations?type=WORD')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
@@ -123,14 +123,14 @@ describe('Inspiration (e2e)', () => {
 
       // when
       const { status, body } = await request(app.getHttpServer())
-        .get('/inspirations/audio')
+        .get('/inspirations?type=AUDIO')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
       const expectedData = {
         filename: 'test.mp3',
         id: expect.any(String),
-        audioUrl: expect.stringContaining(process.env.AWS_CLOUDFRONT_URL!),
+        fileUrl: expect.stringContaining(process.env.AWS_CLOUDFRONT_URL!),
       };
       expect(status).toBe(200);
       expect(body).toEqual(expectedData);
@@ -142,7 +142,7 @@ describe('Inspiration (e2e)', () => {
 
       // when
       const { status } = await request(app.getHttpServer())
-        .get('/inspirations/audio')
+        .get('/inspirations?type=AUDIO')
         .set('Authorization', `Bearer ${accessToken}`);
 
       // then
@@ -163,14 +163,14 @@ describe('Inspiration (e2e)', () => {
 
         // when
         const { status, body } = await request(app.getHttpServer())
-          .get('/inspirations/video')
+          .get('/inspirations?type=VIDEO')
           .set('Authorization', `Bearer ${accessToken}`);
 
         // then
         const expectedData = {
           filename: 'test.mp4',
           id: expect.any(String),
-          videoUrl: expect.stringContaining(process.env.AWS_CLOUDFRONT_URL!),
+          fileUrl: expect.stringContaining(process.env.AWS_CLOUDFRONT_URL!),
         };
         expect(status).toBe(200);
         expect(body).toEqual(expectedData);
@@ -182,11 +182,26 @@ describe('Inspiration (e2e)', () => {
 
         // when
         const { status } = await request(app.getHttpServer())
-          .get('/inspirations/video')
+          .get('/inspirations?type=VIDEO')
           .set('Authorization', `Bearer ${accessToken}`);
 
         // then
         expect(status).toBe(404);
+      });
+    });
+
+    describe('GET /inspirations - 글감 받기', () => {
+      it('정의된 글감 타입이 아닌 경우 400을 반환한다', async () => {
+        // given
+        const { accessToken } = await login(app);
+
+        // when
+        const { status } = await request(app.getHttpServer())
+          .get('/inspirations?type=INVALID')
+          .set('Authorization', `Bearer ${accessToken}`);
+
+        // then
+        expect(status).toBe(400);
       });
     });
   });
