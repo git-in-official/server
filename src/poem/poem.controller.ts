@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -26,7 +27,6 @@ import {
   UpdateTagDto,
   CreatePoemDto,
   GetPoemsDto,
-  PlayDto,
 } from './dto/request';
 import {
   TagsDto,
@@ -101,7 +101,10 @@ export class PoemController {
   })
   @ApiResponse({ status: 201 })
   @Post(':id/scrap')
-  async scrap(@Param('id') poemId: string, @CurrentUser() userId: string) {
+  async scrap(
+    @Param('id', ParseUUIDPipe) poemId: string,
+    @CurrentUser() userId: string,
+  ) {
     return await this.poemService.scrap(poemId, userId);
   }
 
@@ -139,7 +142,7 @@ export class PoemController {
     description: '낭독 횟수 증가, responsebody는 없습니다.',
   })
   @Get(':id/play')
-  async play(@Param() { id }: PlayDto) {
+  async play(@Param('id', ParseUUIDPipe) id: string) {
     await this.poemService.play(id);
     return;
   }

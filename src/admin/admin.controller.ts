@@ -7,6 +7,7 @@ import {
   Get,
   Param,
   Patch,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -66,7 +67,7 @@ export class AdminController {
   @ApiOperation({ summary: '출판' })
   @ApiResponse({ status: 200, description: '출판 성공' })
   @Patch('poems/proofreading/:id/publish')
-  async publish(@Param('id') id: string) {
+  async publish(@Param('id', ParseUUIDPipe) id: string) {
     await this.poemService.publish(id);
     return;
   }
