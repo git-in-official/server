@@ -21,7 +21,7 @@ export class InspirationService {
     const index = this.getHashedIndex(dateString, length);
     return {
       id: titles[index].id,
-      title: titles[index].title,
+      text: titles[index].title,
     };
   }
 
@@ -37,7 +37,7 @@ export class InspirationService {
     const index = this.getHashedIndex(dateString, length);
     return {
       id: words[index].id,
-      word: words[index].word,
+      text: words[index].word,
     };
   }
 
@@ -54,7 +54,7 @@ export class InspirationService {
     return {
       id: audios[index].id,
       filename: audios[index].filename,
-      audioUrl:
+      fileUrl:
         this.awsService.getAudioInspirationUrl() + audios[index].filename,
     };
   }
@@ -72,7 +72,7 @@ export class InspirationService {
     return {
       id: videos[index].id,
       filename: videos[index].filename,
-      videoUrl:
+      fileUrl:
         this.awsService.getVideoInspirationUrl() + videos[index].filename,
     };
   }
