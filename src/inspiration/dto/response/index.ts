@@ -1,4 +1,2 @@
-export * from './title.dto';
-export * from './word.dto';
-export * from './audio.dto';
-export * from './video.dto';
+export * from './file-inspiration.dto';
+export * from './text-inspiration.dto';

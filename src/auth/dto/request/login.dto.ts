@@ -3,10 +3,10 @@ import { Transform } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginDto {
-  @ApiProperty({ enum: ['GOOGLE', 'APPLE'] })
+  @ApiProperty({ enum: ['GOOGLE'] })
   @Transform(({ value }) => value.toUpperCase())
-  @IsEnum(['GOOGLE', 'APPLE'])
-  readonly provider: 'GOOGLE' | 'APPLE';
+  @IsEnum(['GOOGLE'])
+  readonly provider: 'GOOGLE';
 
   @ApiProperty()
   @IsString()

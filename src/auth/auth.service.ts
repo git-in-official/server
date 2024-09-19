@@ -13,7 +13,7 @@ export class AuthService {
     provider,
     providerAccessToken,
   }: {
-    provider: 'GOOGLE' | 'APPLE';
+    provider: 'GOOGLE';
     providerAccessToken: string;
   }) {
     if (provider === 'GOOGLE') {
@@ -27,6 +27,8 @@ export class AuthService {
       }
       const jwtAccessToken = await this.createAccessToken(user.id);
       return { accessToken: jwtAccessToken, name: user.name };
+    } else {
+      throw new Error('invalid provider');
     }
   }
 
@@ -35,7 +37,7 @@ export class AuthService {
     providerAccessToken,
     name,
   }: {
-    provider: 'GOOGLE' | 'APPLE';
+    provider: 'GOOGLE';
     providerAccessToken: string;
     name: string;
   }) {
@@ -48,6 +50,8 @@ export class AuthService {
       });
       const jwtAccessToken = await this.createAccessToken(newUser.id);
       return { accessToken: jwtAccessToken, name: newUser.name };
+    } else {
+      throw new Error('invalid provider');
     }
   }
 
@@ -57,6 +61,9 @@ export class AuthService {
     const response = await fetch(
       `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${accessToken}`,
     );
+    if (!response.ok) {
+      throw new Error('failed to get google profile');
+    }
     return await response.json();
   }
 

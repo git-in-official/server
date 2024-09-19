@@ -7,6 +7,8 @@ import {
   Get,
   Param,
   Patch,
+  ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -14,15 +16,15 @@ import {
   ApiConsumes,
   ApiBody,
   ApiResponse,
+  ApiQuery,
+  getSchemaPath,
 } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { UploadInspirationDto } from './dto/request';
+import { UploadInspirationDto, GetAllInspirationsDto } from './dto/request';
 import {
   ProofreadingPoemDto,
-  TitleInspirationDto,
-  WordInspirationDto,
-  AudioInspirationDto,
-  VideoInspirationDto,
+  AdminTextInspirationDto,
+  AdminFileInspirationDto,
 } from './dto/response';
 import { InspirationService } from 'src/inspiration/inspiration.service';
 import { PoemService } from 'src/poem/poem.service';
@@ -66,36 +68,34 @@ export class AdminController {
   @ApiOperation({ summary: '출판' })
   @ApiResponse({ status: 200, description: '출판 성공' })
   @Patch('poems/proofreading/:id/publish')
-  async publish(@Param('id') id: string) {
+  async publish(@Param('id', ParseUUIDPipe) id: string) {
     await this.poemService.publish(id);
     return;
   }
 
-  @ApiOperation({ summary: '제목 글감 리스트 조회' })
-  @ApiResponse({ status: 200, type: [TitleInspirationDto] })
-  @Get('inspirations/titles')
-  async getAllTitles(): Promise<TitleInspirationDto[]> {
-    return await this.inspirationService.getAllTitles();
-  }
-
-  @ApiOperation({ summary: '단어 글감 리스트 조회' })
-  @ApiResponse({ status: 200, type: [WordInspirationDto] })
-  @Get('inspirations/words')
-  async getAllWords(): Promise<WordInspirationDto[]> {
-    return await this.inspirationService.getAllWords();
-  }
-
-  @ApiOperation({ summary: '음성 글감 리스트 조회' })
-  @ApiResponse({ status: 200, type: [AudioInspirationDto] })
-  @Get('inspirations/audios')
-  async getAllAudios(): Promise<AudioInspirationDto[]> {
-    return await this.inspirationService.getAllAudios();
-  }
-
-  @ApiOperation({ summary: '영상 글감 리스트 조회' })
-  @ApiResponse({ status: 200, type: [VideoInspirationDto] })
-  @Get('inspirations/videos')
-  async getAllVideos(): Promise<VideoInspirationDto[]> {
-    return await this.inspirationService.getAllVideos();
+  @ApiOperation({ summary: '전체 글감 리스트 조회' })
+  @ApiQuery({ name: 'type', enum: ['TITLE', 'WORD', 'AUDIO', 'VIDEO'] })
+  @ApiResponse({
+    status: 200,
+    schema: {
+      oneOf: [
+        { $ref: getSchemaPath(AdminTextInspirationDto) },
+        { $ref: getSchemaPath(AdminFileInspirationDto) },
+      ],
+    },
+  })
+  @Get('inspirations')
+  async getAllInspirations(
+    @Query() { type }: GetAllInspirationsDto,
+  ): Promise<AdminTextInspirationDto[] | AdminFileInspirationDto[]> {
+    if (type === 'TITLE') {
+      return await this.inspirationService.getAllTitles();
+    } else if (type === 'WORD') {
+      return await this.inspirationService.getAllWords();
+    } else if (type === 'AUDIO') {
+      return await this.inspirationService.getAllAudios();
+    } else {
+      return await this.inspirationService.getAllVideos();
+    }
   }
 }

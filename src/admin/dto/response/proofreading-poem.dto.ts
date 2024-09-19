@@ -1,62 +1,32 @@
 import { ApiProperty, getSchemaPath, ApiExtraModels } from '@nestjs/swagger';
 import { themes, interactions } from 'src/constants/tags';
 
-class TitleInspirationDto {
+class TextInspirationWithTypeDto {
   @ApiProperty()
   readonly id: string;
 
   @ApiProperty()
-  readonly type: 'TITLE';
+  readonly type: string;
 
   @ApiProperty()
-  readonly title: string;
+  readonly text: string;
 }
 
-class WordInspirationDto {
+class FileInspirationWithTypeDto {
   @ApiProperty()
   readonly id: string;
 
   @ApiProperty()
-  readonly type: 'WORD';
-
-  @ApiProperty()
-  readonly word: string;
-}
-
-class AudioInspirationDto {
-  @ApiProperty()
-  readonly id: string;
-
-  @ApiProperty()
-  readonly type: 'AUDIO';
+  readonly type: string;
 
   @ApiProperty()
   readonly filename: string;
 
   @ApiProperty()
-  readonly audioUrl: string;
+  readonly fileUrl: string;
 }
 
-class VideoInspirationDto {
-  @ApiProperty()
-  readonly id: string;
-
-  @ApiProperty()
-  readonly type: 'VIDEO';
-
-  @ApiProperty()
-  readonly filename: string;
-
-  @ApiProperty()
-  readonly videoUrl: string;
-}
-
-@ApiExtraModels(
-  TitleInspirationDto,
-  WordInspirationDto,
-  AudioInspirationDto,
-  VideoInspirationDto,
-)
+@ApiExtraModels(TextInspirationWithTypeDto, FileInspirationWithTypeDto)
 export class ProofreadingPoemDto {
   @ApiProperty()
   readonly id: string;
@@ -90,15 +60,9 @@ export class ProofreadingPoemDto {
 
   @ApiProperty({
     oneOf: [
-      { $ref: getSchemaPath(TitleInspirationDto) },
-      { $ref: getSchemaPath(WordInspirationDto) },
-      { $ref: getSchemaPath(AudioInspirationDto) },
-      { $ref: getSchemaPath(VideoInspirationDto) },
+      { $ref: getSchemaPath(TextInspirationWithTypeDto) },
+      { $ref: getSchemaPath(FileInspirationWithTypeDto) },
     ],
   })
-  readonly inspiration:
-    | TitleInspirationDto
-    | WordInspirationDto
-    | AudioInspirationDto
-    | VideoInspirationDto;
+  readonly inspiration: TextInspirationWithTypeDto | FileInspirationWithTypeDto;
 }

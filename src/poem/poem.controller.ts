@@ -10,6 +10,7 @@ import {
   Param,
   Get,
   Query,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -26,7 +27,6 @@ import {
   UpdateTagDto,
   CreatePoemDto,
   GetPoemsDto,
-  PlayDto,
 } from './dto/request';
 import {
   TagsDto,
@@ -54,7 +54,7 @@ export class PoemController {
   @ApiResponse({ status: 200, type: TagsDto })
   @HttpCode(200)
   @Post('analyze')
-  async analysis(@Body() analyzePoemDto: AnalyzePoemDto) {
+  async analysis(@Body() analyzePoemDto: AnalyzePoemDto): Promise<TagsDto> {
     return await this.poemService.analyzePoem(
       analyzePoemDto.title,
       analyzePoemDto.content,
@@ -68,7 +68,7 @@ export class PoemController {
   @ApiResponse({ status: 200, type: ContentDto })
   @HttpCode(200)
   @Patch('tag')
-  async updateTag(@Body() updateTagDto: UpdateTagDto) {
+  async updateTag(@Body() updateTagDto: UpdateTagDto): Promise<ContentDto> {
     return await this.poemService.updateTag({
       ...updateTagDto,
     });
@@ -101,8 +101,12 @@ export class PoemController {
   })
   @ApiResponse({ status: 201 })
   @Post(':id/scrap')
-  async scrap(@Param('id') poemId: string, @CurrentUser() userId: string) {
-    return await this.poemService.scrap(poemId, userId);
+  async scrap(
+    @Param('id', ParseUUIDPipe) poemId: string,
+    @CurrentUser() userId: string,
+  ) {
+    await this.poemService.scrap(poemId, userId);
+    return;
   }
 
   @ApiOperation({
@@ -139,7 +143,7 @@ export class PoemController {
     description: '낭독 횟수 증가, responsebody는 없습니다.',
   })
   @Get(':id/play')
-  async play(@Param() { id }: PlayDto) {
+  async play(@Param('id', ParseUUIDPipe) id: string) {
     await this.poemService.play(id);
     return;
   }

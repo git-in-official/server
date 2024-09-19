@@ -1,8 +1,8 @@
 export interface InspirationRepository {
-  findAllTitles(): Promise<{ id: string; type: string; title: string }[]>;
-  findAllWords(): Promise<{ id: string; type: string; word: string }[]>;
-  findAllAudios(): Promise<{ id: string; type: string; filename: string }[]>;
-  findAllVideos(): Promise<{ id: string; type: string; filename: string }[]>;
+  findAllTitles(): Promise<Inspiration[]>;
+  findAllWords(): Promise<Inspiration[]>;
+  findAllAudios(): Promise<Inspiration[]>;
+  findAllVideos(): Promise<Inspiration[]>;
   createTitle(title: string): Promise<void>;
   createWord(word: string): Promise<void>;
   createAudio(filename: string): Promise<void>;
@@ -10,3 +10,8 @@ export interface InspirationRepository {
 }
 
 export const InspirationRepository = Symbol('InspirationRepository');
+
+export interface Inspiration {
+  id: string;
+  displayName: string;
+}

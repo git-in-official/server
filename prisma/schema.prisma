@@ -27,6 +27,7 @@ model User {
   name         String
   introduction String?
   ink          Int      @default(0)
+  createdAt    DateTime @default(now())
 
   mainAchievementId String?
   mainAchievement   Achievement?             @relation(fields: [mainAchievementId], references: [id])
@@ -52,7 +53,7 @@ model Poem {
   status          String
   originalContent String?
   originalTitle   String?
-  scrapCount Int @default(0)
+  scrapCount      Int      @default(0)
 
   createdAt DateTime @default(now())
 

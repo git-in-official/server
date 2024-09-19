@@ -97,8 +97,6 @@ export class PoemService {
   async getRemain(userId: string) {
     const maximum = 10;
     const count = await this.poemRepository.countUserDaily(userId);
-    console.log('userId', userId);
-    console.log('count', maximum - count);
     return {
       count: maximum - count,
     };
@@ -109,33 +107,19 @@ export class PoemService {
     return peomList.map((poem) => {
       const { inspiration, author, ...rest } = poem;
       let inspirationData;
-      if (inspiration.type === 'TITLE') {
+      if (inspiration.type === 'TITLE' || inspiration.type === 'WORD') {
         inspirationData = {
           id: inspiration.id,
           type: inspiration.type,
-          title: inspiration.displayName,
-        };
-      } else if (inspiration.type === 'WORD') {
-        inspirationData = {
-          id: inspiration.id,
-          type: inspiration.type,
-          word: inspiration.displayName,
-        };
-      } else if (inspiration.type === 'AUDIO') {
-        inspirationData = {
-          id: inspiration.id,
-          type: inspiration.type,
-          filename: inspiration.displayName,
-          audioUrl:
-            this.awsService.getAudioInspirationUrl() + inspiration.displayName,
+          text: inspiration.displayName,
         };
       } else {
         inspirationData = {
           id: inspiration.id,
           type: inspiration.type,
           filename: inspiration.displayName,
-          videoUrl:
-            this.awsService.getVideoInspirationUrl() + inspiration.displayName,
+          fileUrl:
+            this.awsService.getAudioInspirationUrl() + inspiration.displayName,
         };
       }
       return {

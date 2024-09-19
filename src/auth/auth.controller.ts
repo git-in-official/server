@@ -27,7 +27,7 @@ export class AuthController {
   @ApiResponse({ status: 404, description: 'user not found' })
   @Post('login')
   @HttpCode(200)
-  async login(@Body() loginDto: LoginDto) {
+  async login(@Body() loginDto: LoginDto): Promise<JwtDto> {
     try {
       return await this.authService.login(loginDto);
     } catch (e) {
@@ -35,8 +35,8 @@ export class AuthController {
         if (e.message === 'user not found') {
           throw new HttpException('user not found', 404);
         }
-        throw e;
       }
+      throw e;
     }
   }
 
@@ -44,7 +44,7 @@ export class AuthController {
   @ApiResponse({ status: 201, type: JwtDto })
   @ApiResponse({ status: 400, description: '유효성 검사 실패' })
   @Post('signup')
-  async signup(@Body() signupDto: SignupDto) {
+  async signup(@Body() signupDto: SignupDto): Promise<JwtDto> {
     return this.authService.signup(signupDto);
   }
 
