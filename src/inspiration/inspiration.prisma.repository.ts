@@ -7,55 +7,51 @@ export class InspirationPrismaRepository implements InspirationRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAllTitles() {
-    const result = await this.prisma.inspiration.findMany({
+    return await this.prisma.inspiration.findMany({
       where: {
         type: 'TITLE',
       },
+      select: {
+        id: true,
+        displayName: true,
+      },
     });
-    return result.map((item) => ({
-      id: item.id,
-      type: item.type,
-      title: item.displayName,
-    }));
   }
 
   async findAllWords() {
-    const result = await this.prisma.inspiration.findMany({
+    return await this.prisma.inspiration.findMany({
       where: {
         type: 'WORD',
       },
+      select: {
+        id: true,
+        displayName: true,
+      },
     });
-    return result.map((item) => ({
-      id: item.id,
-      type: item.type,
-      word: item.displayName,
-    }));
   }
 
   async findAllAudios() {
-    const result = await this.prisma.inspiration.findMany({
+    return await this.prisma.inspiration.findMany({
       where: {
         type: 'AUDIO',
       },
+      select: {
+        id: true,
+        displayName: true,
+      },
     });
-    return result.map((item) => ({
-      id: item.id,
-      type: item.type,
-      filename: item.displayName,
-    }));
   }
 
   async findAllVideos() {
-    const result = await this.prisma.inspiration.findMany({
+    return await this.prisma.inspiration.findMany({
       where: {
         type: 'VIDEO',
       },
+      select: {
+        id: true,
+        displayName: true,
+      },
     });
-    return result.map((item) => ({
-      id: item.id,
-      type: item.type,
-      filename: item.displayName,
-    }));
   }
 
   async createTitle(title: string) {

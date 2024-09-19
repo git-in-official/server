@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class TitleInspirationDto {
+export class AdminTextInspirationDto {
   @ApiProperty()
   id: string;
 
   @ApiProperty()
-  type: string;
-
-  @ApiProperty()
-  title: string;
+  text: string;
 }

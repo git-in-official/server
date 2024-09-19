@@ -21,7 +21,7 @@ export class InspirationService {
     const index = this.getHashedIndex(dateString, length);
     return {
       id: titles[index].id,
-      text: titles[index].title,
+      text: titles[index].displayName,
     };
   }
 
@@ -37,7 +37,7 @@ export class InspirationService {
     const index = this.getHashedIndex(dateString, length);
     return {
       id: words[index].id,
-      text: words[index].word,
+      text: words[index].displayName,
     };
   }
 
@@ -53,9 +53,9 @@ export class InspirationService {
     const index = this.getHashedIndex(dateString, length);
     return {
       id: audios[index].id,
-      filename: audios[index].filename,
+      filename: audios[index].displayName,
       fileUrl:
-        this.awsService.getAudioInspirationUrl() + audios[index].filename,
+        this.awsService.getAudioInspirationUrl() + audios[index].displayName,
     };
   }
 
@@ -71,9 +71,9 @@ export class InspirationService {
     const index = this.getHashedIndex(dateString, length);
     return {
       id: videos[index].id,
-      filename: videos[index].filename,
+      filename: videos[index].displayName,
       fileUrl:
-        this.awsService.getVideoInspirationUrl() + videos[index].filename,
+        this.awsService.getVideoInspirationUrl() + videos[index].displayName,
     };
   }
 
@@ -110,20 +110,31 @@ export class InspirationService {
   }
 
   async getAllTitles() {
-    return await this.inspirationRepository.findAllTitles();
+    const titles = await this.inspirationRepository.findAllTitles();
+    return titles.map((title) => {
+      return {
+        id: title.id,
+        text: title.displayName,
+      };
+    });
   }
 
   async getAllWords() {
-    return await this.inspirationRepository.findAllWords();
+    const words = await this.inspirationRepository.findAllWords();
+    return words.map((word) => {
+      return {
+        id: word.id,
+        text: word.displayName,
+      };
+    });
   }
 
   async getAllAudios() {
     const audios = await this.inspirationRepository.findAllAudios();
     return audios.map((audio) => ({
       id: audio.id,
-      type: audio.type,
-      filename: audio.filename,
-      audioUrl: this.awsService.getAudioInspirationUrl() + audio.filename,
+      filename: audio.displayName,
+      fileUrl: this.awsService.getAudioInspirationUrl() + audio.displayName,
     }));
   }
 
@@ -131,9 +142,8 @@ export class InspirationService {
     const videos = await this.inspirationRepository.findAllVideos();
     return videos.map((video) => ({
       id: video.id,
-      type: video.type,
-      filename: video.filename,
-      videoUrl: this.awsService.getVideoInspirationUrl() + video.filename,
+      filename: video.displayName,
+      fileUrl: this.awsService.getVideoInspirationUrl() + video.displayName,
     }));
   }
 }

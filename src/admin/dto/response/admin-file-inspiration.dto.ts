@@ -1,15 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class VideoInspirationDto {
+export class AdminFileInspirationDto {
   @ApiProperty()
   id: string;
-
-  @ApiProperty()
-  type: string;
 
   @ApiProperty()
   filename: string;
 
   @ApiProperty()
-  videoUrl: string;
+  fileUrl: string;
 }

@@ -4,6 +4,10 @@ import {
   TextInspirationDto,
   FileInspirationDto,
 } from 'src/inspiration/dto/response';
+import {
+  AdminTextInspirationDto,
+  AdminFileInspirationDto,
+} from 'src/admin/dto/response';
 
 export function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
@@ -15,7 +19,12 @@ export function setupSwagger(app: INestApplication) {
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    extraModels: [TextInspirationDto, FileInspirationDto],
+    extraModels: [
+      TextInspirationDto,
+      FileInspirationDto,
+      AdminTextInspirationDto,
+      AdminFileInspirationDto,
+    ],
   });
 
   SwaggerModule.setup('api', app, document);
